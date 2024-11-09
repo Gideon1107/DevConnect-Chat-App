@@ -1,8 +1,26 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Prata&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Train+One&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 /* ... */
+
+*{
+  font-family: "Outfit", sans-serif;
+}
+
+.prata-regular {
+  font-family: "Prata", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.train-one-regular {
+  font-family: "Train One", system-ui;
+  font-weight: 400;
+  font-style: normal;
+}
 
 @layer base {
   :root {
