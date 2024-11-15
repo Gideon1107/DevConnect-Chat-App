@@ -26,15 +26,15 @@ const Auth = () => {
 
     return (
 
-        <div className="bg-[url('../src/assets/pattern_1.jpg')] bg-cover bg-no-repeat bg-center">
+        <div className="bg-[url('../src/assets/pattern_1.jpg')] bg-cover bg-no-repeat bg-center ">
             {/* NavBar */}
             <nav className='p-4 z-50'>
                 <img src={logo} alt="logo" height={200} width={200} />
             </nav>
 
             {/* Login/SignUp */}
-            <div className="h-[calc(100vh-60px)]  flex items-center justify-center ">
-                <div className=' bg-white bg-opacity-60 border-2 border-white text-opacity-90 shadow-2xl w-[80vw] md:w-[90vw] lg:w-[70vw] xl:w-[80vw] rounded-xl grid xl:grid-cols-2 items-center justify-center py-2'>
+            <div className="h-[calc(100vh-60px)] overflow-y-auto flex items-center justify-center ">
+                <div className='bg-white bg-opacity-60 border-2 border-white text-opacity-90 shadow-2xl w-[80vw] md:w-[90vw] lg:w-[70vw] xl:w-[80vw] rounded-xl grid xl:grid-cols-2 items-center justify-center py-2 '>
                     
                     <div className=' xl:flex justify-center items-center'>
                         <img src={Background} alt="background"  className='h-[400px] xl:h-[600px] max-sm:h-[300px]'/>
