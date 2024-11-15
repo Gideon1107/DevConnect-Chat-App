@@ -26,24 +26,24 @@ const Auth = () => {
 
     return (
 
-        <div className="bg-[url('../src/assets/pattern_1.jpg')] w-[100vw] bg-cover bg-no-repeat bg-center">
+        <div className="bg-[url('../src/assets/pattern_1.jpg')] bg-cover bg-no-repeat bg-center">
             {/* NavBar */}
             <nav className='p-4 z-50'>
-                <img src={logo} alt="logo" height={180} width={180} />
+                <img src={logo} alt="logo" height={200} width={200} />
             </nav>
 
             {/* Login/SignUp */}
-            <div className="h-[calc(100vh-56px)] flex items-center justify-center ">
-                <div className=' bg-white border-2 border-white text-opacity-90 shadow-2xl w-[80vw] md:w-[90vw] lg:w-[70vw] xl:w-[80vw] rounded-xl grid xl:grid-cols-2 items-center justify-center'>
+            <div className="h-[calc(100vh-60px)]  flex items-center justify-center ">
+                <div className=' bg-white bg-opacity-60 border-2 border-white text-opacity-90 shadow-2xl w-[80vw] md:w-[90vw] lg:w-[70vw] xl:w-[80vw] rounded-xl grid xl:grid-cols-2 items-center justify-center py-2'>
                     
                     <div className=' xl:flex justify-center items-center'>
-                        <img src={Background} alt="background"  className='h-[400px] xl:h-[600px]'/>
+                        <img src={Background} alt="background"  className='h-[400px] xl:h-[600px] max-sm:h-[300px]'/>
                     </div>
 
                     <div className='flex flex-col gap-10 items-center justify-center'>
                         <div className='flex items-center justify-center flex-col'>
                             <div className='flex items-center justify-center'>
-                                <h1 className='max-sm:text-5xl text-5xl font-bold md:text-6xl pb-3 max-sm:pb-2'>Welcome</h1>
+                                <h1 className='poiret-one-regular max-sm:text-4xl text-5xl font-bold md:text-6xl pb-3 max-sm:pb-2 text-center'><span className='text-green-400 poiret-one-regular'>Connect </span>Now</h1>
                                 {/* <img src={Victory} alt="" className='h-[100px] max-sm:h-[80px]' /> */}
                             </div>
                             <p className='max-sm:p-2 max-sm:text-sm font-normal text-center '>Enter your details to start connecting with developers like you!</p>
