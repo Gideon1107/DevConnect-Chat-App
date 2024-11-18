@@ -30,6 +30,8 @@ const connectToDatabase = async () => {
     // Close the connection when done
     await db.end();
   }
+
+  
 };
 
 // Call the async function to connect
