@@ -1,24 +1,89 @@
-import { Button } from "@/components/ui/button"
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom"
-import Auth from "./pages/Auth"
-import Chat from "./pages/Chat"
-import Profile from "./pages/Profile"
+import { useState } from 'react'
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
+import { Navbar } from './components/Navbar'
+import { Footer } from './components/Footer'
+import { SignUpModal } from './components/SignUpModal'
+import { SignInModal } from './components/SignInModal'
+import { Home } from './pages/Home'
+import { Features } from './pages/Features'
+import { Community } from './pages/Community'
+import { Documentation } from './pages/Documentation'
+import About from './components/About'
+import NotFound from './components/NotFound'
+import PrivateRoute from './components/PrivateRoute'
+import Chat  from './pages/Chat'
+import Profile  from './pages/Profile'
+import Settings from './pages/Settings'
+import Groups from './pages/Groups'
+import GroupDetails from './pages/GroupDetails'
+import Channels from './pages/Channels'
+import ChannelDetails from './pages/ChannelDetails'
 
 
-function App() {
-  
+
+
+const App = () => {
+  const [isSignUpOpen, setIsSignUpOpen] = useState(false)
+  const [isSignInOpen, setIsSignInOpen] = useState(false)
+
+  const handleOpenSignUp = () => {
+    setIsSignInOpen(false)
+    setIsSignUpOpen(true)
+  }
+
+  const handleOpenSignIn = () => {
+    setIsSignUpOpen(false)
+    setIsSignInOpen(true)
+  }
+
+
   return (
-   <BrowserRouter>
-    <Routes>
-      <Route path="/auth" element={<Auth/>}/>
-      <Route path="/chat" element={<Chat/>}/>
-      <Route path="/profile" element={<Profile/>}/>
+    <Router>
+      <div className="bg-slate-900 min-h-screen">
+        <Navbar onSignInClick={handleOpenSignIn} />
+        <Routes>
+          <Route path="/" element={<Home onGetStarted={() => setIsSignUpOpen(true)} />} />
+          <Route path="/features" element={<Features />} />
+          <Route path="/community" element={<Community />} />
+          <Route path="/docs" element={<Documentation />} />
+          <Route path="/about" element={<About />} />
 
-      <Route path="*" element={<Navigate to="auth"/>}/>
-    </Routes>
-   </BrowserRouter>
+          {/* Protected Routes */}
+          <Route path="/chat" element={<PrivateRoute element={<Chat />} />} />
+          <Route path="/profile/:id" element={<PrivateRoute element={<Profile />} />} />
+          <Route path="/settings" element={<PrivateRoute element={<Settings />} />} />
 
+          {/* Groups & Channels */}
+          <Route path="/groups" element={<PrivateRoute element={<Groups />} />} />
+          <Route path="/groups/:id" element={<PrivateRoute element={<GroupDetails />} />} />
+          <Route path="/channels" element={<PrivateRoute element={<Channels />} />} />
+          <Route path="/channels/:id" element={<PrivateRoute element={<ChannelDetails />} />} />
+
+
+          {/* Redirects */}
+          <Route path="/pricing" element={<Navigate to="/features" />} />
+          <Route path="/blog" element={<Navigate to="/community" />} />
+          <Route path="/contact" element={<Navigate to="/about" />} />
+
+          {/* Not Found */}
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+        <Footer />
+
+        {/* Modals */}
+        <SignUpModal
+          isOpen={isSignUpOpen}
+          onClose={() => setIsSignUpOpen(false)}
+          onSwitchToSignIn={handleOpenSignIn}
+        />
+        <SignInModal
+          isOpen={isSignInOpen}
+          onClose={() => setIsSignInOpen(false)}
+          onSwitchToSignUp={handleOpenSignUp}
+        />
+      </div>
+    </Router>
   )
 }
 
-export default App
+export default App;

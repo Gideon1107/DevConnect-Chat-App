@@ -1,38 +1,52 @@
-import pg from 'pg'; // Import Client from pg
-import dotenv from 'dotenv'; // Import dotenv for environment variables
+import express from 'express';
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+import cors from 'cors';
+import http from 'http';
+import { Server } from 'socket.io';
+import userRoutes from './routes/userRoutes.js';
+import connectDB from './config/mongodb.js';
 
-dotenv.config(); // Load environment variables from .env file
+// Load environment variables
+dotenv.config();
 
-const { Pool } = pg;
-
-// Create a new PostgreSQL client
-const db = new Pool({
-  host: process.env.DB_HOST,         // PostgreSQL host (default is localhost)
-  port: process.env.DB_PORT || 5432, // PostgreSQL port (default is 5432)
-  user: process.env.DB_USER,         // PostgreSQL user
-  password: process.env.DB_PASSWORD, // PostgreSQL password
-  database: process.env.DB_NAME      // PostgreSQL database
+// Initialize Express app
+const app = express();
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: '*', // Allow all origins (update in production)
+  },
 });
 
-// Async function to connect to PostgreSQL and run a query
-const connectToDatabase = async () => {
-  try {
-    // Connect to PostgreSQL
-    await db.connect();
-    console.log('Connected to PostgreSQL!');
+// Middleware
+app.use(cors());
+app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
+app.use(express.json()); // Parse JSON bodies
 
-    // Run a simple query
-    const res = await db.query('SELECT NOW()');
-    console.log('Query result:', res.rows); // Print the current time
-  } catch (err) {
-    console.error('Error connecting to the database', err.stack);
-  } finally {
-    // Close the connection when done
-    await db.end();
-  }
+// Connect to MongoDB
+connectDB();
 
-  
-};
 
-// Call the async function to connect
-connectToDatabase();
+// Routes
+app.use('/api/users', userRoutes);
+
+
+// Socket.io setup
+io.on('connection', (socket) => {
+  console.log('A user connected');
+
+  socket.on('disconnect', () => {
+    console.log('User disconnected');
+  });
+});
+
+app.get("/", (req, res) => {
+  res.send("API Working")
+})
+
+// Start the server
+const PORT = process.env.PORT || 4000;
+server.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
