@@ -14,10 +14,6 @@ import PrivateRoute from './components/PrivateRoute'
 import Chat  from './pages/Chat'
 import Profile  from './pages/Profile'
 import Settings from './pages/Settings'
-import Groups from './pages/Groups'
-import GroupDetails from './pages/GroupDetails'
-import Channels from './pages/Channels'
-import ChannelDetails from './pages/ChannelDetails'
 
 
 
@@ -49,16 +45,20 @@ const App = () => {
           <Route path="/about" element={<About />} />
 
           {/* Protected Routes */}
+          {/* Main Chat Route - DM or Default Chat */}
           <Route path="/chat" element={<PrivateRoute element={<Chat />} />} />
-          <Route path="/profile/:id" element={<PrivateRoute element={<Profile />} />} />
+
+          {/* Dynamic Chat Route - for Individual Messages (DM) */}
+          <Route path="/chat/:userId" element={<PrivateRoute element={<Chat />} />} /> 
+
+          {/* Dynamic Chat Route - for Group or Channel Messages */}
+          <Route path="/chat/:type/:id" element={<PrivateRoute element={<Chat />} />} /> 
+
+          {/* User Profile Route */}
+          <Route path="/profile/:userId" element={<PrivateRoute element={<Profile />} />} />
+
+          {/* Settings Route */}
           <Route path="/settings" element={<PrivateRoute element={<Settings />} />} />
-
-          {/* Groups & Channels */}
-          <Route path="/groups" element={<PrivateRoute element={<Groups />} />} />
-          <Route path="/groups/:id" element={<PrivateRoute element={<GroupDetails />} />} />
-          <Route path="/channels" element={<PrivateRoute element={<Channels />} />} />
-          <Route path="/channels/:id" element={<PrivateRoute element={<ChannelDetails />} />} />
-
 
           {/* Redirects */}
           <Route path="/pricing" element={<Navigate to="/features" />} />
