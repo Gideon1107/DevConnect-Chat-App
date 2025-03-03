@@ -9,7 +9,7 @@ const MONGODB_URI = process.env.MONGODB_URI;
 // Connect to MongoDB
 const connectDB = async () => {
   try {
-    await mongoose.connect(`${MONGODB_URI}/devconnect`, {
+    await mongoose.connect(`${MONGODB_URI}`, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });

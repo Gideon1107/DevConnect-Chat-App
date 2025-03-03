@@ -4,8 +4,10 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import http from 'http';
 import { Server } from 'socket.io';
-import userRoutes from './routes/userRoutes.js';
+import authRoutes from './routes/authRoutes.js';
+import userRoutes from './routes/userRoutes.js'
 import connectDB from './config/mongodb.js';
+
 
 // Load environment variables
 dotenv.config();
@@ -29,7 +31,8 @@ connectDB();
 
 
 // Routes
-app.use('/api/users', userRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/user', userRoutes)
 
 
 // Socket.io setup

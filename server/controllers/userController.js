@@ -1,88 +1,178 @@
 import User from '../models/User.js';
 import bcrypt from 'bcrypt'
-import jwt from 'jsonwebtoken'
-import validator from "validator";
+import { DeleteObjectCommand, S3Client } from '@aws-sdk/client-s3';
 
 
-const createToken = (id) => {
-    return jwt.sign({id}, process.env.JWT_SECRET, {
-        expiresIn: '2h', //Token expires in 1 hour
-    })
-};
 
-
-// Register a new user
-export const registerUser = async (req, res) => {
-
+// Get User Profile
+export const getUserProfile = async (req, res) => {
     try {
-        const { username, email, password } = req.body;
+        const userId = req.user.id; // Get the authenticated user ID from middleware
+        const user = await User.findById(userId).select('-password');   //excluding password from being retrieved
+        if (!user) return res.status(404).json({ message: 'User not found' });
 
-        // checking if user already exist
-        const emailExists = await User.findOne({ email })
-
-        if (emailExists) {
-            return res.status(409).json({ success: false, message: "User already exists" })
-        }
-
-        // Checking if email is valid
-        if (!validator.isEmail(email)) {
-            return res.status(400).json({ success: false, message: "Please enter a valid email" })
-        }
-
-        // Checking password length
-        if (password.length < 8) {
-            return res.status(400).json({ success: false, message: "Please enter a longer password" })
-        }
-
-        // Check if username is already being used by another user
-        const usernameExists = await User.findOne({ username })
-
-        if (usernameExists) {
-            return res.status(409).json({ success: false, message: "Username already exists" })
-        }
-
-        //Hashing user password
-        const salt = await bcrypt.genSalt(10)
-        const hashedPassword = await bcrypt.hash(password, salt)
-
-        const user = new User({ username, email, password: hashedPassword });
-        await user.save();
-
-        // Create Token
-        const token = createToken(user._id)
-        res.status(201).json({ success: true, message: 'User registered successfully', token });
+        res.status(200).json(user);
 
     } catch (error) {
-        res.status(400).json({ message: 'Error registering user', error: error.message });
+        res.status(500).json({ message: 'Server error', error: error.message });
     }
-
 };
 
 
 
-//Route for user login
-export const loginUser = async (req, res) => {
-
+// Update User Profile 
+export const updateUserProfile = async (req, res) => {
     try {
-        const {email, password} = req.body;
+        const { username } = req.body;
 
-        // Find user by email
-        const user = await User.findOne({email})
+        const userId = req.user.id; // Get authenticated user ID from middleware
+        const user = await User.findById(userId);
+        if (!user) return res.status(404).json({ message: 'User not found' });
 
-        if (!user) {
-            return res.status(409).json({ success: false, message: "User does not exists" })
+
+        // Update username fields if provided
+        user.username = username || user.username;
+
+        await user.save();
+        res.status(200).json({ success: true, message: 'Profile updated', user });
+
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Server error', error: error.message });
+    }
+};
+
+export const updateProfilePicture = async (req, res) => {
+    try {
+        const userId = req.user.id //Getting user id from middleware
+        const user = await User.findById(userId)
+        if (!user) return res.status(404).json({ message: 'User not found' });
+
+        // Check if a file was uploaded and store the S3 URL
+        if (req.file) {
+            user.profilePicture = req.file.location; // S3 file URL
         }
 
-        // Check if the password is correct
-         const isPasswordValid = await bcrypt.compare(password, user.password);
+        await user.save();
+        res.status(200).json({ success: true, message: 'Profile picture updated', user });
 
-         if (isPasswordValid) {
-            const token = createToken(user._id)
-            res.status(201).json({ success: true, message: 'User logged in successfully', token });
-         } else {
-            res.status(400).json({ success: false, message: 'Incorrect password'});
-         }
     } catch (error) {
-        res.status(400).json({ message: 'Error logging in user', error: error.message });
+        res.status(500).json({ success: false, message: 'Server error', error: error.message });
     }
 }
+
+
+export const deleteProfilePicture = async (req, res) => {
+
+    // Initialize S3 client
+    const s3 = new S3Client({
+        region: process.env.AWS_REGION,
+        credentials: {
+            accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+            secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+        },
+    });
+
+
+    try {
+
+        // Ensure the user can only delete their own account
+        if (req.user.id !== req.params.id) {
+            return res.status(403).json({ success: false, message: 'Unauthorized to delete avatar' });
+        }
+
+        const user = await User.findById(req.user.id);
+        if (!user) return res.status(404).json({ success: false, message: 'User not found' })
+
+        // Extract file key correctly
+        const fileKey = user.profilePicture.split(`${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/`)[1];
+
+        if (fileKey) {
+            const deleteParams = {
+                Bucket: process.env.AWS_BUCKET_NAME,
+                Key: fileKey,
+            }
+
+            await s3.send(new DeleteObjectCommand(deleteParams));
+        }
+
+        const sanitizedUsername = user.username.replace(/\s+/g, '-').toLowerCase(); // Replace spaces with hyphens and convert to lowercase so link dont break
+        user.profilePicture = `https://ui-avatars.com/api/?name=${sanitizedUsername}&background=random`;
+
+        await user.save();
+        res.status(200).json({ success: true, message: 'Profile picture deleted', user });
+
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Server error', error: error.message });
+    }
+}
+
+
+
+// Change User Password
+export const changePassword = async (req, res) => {
+    try {
+        const { currentPassword, newPassword } = req.body;
+
+        // Validate the input
+        if (!currentPassword || !newPassword) {
+            return res.status(400).json({ success: false, message: 'Both current and new passwords are required' });
+        }
+
+        // Find the user in the database
+        const user = await User.findById(req.user.id);
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
+        // Compare the provided current password with the stored hashed password
+        const isMatch = await bcrypt.compare(currentPassword, user.password);
+        if (!isMatch) {
+            return res.status(400).json({ success: false, message: 'Incorrect current password' });
+        }
+
+        // Check if the new password is the same as the current one
+        if (currentPassword === newPassword) {
+            return res.status(400).json({ success: false, message: 'New password must be different from the current password' });
+        }
+
+        // Hash the new password and save it
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+        user.password = hashedPassword;
+        await user.save();
+
+        res.status(200).json({ success: true, message: 'Password updated successfully', user });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: 'Server error', error: error.message });
+    }
+};
+
+
+
+// Allow User to delete profile
+export const deleteUser = async (req, res) => {
+    try {
+
+        // Ensure the user can only delete their own account
+        if (req.user.id !== req.params.id) {
+            return res.status(403).json({ success: false, message: 'Unauthorized to delete this user' });
+        }
+
+        const user = await User.findById(req.params.id);
+
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
+        // If the user is found, delete it
+        await User.findByIdAndDelete(req.params.id);
+
+        res.status(200).json({ success: true, message: 'User deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Server error', error: error.message });
+    }
+};
+
