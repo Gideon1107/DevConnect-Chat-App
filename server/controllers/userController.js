@@ -75,7 +75,7 @@ export const deleteProfilePicture = async (req, res) => {
 
     try {
 
-        // Ensure the user can only delete their own account
+        // Ensure the user can only delete their profile picture
         if (req.user.id !== req.params.id) {
             return res.status(403).json({ success: false, message: 'Unauthorized to delete avatar' });
         }

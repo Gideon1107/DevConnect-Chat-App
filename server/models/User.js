@@ -9,6 +9,7 @@ const userSchema = new mongoose.Schema({
   status: { type: String, enum: ['online', 'offline', 'away', 'busy'], default: 'offline' },
   lastSeenActive: { type: Date, default: Date.now },
   joinedGroups: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Group' }],
+  googleId: { type: String, unique: true } // Added googleId field
 }, { timestamps: true });
 
 // Middleware to set default profile picture before saving

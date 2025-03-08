@@ -10,7 +10,9 @@
 
 
 * {
-    font-family: "Poiret One", serif;
+    /* font-family: "Poiret One", serif; */
+    font-family: "Montserrat", serif !important;
+    font-weight: 300;
     font-optical-sizing: auto;
     box-sizing: border-box;
 

@@ -1,13 +1,12 @@
 import mongoose from 'mongoose';
 
 const messageSchema = new mongoose.Schema({
-  senderId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }, // User who sent the message
-  receiverId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, // For direct messages, can be null
-  groupId: { type: mongoose.Schema.Types.ObjectId, ref: 'Group' },  // For group messages, can be null
-  content: { type: String, required: true },
-  type: { type: String, enum: ['text', 'image', 'file'], default: 'text' }, // Message type: text, image, file
-  timestamp: { type: Date, default: Date.now },
-  isRead: { type: Boolean, default: false },  // Whether the message has been read
-});
+    chat: { type: mongoose.Schema.Types.ObjectId, ref: 'Chat', required: true },
+    sender: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    content: { type: String },
+    mediaUrl: { type: String }, // URL of the media file
+    mediaType: { type: String, enum: ['image', 'video', 'audio', 'file'] }, // Type of the media file
+    createdAt: { type: Date, default: Date.now }
+}, { timestamps: true });
 
 export default mongoose.model('Message', messageSchema);

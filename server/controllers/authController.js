@@ -87,6 +87,37 @@ export const loginUser = async (req, res) => {
     }
 }
 
+// Route for Login in with Google
+export const googleLogin = async (req, res) => {
+    try {
+        // Successful authentication, generate a JWT token
+        const token = createToken(req.user.id)
+        res.json({ success: true,message: 'User logged in with google successfully', token });
+    } catch (error) {
+        res.status(400).json({ message: 'Error logging in user', error: error.message });
+    }
+}
+
+
+// Route for Admin login
+export const adminLogin = async (req, res) => {
+    try {
+        const {email, password } = req.body;
+
+        console.log(email, password)
+
+        if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
+            const token = createToken(email+password);
+            res.json({success: true, message: "Admin sucessfully logged in", token})
+        } else {
+            res.json({success: false, message: "Invalid credentials"})
+        }
+
+    } catch (error) {
+        console.log(error)
+        res.json({success: false, message: error.message})
+    }
+}
 
 // Logout User (Frontend should remove token)
 export const logoutUser = async (req, res) => {

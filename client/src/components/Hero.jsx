@@ -17,21 +17,21 @@ export const Hero = ({ onGetStarted }) => {
             transition={{ duration: 0.9, ease: "easeInOut" }}>
             <div className="text-center lg:text-left pt-5">
               <div className="flex flex-col ">
-                <h1 className="text-4xl sm:text-6xl font-bold text-white leading-loose ">
+                <h1 className="text-4xl sm:text-6xl font-medium  text-white leading-loose ">
                   Connect with
                 </h1>
-                <span className="text-blue-400 text-4xl sm:text-6xl sm:py-3  font-bold">
+                <span className="text-blue-400 text-4xl sm:text-6xl sm:py-3">
                   <Typewriter
                     words={['Developers']}
                     loop={false}
                     cursor
-                    cursorStyle='_'
-                    typeSpeed={180}
+                    cursorStyle='|'
+                    typeSpeed={200}
                     deleteSpeed={120}
                   // delaySpeed={1000}
                   />
                 </span>
-                <h1 className="text-4xl sm:text-6xl text-white mb-6 leading-loose  font-bold ">
+                <h1 className="text-4xl sm:text-6xl text-white mb-6 leading-loose font-medium ">
                   Worldwide
                 </h1>
 
