@@ -7,7 +7,8 @@ import { yupResolver } from "@hookform/resolvers/yup"
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { useState } from "react";
 import axios from "axios";
-import { HOST, AUTH_ROUTES, LOGIN_ROUTE, SIGNUP_ROUTE, GOOGLE_LOGIN_ROUTE } from "@/utils/constants";
+import { HOST, LOGIN_ROUTE, GOOGLE_LOGIN_ROUTE } from "@/utils/constants";
+import { toast } from 'sonner';
 
 
 // Sign In Schema
@@ -27,22 +28,35 @@ export const SignInModal = ({ isOpen, onClose, onSwitchToSignUp }) => {
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm({ resolver: yupResolver(signInSchemna)}); // Integrate Yup validation with React Hook Form
+  } = useForm({ resolver: yupResolver(signInSchemna) }); // Integrate Yup validation with React Hook Form
 
   const onSubmit = async (data) => {
     try {
-      // Call sign in API
-      const response = await axios.post(`${HOST}/${LOGIN_ROUTE}`, data);
-      console.log(response.data);
+      // Call sign-in API
+      const response = await axios.post(`${HOST}/${LOGIN_ROUTE}`, data, {
+        withCredentials: true, // Important: Sends cookies with the request
+      });
+      if (response.data.success) {
+        toast.success(response.data.message, {theme: "light"});
+        setTimeout(() => {
+          window.location.href = '/chat'; // Redirect after 1 seconds then redirect to chat page
+      }, 1000);
+      }  else {
+        toast.error(response.data.message, {theme: "light"});
+      }
+
       // Reset the form
       reset();
     } catch (error) {
-      console.error(error);
+      if (error.response && error.response.status === 409) {
+        toast.error(error.message);
+      }
     }
   };
 
   const onGoogleSignIn = async () => {
-    window.location.href = `${HOST}/${GOOGLE_LOGIN_ROUTE}`;
+    toast.loading("Redirecting to Google Sign In", {theme: "light"});
+    setTimeout(() => {window.location.href = `${HOST}/${GOOGLE_LOGIN_ROUTE}`; }, 1000);
   };
 
 
@@ -53,7 +67,7 @@ export const SignInModal = ({ isOpen, onClose, onSwitchToSignUp }) => {
 
   return (
     <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
-      <div className="bg-slate-900 p-8 rounded-lg w-full max-w-md border border-slate-800">
+      <div className="bg-slate-900 p-8 rounded-xl w-full max-w-md border border-slate-800">
 
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-white">Sign In</h2>
@@ -107,13 +121,13 @@ export const SignInModal = ({ isOpen, onClose, onSwitchToSignUp }) => {
               Password
             </label>
             <div className="relative flex items-center">
-            <input
-              {...register("password")}
-              type= {showPassword ? "text" : "password"}
-              className="w-full px-4 py-2 bg-slate-800 border text-base border-slate-700 rounded-md text-white focus:outline-none focus:border-blue-500 placeholder:opacity-40 placeholder:text-sm"
-              placeholder="Enter Password"
-            />
-            { showPassword ? <FiEyeOff onClick={() => setShowPassword(!showPassword)} className="absolute text-white right-3"/> : <FiEye onClick={() => setShowPassword(!showPassword)} className="absolute text-white right-3"/> }
+              <input
+                {...register("password")}
+                type={showPassword ? "text" : "password"}
+                className="w-full px-4 py-2 bg-slate-800 border text-base border-slate-700 rounded-md text-white focus:outline-none focus:border-blue-500 placeholder:opacity-40 placeholder:text-sm"
+                placeholder="Enter Password"
+              />
+              {showPassword ? <FiEyeOff onClick={() => setShowPassword(!showPassword)} className="absolute text-white right-3 cursor-pointer" /> : <FiEye onClick={() => setShowPassword(!showPassword)} className="absolute text-white right-3 cursor-pointer" />}
             </div>
 
             {/* Password Error */}

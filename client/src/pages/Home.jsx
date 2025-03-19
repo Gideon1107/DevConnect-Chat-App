@@ -1,18 +1,18 @@
-// File: Home.jsx
+
+import BackToTop from '@/components/BackToTop'
 import { Hero } from '../components/Hero'
+import PropTypes from 'prop-types'
 
 
 
 export const Home = ({ onGetStarted }) => {
-
-    const scrollToTop = () => {
-      window
-        .scrollTo({
-          top: 0,
-          behavior: 'smooth',
-        });
-      }
-    scrollToTop()
     
-  return <Hero onGetStarted={onGetStarted} />
+  return <div>
+    <Hero onGetStarted={onGetStarted} />
+
+  </div> 
+}
+
+Home.propTypes = {
+  onGetStarted: PropTypes.func.isRequired
 }

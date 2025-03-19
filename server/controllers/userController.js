@@ -29,10 +29,24 @@ export const updateUserProfile = async (req, res) => {
         const user = await User.findById(userId);
         if (!user) return res.status(404).json({ message: 'User not found' });
 
+        const usernameExists = await User.findOne({ username })
+        
+        if (usernameExists) {
+            return res.status(200).json({ success: false, message: "Username already exists" })
+        }
 
+        if (!username.trim()) {
+            return res.status(400).json({ success: false, message: 'Username is required' });
+        }
+
+        const usernamePattern = /^[a-zA-Z0-9_-]+$/;  // Only allows alphanumeric characters, underscores, and hyphens
+
+        if (!usernamePattern.test(username)) {
+            return res.status(400).json({ message: 'Username cannot contain spaces or special characters.' });
+        }
+        
         // Update username fields if provided
         user.username = username || user.username;
-
         await user.save();
         res.status(200).json({ success: true, message: 'Profile updated', user });
 

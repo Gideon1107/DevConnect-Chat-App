@@ -1,8 +1,14 @@
 import express from 'express';
 import passport from 'passport';
-import { registerUser } from '../controllers/authController.js';
-import { loginUser } from '../controllers/authController.js'
-import { googleLogin } from '../controllers/authController.js'
+import { 
+    registerUser,
+    logoutUser,
+    loginUser,
+    googleLogin
+ } 
+ from '../controllers/authController.js';
+import { checkAuth } from '../middlewares/checkAuth.js';
+import authUser from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
 
@@ -18,5 +24,10 @@ router.get('/google', passport.authenticate('google', { scope: ['profile', 'emai
 
 // Google login callback route
 router.get('/google/callback', passport.authenticate('google', { failureRedirect: '/login' }), googleLogin);
+
+//checks auth for login
+router.get('/check', checkAuth)
+
+router.post('/logout',authUser, logoutUser);
 
 export default router;

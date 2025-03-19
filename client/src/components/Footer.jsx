@@ -4,13 +4,13 @@ import { Link } from "react-router-dom"
 export const Footer = () => {
   return (
     <footer className="bg-slate-900 border-t border-slate-800">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+      <div className="px-4 sm:px-[5vw] md:px-[7vw] lg:px-[9vw] py-12">
+        <div className="flex flex-col sm:flex-row justify-between gap-8">
           <div className="space-y-4">
             <Link to="/" className="text-2xl font-bold text-blue-500">
               <img src={Logo} alt="logo"  width={150}/>
             </Link>
-            <p className="text-gray-400 text-sm">
+            <p className="text-gray-400 text-sm font-light">
               Connect, collaborate, and grow with developers worldwide.
             </p>
             <div className="flex space-x-4">
@@ -30,7 +30,7 @@ export const Footer = () => {
           </div>
           <div>
             <h3 className="text-white font-semibold mb-4">Product</h3>
-            <ul className="space-y-2">
+            <ul className="space-y-2 font-light">
               <li>
                 <Link to="/features" className="text-gray-400 hover:text-white text-sm">
                   Features
@@ -50,7 +50,7 @@ export const Footer = () => {
           </div>
           <div>
             <h3 className="text-white font-semibold mb-4">Resources</h3>
-            <ul className="space-y-2">
+            <ul className="space-y-2 font-light">
               <li>
                 <Link to="/docs" className="text-gray-400 hover:text-white text-sm">
                   Documentation
@@ -70,7 +70,7 @@ export const Footer = () => {
           </div>
           <div>
             <h3 className="text-white font-semibold mb-4">Company</h3>
-            <ul className="space-y-2">
+            <ul className="space-y-2 font-light">
               <li>
                 <Link to="/about" className="text-gray-400 hover:text-white text-sm">
                   About Us
@@ -89,7 +89,7 @@ export const Footer = () => {
             </ul>
           </div>
         </div>
-        <div className="border-t border-slate-800 mt-12 pt-8">
+        <div className="border-t border-slate-800 mt-12 pt-8 font-light">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="text-gray-400 text-sm">
               &copy; {new Date().getFullYear()} DevConnect. All rights reserved.

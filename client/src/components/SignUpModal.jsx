@@ -1,21 +1,88 @@
 import { FcGoogle } from "react-icons/fc";
 import { X } from "lucide-react"
+import PropTypes from "prop-types"
+import * as Yup from "yup"
+import { useForm } from "react-hook-form"
+import { yupResolver } from "@hookform/resolvers/yup"
+import { FiEye, FiEyeOff } from "react-icons/fi";
+import { useState } from "react";
+import axios from "axios";
+import { HOST, SIGNUP_ROUTE, GOOGLE_LOGIN_ROUTE } from "@/utils/constants";
+import { toast } from 'sonner';
 
+
+// Sign Up Schema
+const signUpSchemna = Yup.object().shape({
+  username: Yup.string().required("Username is required").min(3, "Username must be at least 3 characters").matches(
+    /^[a-zA-Z0-9_]*$/,
+    "Username must contain only letters, numbers, and underscores"
+  ),
+  email: Yup.string().matches(
+    /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+    "Invalid email address"
+  ).required("Email is required"),
+  password: Yup.string().required("Password is required").min(8, "Password must be at least 8 characters")
+});
 
 
 export const SignUpModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm({ resolver: yupResolver(signUpSchemna) }); // Integrate Yup validation with React Hook Form
+
+  const onSubmit = async (data) => {
+    console.log(data);
+    try {
+      // Call sign-in API
+      const response = await axios.post(`${HOST}/${SIGNUP_ROUTE}`, data, {
+        withCredentials: true, // Important: Sends cookies with the request
+      });
+      
+      if (response.data.success) {
+        toast.success(response.data.message, {theme: "light"});
+        setTimeout(() => {
+          window.location.href = '/chat'; // Redirect after 1 seconds then redirect to chat page
+      }, 1000);
+      } else {
+        toast.error(response.data.message, {theme: "light"});
+      }
+
+      // Reset the form if sign up is successful
+      if (response.data.success) {
+      reset();
+      }
+
+    } catch (error) {
+      if (error.response && error.response.status === 409) {
+        toast.error(error.message);
+      }
+    }
+  };
+
+  const onGoogleSignIn = async () => {
+    toast.loading("Redirecting to Google Sign In", {theme: "light"});
+    setTimeout(() => {window.location.href = `${HOST}/${GOOGLE_LOGIN_ROUTE}`; }, 1000);
+  };
+
+  const [showPassword, setShowPassword] = useState(false);
+
+
   if (!isOpen) return null
 
   return (
     <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
-      <div className="bg-slate-900 p-8 rounded-lg w-full max-w-md border border-slate-800">
+      <div className="bg-slate-900 p-8 rounded-xl w-full max-w-md border border-slate-800">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-white">Create Account</h2>
           <button onClick={onClose} className="text-gray-400 hover:text-white">
             <X size={24} />
           </button>
         </div>
-        <button className="w-full bg-white text-gray-900 px-4 py-2 rounded-md text-sm font-semibold hover:bg-gray-100 flex items-center justify-center gap-2 mb-4">
+        <button className="w-full bg-white text-gray-900 px-4 py-2 rounded-md text-sm font-semibold hover:bg-gray-100 flex items-center justify-center gap-2 mb-4" onClick={onGoogleSignIn}>
             <FcGoogle/>
           Continue with Google
         </button>
@@ -29,37 +96,70 @@ export const SignUpModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
             </span>
           </div>
         </div>
-        <form className="space-y-4">
+
+        <form className="space-y-4" noValidate onSubmit={handleSubmit(onSubmit)}>
+
+            {/* Username */}
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-1">
-              Full Name
+              Username
             </label>
             <input
+              {...register("username")}
               type="text"
-              className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-md text-white focus:outline-none focus:border-blue-500"
-              placeholder="John Doe"
+              className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-md text-white focus:outline-none focus:border-blue-500 placeholder:opacity-40 placeholder:text-sm"
+              placeholder="JohnDoe"
+              autoComplete="off"
             />
+
+            {/* Username Error message */}
+            {errors.username && (
+              <span className="text-red-600 text-sm mt-1">{errors.username.message}</span>
+            )}
           </div>
+
+          {/* Email */}
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-1">
               Email
             </label>
             <input
+              {...register("email")}
               type="email"
-              className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-md text-white focus:outline-none focus:border-blue-500"
+              className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-md text-white focus:outline-none focus:border-blue-500 placeholder:opacity-40 placeholder:text-sm"
               placeholder="you@example.com"
+              autoComplete="off"
             />
+
+            {/* Email Error message */}
+            {errors.email && (
+              <span className="text-red-600 text-sm mt-1">{errors.email.message}</span>
+            )}
           </div>
+
+          {/* Password */}
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-1">
               Password
             </label>
+            <div className="relative flex items-center">
             <input
-              type="password"
-              className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-md text-white focus:outline-none focus:border-blue-500"
+              {...register("password")}
+              type={showPassword ? "text" : "password"}
+              className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-md text-white focus:outline-none focus:border-blue-500 placeholder:opacity-40 placeholder:text-sm"
               placeholder="••••••••"
+              autoComplete="off"
             />
+              {showPassword ? <FiEyeOff onClick={() => setShowPassword(!showPassword)} className="absolute text-white right-3 cursor-pointer" /> : <FiEye onClick={() => setShowPassword(!showPassword)} className="absolute text-white right-3 cursor-pointer" />}
+            </div>
+            
+            {/* Password Error message */}
+            {errors.password && (
+              <span className="text-red-600 text-sm mt-1">{errors.password.message}</span>
+            )}
           </div>
+
+          {/* Sign Up button */}
           <button
             type="submit"
             className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition-colors"
@@ -81,3 +181,10 @@ export const SignUpModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
     </div>
   );
 }
+
+// Prop Validation
+SignUpModal.propTypes = {
+  isOpen: PropTypes.bool.isRequired, //onSignInClick must be a function and is required
+  onClose: PropTypes.func.isRequired, //onClose must be a function and is required
+  onSwitchToSignIn: PropTypes.func.isRequired // onSwitchToSignUp must be a function and is required
+};

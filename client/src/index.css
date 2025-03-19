@@ -2,20 +2,54 @@
 @import url('https://fonts.googleapis.com/css2?family=Train+One&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Poiret+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 
+/* Target autofilled inputs */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  background-color: #1e293b !important; /* Same as bg-slate-800 */
+  color: white !important; /* Maintain text color */
+  box-shadow: 0 0 0px 1000px #1e293b inset !important; /* Force background color */
+  -webkit-text-fill-color: white !important; /* Ensure text remains white */
+  transition: background-color 5000s ease-in-out 0s; /* Prevent flashing */
+  caret-color: white !important; /* Ensures cursor is visible */
+}
+
 
 
 * {
     /* font-family: "Poiret One", serif; */
-    font-family: "Montserrat", serif !important;
-    font-weight: 300;
+    /* font-family: "Montserrat", serif !important; */
+    /* font-family: "Roboto", sans-serif; */
+    /* font-family: "Roboto Mono", monospace; */
+    font-family: "Work Sans", sans-serif;
     font-optical-sizing: auto;
     box-sizing: border-box;
 
+}
+
+.roboto {
+  font-family: "Roboto", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  font-variation-settings:
+    "wdth" 100;
+}
+
+.roboto-mono{
+  font-family: "Roboto Mono", monospace;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
 }
 
 .montserrat {

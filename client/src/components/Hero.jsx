@@ -1,14 +1,24 @@
 import { FcGoogle } from "react-icons/fc";
-import { MessageSquare, Globe, Users, X } from "lucide-react"
+import { MessageSquare, Globe, Users} from "lucide-react"
 import heroImg from "../assets/threeconnect.png"
 import PropTypes from "prop-types"
 import { motion } from "framer-motion"
 import { Typewriter } from 'react-simple-typewriter'
+import { toast } from 'sonner';
+import { HOST, GOOGLE_LOGIN_ROUTE } from "@/utils/constants";
 
 
 export const Hero = ({ onGetStarted }) => {
+
+
+  const onGoogleSignIn = async () => {
+    toast.loading("Redirecting to Google Sign In", {theme: "light"});
+    setTimeout(() => {window.location.href = `${HOST}/${GOOGLE_LOGIN_ROUTE}`; }, 1000);
+  };
+
+
   return (
-    <div className="bg-slate-900 min-h-screen pt-16">
+    <div className="bg-slate-900 min-h-screen sm:pt-16">
       <div className="px-4 sm:px-[5vw] md:px-[7vw] lg:px-[9vw] pt-8 sm:pt-20 pb-16 ">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <motion.div
@@ -36,18 +46,20 @@ export const Hero = ({ onGetStarted }) => {
                 </h1>
 
               </div>
-              <p className="text-lg text-gray-400 mb-8 max-w-2xl lg:max-w-none mx-auto ">
+              <p className="text-lg text-gray-400 mb-8 max-w-2xl lg:max-w-none mx-auto font-light ">
                 Join a global community of developers. Share ideas, collaborate on
                 projects, and grow together.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-12">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-12 pt-4">
                 <button
                   onClick={onGetStarted}
-                  className="bg-blue-600 text-white px-8 py-3 rounded-lg font-normal text-base hover:bg-blue-700"
+                  className="bg-blue-600  text-white px-8 py-3 rounded-[3px] font-light text-base hover:bg-blue-700 transition-all duration-200 ease-in-out"
                 >
                   Get Started
                 </button>
-                <button className="bg-white text-gray-900 px-8 py-3 rounded-lg text-base font-normal hover:bg-gray-100 flex items-center justify-center gap-2">
+                <button className="bg-transparent text-white border-[1px] border-white px-8 py-3 rounded-[3px] text-base font-light flex items-center justify-center gap-2 hover:bg-white hover:text-slate-900 transition-all duration-300 ease-in-out"
+                  onClick={onGoogleSignIn}
+                >
                   <FcGoogle />
                   Continue with Google
                 </button>
@@ -78,7 +90,7 @@ export const Hero = ({ onGetStarted }) => {
               <Globe className="h-8 w-8 text-blue-500" />
             </div>
             <h3 className="text-white font-semibold mb-2">Global Community</h3>
-            <p className="text-gray-400 text-center">
+            <p className="text-gray-400 text-center font-light">
               Connect with developers from around the world
             </p>
           </div>
@@ -87,7 +99,7 @@ export const Hero = ({ onGetStarted }) => {
               <MessageSquare className="h-8 w-8 text-blue-500" />
             </div>
             <h3 className="text-white font-semibold mb-2">Real-time Chat</h3>
-            <p className="text-gray-400 text-center">
+            <p className="text-gray-400 text-center font-light">
               Instant messaging with code sharing support
             </p>
           </div>
@@ -98,7 +110,7 @@ export const Hero = ({ onGetStarted }) => {
             <h3 className="text-white font-semibold mb-2">
               Team Collaboration
             </h3>
-            <p className="text-gray-400 text-center">
+            <p className="text-gray-400 text-center font-light">
               Create groups and collaborate seamlessly
             </p>
           </div>

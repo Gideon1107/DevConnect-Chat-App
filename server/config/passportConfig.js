@@ -5,19 +5,34 @@ import User from '../models/User.js';
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: 'http://localhost:4000/api/auth/google/callback'
+    callbackURL: process.env.GOOGLE_CALLBACK_URL
   },
   async (accessToken, refreshToken, profile, done) => {
     try {
       let user = await User.findOne({ googleId: profile.id });
       if (!user) {
+
+        let baseUsername = profile.displayName.split(' ')[0].toLowerCase(); // Extract first name & lowercase
+        let username = baseUsername;
+        // Check if username exists
+        let existingUser = await User.findOne({ username });
+        let count = 1;
+
+        while (existingUser) {
+          username = `${baseUsername}${count}`; // Append a number
+          existingUser = await User.findOne({ username });
+          count++;
+        }
+
         user = new User({
           googleId: profile.id,
-          username: profile.displayName,
+          username,
           password: "googleUser",
+          status: "online",
           email: profile.emails[0].value,
-          profilePicture: profile.photos[0].value
+          profilePicture: `https://ui-avatars.com/api/?name=${username}&background=random`
         });
+
         await user.save();
       }
       done(null, user);
