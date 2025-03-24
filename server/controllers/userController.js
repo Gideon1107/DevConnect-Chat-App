@@ -32,11 +32,9 @@ export const updateUserProfile = async (req, res) => {
         const usernameExists = await User.findOne({ username })
         
         if (usernameExists) {
-            return res.status(200).json({ success: false, message: "Username already exists" })
-        }
-
-        if (!username.trim()) {
-            return res.status(400).json({ success: false, message: 'Username is required' });
+            if (usernameExists.id !== userId) {
+                return res.status(200).json({ success: false, message: "Username already exists" })
+            }
         }
 
         const usernamePattern = /^[a-zA-Z0-9_-]+$/;  // Only allows alphanumeric characters, underscores, and hyphens
@@ -89,11 +87,6 @@ export const deleteProfilePicture = async (req, res) => {
 
     try {
 
-        // Ensure the user can only delete their profile picture
-        if (req.user.id !== req.params.id) {
-            return res.status(403).json({ success: false, message: 'Unauthorized to delete avatar' });
-        }
-
         const user = await User.findById(req.user.id);
         if (!user) return res.status(404).json({ success: false, message: 'User not found' })
 
@@ -125,7 +118,13 @@ export const deleteProfilePicture = async (req, res) => {
 // Change User Password
 export const changePassword = async (req, res) => {
     try {
-        const { currentPassword, newPassword } = req.body;
+        const { currentPassword, newPassword, confirmPassword  } = req.body;
+        
+
+        //Check if the newpassord is same with confirm password
+        if (newPassword !== confirmPassword) {
+            return res.status(200).json({ success: false, message: "Passowrd must match"});
+        }
 
         // Validate the input
         if (!currentPassword || !newPassword) {
@@ -141,12 +140,12 @@ export const changePassword = async (req, res) => {
         // Compare the provided current password with the stored hashed password
         const isMatch = await bcrypt.compare(currentPassword, user.password);
         if (!isMatch) {
-            return res.status(400).json({ success: false, message: 'Incorrect current password' });
+            return res.status(200).json({ success: false, message: 'Incorrect current password' });
         }
 
         // Check if the new password is the same as the current one
         if (currentPassword === newPassword) {
-            return res.status(400).json({ success: false, message: 'New password must be different from the current password' });
+            return res.status(200).json({ success: false, message: 'New password must be different from the current password' });
         }
 
         // Hash the new password and save it

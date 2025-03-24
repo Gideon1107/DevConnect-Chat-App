@@ -37,26 +37,27 @@ export const SignInModal = ({ isOpen, onClose, onSwitchToSignUp }) => {
         withCredentials: true, // Important: Sends cookies with the request
       });
       if (response.data.success) {
-        toast.success(response.data.message, {theme: "light"});
+        toast.success(response.data.message, { theme: "light" });
+        // Reset the form
+        reset();
         setTimeout(() => {
           window.location.href = '/chat'; // Redirect after 1 seconds then redirect to chat page
-      }, 1000);
-      }  else {
-        toast.error(response.data.message, {theme: "light"});
+        }, 1000);
+      } else {
+        toast.error(response.data.message, { theme: "light" });
       }
 
-      // Reset the form
-      reset();
     } catch (error) {
       if (error.response && error.response.status === 409) {
         toast.error(error.message);
       }
     }
+
   };
 
   const onGoogleSignIn = async () => {
-    toast.loading("Redirecting to Google Sign In", {theme: "light"});
-    setTimeout(() => {window.location.href = `${HOST}/${GOOGLE_LOGIN_ROUTE}`; }, 1000);
+    toast.loading("Redirecting to Google Sign In", { theme: "light" });
+    setTimeout(() => { window.location.href = `${HOST}/${GOOGLE_LOGIN_ROUTE}`; }, 1000);
   };
 
 

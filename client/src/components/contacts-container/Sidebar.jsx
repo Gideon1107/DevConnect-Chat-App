@@ -15,7 +15,7 @@ const Sidebar = ({ onSelectUser, selectedUser }) => {
       </div>
       
       <div className="p-4 ">
-        <button className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg flex items-center justify-center gap-2 hover:bg-blue-700">
+        <button className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg flex items-center justify-center gap-2 hover:bg-blue-700 rounded-tr-[12px] rounded-bl-[12px]">
           <i className="fas fa-users"></i>
           <span className="md:inline hidden ">Create Group</span>
         </button>

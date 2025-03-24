@@ -22,6 +22,7 @@ import { useAppStore } from './store/store';
 import { useEffect } from 'react';
 import axios from 'axios';
 import { HOST, GETUSER_ROUTE, CHECK_AUTH_ROUTE } from './utils/constants';
+import ChangePassword from './components/ChangePassword';
 
 
 
@@ -108,10 +109,10 @@ const App = () => {
           <Route path="/chat/:type/:id" element={<PrivateRoute element={<Chat />} />} />
 
           {/* User Profile Route */}
-          <Route path="/profile/:userId" element={<PrivateRoute element={<Profile />} />} />
+          <Route path="/profile" element={<PrivateRoute element={<Profile />} />} />
 
           {/* Settings Route */}
-          <Route path="/settings" element={<PrivateRoute element={<Settings />} />} />
+          <Route path="/change-password" element={<PrivateRoute element={<ChangePassword />} />} />
 
           {/* Redirects */}
           <Route path="/pricing" element={<Navigate to="/features" />} />

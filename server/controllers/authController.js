@@ -87,23 +87,24 @@ export const loginUser = async (req, res) => {
 
     try {
         const { email, password } = req.body;
-
+        
         // Find user by email
         const user = await User.findOne({ email })
         
 
 
         if (!user) {
-            return res.status(409).json({ success: false, message: "User does not exists" })
+            return res.status(200).json({ success: false, message: "User does not exists" })
         }
-
-        user.status = "online"; // Set user status to online
-        await user.save();
 
         // Check if the password is correct
         const isPasswordValid = await bcrypt.compare(password, user.password);
 
         if (isPasswordValid) {
+
+            user.status = "online"; // Set user status to online
+            await user.save();
+
             const token = createToken(user._id)
 
             // Set the token in an HTTP-only cookie
@@ -117,7 +118,7 @@ export const loginUser = async (req, res) => {
             res.status(200).json({ success: true, message: 'User logged in successfully', token });
 
         } else {
-            res.status(400).json({ success: false, message: 'Incorrect password' });
+            res.status(200).json({ success: false, message: 'Incorrect password' });
         }
     } catch (error) {
         res.status(400).json({ message: 'Error logging in user', error: error.message });

@@ -35,7 +35,7 @@ const MessageInput = () => {
 
   return (
     <div className="h-[10vh] bg-slate-800 flex justify-center items-center px-8 mb-6 gap-4">
-      <form onClick={(e) => e.preventDefault() } className="flex-1 flex rounded-[5px] items-center gap-4 pr-5 bg-slate-600">
+      <form onClick={(e) => e.preventDefault() } className="flex-1 flex  items-center gap-4 pr-5 bg-slate-600 rounded-tr-[12px] rounded-bl-[12px]">
         {/* Message input field */}
         <input type="text" className="flex-1 p-3 bg-transparent rounded-lg focus:border-none focus:outline-none placeholder:text-sm" placeholder="Start Typing..."
           value={message}

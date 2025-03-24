@@ -6,5 +6,8 @@ export const LOGIN_ROUTE = `${AUTH_ROUTES}/login`;
 export const GOOGLE_LOGIN_ROUTE = `${AUTH_ROUTES}/google`;
 export const CHECK_AUTH_ROUTE = `${AUTH_ROUTES}/check`;
 export const LOGOUT_ROUTE = `${AUTH_ROUTES}/logout`;
-export const GETUSER_ROUTE = `${USER_ROUTES}/profile`
-
+export const GETUSER_ROUTE = `${USER_ROUTES}/profile`;
+export const ADD_PROFILE_PICTURE_ROUTE = `${USER_ROUTES}/update-avatar`
+export const DELETE_PROFILE_PICTURE_ROUTE = `${USER_ROUTES}/delete-avatar`
+export const UPDATE_PROFILE_ROUTE = `${USER_ROUTES}/update-profile`
+export const CHANGE_PASSWORD_ROUTE = `${USER_ROUTES}/change-password`

@@ -25,7 +25,7 @@ router.put('/update-profile', authUser, updateUserProfile); // Protect the route
 router.put('/update-avatar', authUser, upload.single('profilePicture'), updateProfilePicture); // Protect the route with authUser and using multer
 
 //Delete user profile picture
-router.delete('/delete-avatar/:id', authUser,deleteProfilePicture )
+router.delete('/delete-avatar', authUser,deleteProfilePicture )
 
 //Change user password
 router.put('/change-password', authUser, changePassword);

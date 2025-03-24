@@ -6,6 +6,7 @@ import { IoIosLogOut } from "react-icons/io";
 import { CiSettings } from "react-icons/ci";
 import EditProfile from "./EditProfile";
 import { useState } from "react";
+import { Navigate } from "react-router-dom";
 
 
 const UserProfile = () => {
