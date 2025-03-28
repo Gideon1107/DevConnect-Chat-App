@@ -1,10 +1,10 @@
-import React from 'react';
+
 
 const ChatList = ({ onSelectUser, selectedUser }) => {
   const chats = [
     { id: 1, name: 'Alice Cooper', message: 'Working on the new feature...', avatar: 'https://ui-avatars.com/api/?name=Alice`;' },
     { id: 2, name: 'Bob Wilson', message: 'Can you review my PR?', avatar: 'https://ui-avatars.com/api/?name=Bob&background=random' },
-    { id: 3, name: "Gideon", message: "please be my mentor", avatar: "https://ui-avatars.com/api/?name=Gideon"}
+    { id: 3, name: "Gideon", message: "Hello", avatar: "https://ui-avatars.com/api/?name=Gideon"}
   ];
 
   return (

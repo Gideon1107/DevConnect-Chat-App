@@ -21,7 +21,7 @@ import BackToTop from './components/BackToTop';
 import { useAppStore } from './store/store';
 import { useEffect } from 'react';
 import axios from 'axios';
-import { HOST, GETUSER_ROUTE, CHECK_AUTH_ROUTE } from './utils/constants';
+import { HOST, GETUSER_ROUTE, CHECK_AUTH_ROUTE, GETALLUSERS_ROUTE } from './utils/constants';
 import ChangePassword from './components/ChangePassword';
 
 
@@ -41,7 +41,7 @@ const App = () => {
     setIsSignInOpen(true)
   }
 
-  const { user, setUser } = useAppStore();
+  const { user, setUser, setUsers } = useAppStore();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -54,9 +54,11 @@ const App = () => {
           const response = await axios.get(`${HOST}/${GETUSER_ROUTE}`, {
             withCredentials: true, // Ensures cookies (authToken) are sent with the request
           });
+          
 
           if (response.status === 200) {
             setUser(response.data); // state to store user details
+            setLoading(false)
           }
         } else {
           setUser(undefined)
@@ -69,16 +71,35 @@ const App = () => {
       }
     };
 
+
+    const fetchAllUsers = async () => {
+      try {
+        const authResponse = await axios.get(`${HOST}/${CHECK_AUTH_ROUTE}`, { withCredentials: true });
+        if (authResponse.data.isAuthenticated) {
+          const response = await axios.get(`${HOST}/${GETALLUSERS_ROUTE}`, {
+            withCredentials: true
+          })
+          setUsers(response.data)
+        }
+
+      } catch (error) {
+        console.error('Error fetching all users:', error.response?.data?.message || error.message);
+        setUser(undefined)
+      }
+      
+  }
+
     if (!user) {
       fetchUser()
+      fetchAllUsers()
     } else {
       setLoading(false)
     }
-  }, [user, setUser])
+  }, [user, setUser, setUsers])
 
 
   if (loading) {
-    return <div>Loading...</div>
+    return <div className='bg-slate-900'>Loading...</div>
   }
 
 

@@ -19,6 +19,20 @@ export const getUserProfile = async (req, res) => {
 };
 
 
+// Get All User Profile
+export const getAllUsers = async (req, res) => {
+    try {
+        const allUsers = await User.find({
+            $and: [{ _id: { $ne: req.user.id}}],
+        })
+        res.status(200).json(allUsers);
+
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};
+
+
 
 // Update User Profile 
 export const updateUserProfile = async (req, res) => {

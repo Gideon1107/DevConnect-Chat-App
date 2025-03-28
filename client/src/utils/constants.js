@@ -11,3 +11,4 @@ export const ADD_PROFILE_PICTURE_ROUTE = `${USER_ROUTES}/update-avatar`
 export const DELETE_PROFILE_PICTURE_ROUTE = `${USER_ROUTES}/delete-avatar`
 export const UPDATE_PROFILE_ROUTE = `${USER_ROUTES}/update-profile`
 export const CHANGE_PASSWORD_ROUTE = `${USER_ROUTES}/change-password`
+export const GETALLUSERS_ROUTE = `${USER_ROUTES}//all-users`

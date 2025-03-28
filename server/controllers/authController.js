@@ -4,10 +4,16 @@ import jwt from 'jsonwebtoken'
 import validator from "validator";
 
 
-const createToken = (id) => {
+const createAuthToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, {
-        expiresIn: '2h', //Token expires in 1 hour
-    })
+        expiresIn: '2h', // Access token expires in 2 hours
+    });
+};
+
+const createRefreshToken = (id) => {
+    return jwt.sign({ id }, process.env.JWT_SECRET, {
+        expiresIn: '30d', // Refresh token expires in 30 days
+    });
 };
 
 
@@ -61,18 +67,29 @@ export const registerUser = async (req, res) => {
         user.status = "online";
         await user.save();
 
-        // Create Token
-        const token = createToken(user._id)
+        // Generate Token
+        const authToken = createAuthToken(user._id)
+        const refreshToken = createRefreshToken(user._id);
 
-        // Set the token in an HTTP-only cookie
-        res.cookie('authToken', token, {
+
+        // Store the refresh token in an httpOnly cookie
+        res.cookie('refreshToken', refreshToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production', // Ensure it's only sent over HTTPS in production
+            sameSite: 'Strict', // Helps prevent CSRF attacks
+            maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days expiration
+        });
+
+
+        // Store the auth token in an httpOnly cookie
+        res.cookie('authToken', authToken, {
             httpOnly: true,  // Prevents access to cookie via JavaScript (XSS protection)
             secure: process.env.NODE_ENV === 'production',  // Only sent over HTTPS in production
             sameSite: 'Strict',  // Helps prevent CSRF attacks
-            maxAge: 60 * 60 * 1000,  // 1 hour expiration
+            maxAge: 2 * 60 * 60 * 1000,  // 2 hour expiration
         });
 
-        res.status(201).json({ success: true, message: 'User registered successfully', token });
+        res.status(201).json({ success: true, message: 'User registered successfully', authToken });
 
     } catch (error) {
         res.status(400).json({ message: 'Error registering user', error: error.message });
@@ -87,11 +104,9 @@ export const loginUser = async (req, res) => {
 
     try {
         const { email, password } = req.body;
-        
+
         // Find user by email
         const user = await User.findOne({ email })
-        
-
 
         if (!user) {
             return res.status(200).json({ success: false, message: "User does not exists" })
@@ -105,17 +120,28 @@ export const loginUser = async (req, res) => {
             user.status = "online"; // Set user status to online
             await user.save();
 
-            const token = createToken(user._id)
+            // Generate Token
+            const authToken = createAuthToken(user._id)
+            const refreshToken = createRefreshToken(user._id);
 
-            // Set the token in an HTTP-only cookie
-            res.cookie('authToken', token, {
+            // Store the refresh token in an httpOnly cookie
+            res.cookie('refreshToken', refreshToken, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production', // Ensure it's only sent over HTTPS in production
+                sameSite: 'Strict', // Helps prevent CSRF attacks
+                maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days expiration
+            });
+
+
+            // Store the auth token in an httpOnly cookie
+            res.cookie('authToken', authToken, {
                 httpOnly: true,  // Prevents access to cookie via JavaScript (XSS protection)
                 secure: process.env.NODE_ENV === 'production',  // Only sent over HTTPS in production
                 sameSite: 'Strict',  // Helps prevent CSRF attacks
-                maxAge: 60 * 60 * 1000,  // 1 hour expiration
+                maxAge: 2 * 60 * 60 * 1000,  // 2 hour expiration
             });
 
-            res.status(200).json({ success: true, message: 'User logged in successfully', token });
+            res.status(200).json({ success: true, message: 'User logged in successfully', authToken });
 
         } else {
             res.status(200).json({ success: false, message: 'Incorrect password' });
@@ -129,16 +155,27 @@ export const loginUser = async (req, res) => {
 export const googleLogin = async (req, res) => {
     try {
         // Successful authentication, generate a JWT token
-        const token = createToken(req.user.id)
 
-        // Set the token in an HTTP-only cookie
-        res.cookie('authToken', token, {
-            httpOnly: true, // Prevents access via JavaScript (XSS protection)
-            secure: process.env.NODE_ENV === 'production', // Ensures it's only sent over HTTPS in production
+        const authToken = createAuthToken(req.user.id)
+        const refreshToken = createRefreshToken(req.user.id);
+
+        // Store the refresh token in an httpOnly cookie
+        res.cookie('refreshToken', refreshToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production', // Ensure it's only sent over HTTPS in production
             sameSite: 'Strict', // Helps prevent CSRF attacks
-            maxAge: 60 * 60 * 1000, // 1 hour expiration
+            maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days expiration
         });
-        
+
+
+        // Store the auth token in an httpOnly cookie
+        res.cookie('authToken', authToken, {
+            httpOnly: true,  // Prevents access to cookie via JavaScript (XSS protection)
+            secure: process.env.NODE_ENV === 'production',  // Only sent over HTTPS in production
+            sameSite: 'Strict',  // Helps prevent CSRF attacks
+            maxAge: 2 * 60 * 60 * 1000,  // 2 hour expiration
+        });
+
 
         // Redirect the user to /chat
         res.redirect(`${process.env.ORIGIN}/chat`);
@@ -151,19 +188,25 @@ export const googleLogin = async (req, res) => {
 // Logout User Route
 export const logoutUser = async (req, res) => {
     const { id } = req.user // Get user id from middleware
-    
+
     const user = await User.findById(id); // Find the user in the database
-    
+
     user.status = "offline"; // Set user status to offline
     user.lastSeenActive = Date.now(); // Set the last seen active time to the current time
     await user.save();
-    
-    
-    // Clear the token from the cookie
+
+
+    // Clear the tokens from the cookie
     res.clearCookie('authToken', {
         httpOnly: true, // Ensures the cookie cannot be accessed via JavaScript
         secure: process.env.NODE_ENV === 'production', // Set to true only in production
         sameSite: 'Strict', // Helps prevent CSRF attacks
+    });
+
+    res.clearCookie('refreshToken', {
+        httpOnly: true, // Ensures the cookie cannot be accessed via JavaScript
+        secure: process.env.NODE_ENV === 'production', 
+        sameSite: 'Strict',
     });
 
     // Send a response indicating successful logout

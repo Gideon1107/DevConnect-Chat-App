@@ -1,5 +1,3 @@
-
-import BackToTop from '@/components/BackToTop'
 import { Hero } from '../components/Hero'
 import PropTypes from 'prop-types'
 

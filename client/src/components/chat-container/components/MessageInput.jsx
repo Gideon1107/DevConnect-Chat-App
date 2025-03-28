@@ -10,18 +10,18 @@ const MessageInput = () => {
   const emojiRef = useRef();
   const [isEmojiPickerOpen, setIsEmojiPickerOpen] = useState(false)
 
-  useEffect(() => {
-    function handleClickOutsideEmojiPicker(event) {
-      if (emojiRef.current && !emojiRef.current.contains(event.target)) {
-        setIsEmojiPickerOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutsideEmojiPicker)
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutsideEmojiPicker)
-    }
+  // useEffect(() => {
+  //   function handleClickOutsideEmojiPicker(event) {
+  //     if (emojiRef.current && !emojiRef.current.contains(event.target)) {
+  //       setIsEmojiPickerOpen(false);
+  //     }
+  //   }
+  //   document.addEventListener("mousedown", handleClickOutsideEmojiPicker)
+  //   return () => {
+  //     document.removeEventListener("mousedown", handleClickOutsideEmojiPicker)
+  //   }
 
-  }, [emojiRef])
+  // }, [emojiRef])
 
 
   const handleAddEmoji = (emoji) => {
@@ -54,8 +54,8 @@ const MessageInput = () => {
           </button>
 
           {/* Emoji display */}
-          <div className="absolute bottom-16 right-0" ref={emojiRef}>
-            <EmojiPicker theme="dark"
+          <div className="absolute bottom-12 -right-16 sm:right-0" ref={emojiRef}>
+            <EmojiPicker theme="auto" width={320} height={440}
             open={isEmojiPickerOpen}
             onEmojiClick={handleAddEmoji}
             autoFocusSearch={false}

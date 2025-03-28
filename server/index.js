@@ -12,6 +12,7 @@ import connectDB from './config/mongodb.js';
 import cookieParser from 'cookie-parser';
 
 import './config/passportConfig.js'; // Import passport configuration
+import setupSocket from './socket.js';
 
 
 // Load environment variables
@@ -20,11 +21,6 @@ dotenv.config();
 // Initialize Express app
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server, {
-  cors: {
-    origin: process.env.ORIGIN,
-  },
-});
 
 // Middleware
 app.use(cors({
@@ -39,32 +35,25 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(cookieParser());
 
-
-// Connect to MongoDB
-connectDB();
-
-
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes)
 app.use('/api/admin', adminRoutes)
 
 
-// Socket.io setup
-io.on('connection', (socket) => {
-  console.log('A user connected');
-
-  socket.on('disconnect', () => {
-    console.log('User disconnected');
-  });
-});
-
 app.get("/", (req, res) => {
   res.send("API Working")
 })
+
+// Connect to MongoDB
+connectDB();
+
+//Connect Socket io
+setupSocket(server)
 
 // Start the server
 const PORT = process.env.PORT || 4000;
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+

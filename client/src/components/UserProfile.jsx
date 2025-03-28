@@ -6,7 +6,7 @@ import { IoIosLogOut } from "react-icons/io";
 import { CiSettings } from "react-icons/ci";
 import EditProfile from "./EditProfile";
 import { useState } from "react";
-import { Navigate } from "react-router-dom";
+import { capitalizeUsername } from "@/utils/capitalize";
 
 
 const UserProfile = () => {
@@ -15,15 +15,9 @@ const UserProfile = () => {
 
   const { user, setUser } = useAppStore();
 
-  // Function to capitalize the first letter of the username
-  const capitalizeUsername = (username) => {
-    if (!username) return ''; // Return empty string if username is falsy
-    return username.charAt(0).toUpperCase() + username.slice(1);
-  };
 
   const onLogout = async () => {
     try {
-      // Call logout API
       const response = await axios.post(`${HOST}/${LOGOUT_ROUTE}`, {}, {
         withCredentials: true, // Important: Sends cookies with the request
       });
@@ -68,7 +62,7 @@ const UserProfile = () => {
       </button>
 
       <button onClick={onLogout} title="Logout">
-        <IoIosLogOut size={24} className=" text-white rounded-xl cursor-pointer hover:text-gray-200" />
+        <IoIosLogOut size={24} className=" text-red-700 rounded-xl cursor-pointer hover:text-red-600" />
       </button>
       </div>
 

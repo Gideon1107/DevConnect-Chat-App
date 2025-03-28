@@ -4,6 +4,7 @@ import ChatList from '../ChatList';
 import UsersList from '../UsersList';
 import GroupsList from '../GroupsList';
 import logo from "../../assets/devLogo4.png"
+import { MdGroups2 } from "react-icons/md";
 
 const Sidebar = ({ onSelectUser, selectedUser }) => {
   const [activeTab, setActiveTab] = useState('messages');
@@ -14,10 +15,10 @@ const Sidebar = ({ onSelectUser, selectedUser }) => {
       <img src={logo} alt="logo" className="w-[150px] mb-6"/>
       </div>
       
-      <div className="p-4 ">
-        <button className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg flex items-center justify-center gap-2 hover:bg-blue-700 rounded-tr-[12px] rounded-bl-[12px]">
-          <i className="fas fa-users"></i>
-          <span className="md:inline hidden ">Create Group</span>
+      <div className="p-4">
+        <button className="w-full bg-blue-600 text-white py-2 px-4 flex items-center justify-center gap-2 hover:bg-blue-700 rounded-tr-[12px] rounded-bl-[12px]">
+           <MdGroups2 size={30}/>
+          <span className="">Create Group</span>
         </button>
       </div>
 

@@ -2,6 +2,7 @@ import express from 'express';
 import 
 { 
     getUserProfile, 
+    getAllUsers,
     updateUserProfile, 
     updateProfilePicture, 
     changePassword, 
@@ -17,6 +18,9 @@ const router = express.Router();
 
 // Get user profile
 router.get('/profile', authUser, getUserProfile); // Protect the route with authUser
+
+// Get all users
+router.get('/all-users',authUser, getAllUsers)
 
 // Update user profile username
 router.put('/update-profile', authUser, updateUserProfile); // Protect the route with authUser
