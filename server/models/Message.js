@@ -10,7 +10,6 @@ const messageSchema = new mongoose.Schema({
     mediaUrl: { type: String, required : function () {
         return this.messageType === "file";
     } },
-    mediaType: { type: String, enum: ['image', 'video', 'audio', 'file'] }, // Type of the media file
     createdAt: { type: Date, default: Date.now }
 }, { timestamps: true });
 

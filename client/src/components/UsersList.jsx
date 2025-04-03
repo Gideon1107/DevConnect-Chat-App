@@ -65,7 +65,7 @@ const UsersList = () => {
         onClick={() => setSortBy("online")}
         >Online</button>
 
-        <button className={`px-4 md:px-2 bg-slate-600 rounded-tr-lg rounded-bl-lg text-sm py-1 truncate ${sortBy === "username" ? "bg-blue-700" : "bg-slate-600"}`}
+        <button className={`px-4 md:px-2 rounded-tr-lg rounded-bl-lg text-sm py-1 truncate ${sortBy === "username" ? "bg-blue-700" : "bg-slate-600"}`}
         onClick={() => setSortBy("username")}
         >Username(A-Z)</button>
       </div>
@@ -74,7 +74,7 @@ const UsersList = () => {
         filteredAndSortedUsers.length > 0 ? 
         (filteredAndSortedUsers.map((user) => (
             <div
-              key={user.id}
+              key={user._id}
               onClick={() => selectNewUser(user)}
               className="flex items-center gap-3 p-3 cursor-pointer hover:bg-slate-700"
             >

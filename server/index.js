@@ -2,12 +2,13 @@ import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import http from 'http';
-import { Server } from 'socket.io';
 import passport from 'passport';
 import session from 'express-session';
 import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js'
 import adminRoutes from './routes/adminRoutes.js'
+import messagesRoutes from './routes/messagesRoutes.js'
+import chatRoutes from './routes/chatRoutes.js'
 import connectDB from './config/mongodb.js';
 import cookieParser from 'cookie-parser';
 
@@ -39,6 +40,8 @@ app.use(cookieParser());
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes)
 app.use('/api/admin', adminRoutes)
+app.use('/api/messages', messagesRoutes)
+app.use('/api/chat', chatRoutes)
 
 
 app.get("/", (req, res) => {

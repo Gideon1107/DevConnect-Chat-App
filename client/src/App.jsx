@@ -41,7 +41,7 @@ const App = () => {
     setIsSignInOpen(true)
   }
 
-  const { user, setUser, setUsers } = useAppStore();
+  const { user, setUser, users, setUsers } = useAppStore();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -96,6 +96,7 @@ const App = () => {
       setLoading(false)
     }
   }, [user, setUser, setUsers])
+
 
 
   if (loading) {

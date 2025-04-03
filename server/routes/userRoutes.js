@@ -10,20 +10,20 @@ import
     deleteProfilePicture } 
     from '../controllers/userController.js';
 
-import upload  from '../middlewares/upload.js'; // Assuming multer setup is in middlewares/multer.js
+import upload  from '../middlewares/profilePictureUpload.js';
 import authUser  from '../middlewares/authMiddleware.js'; // If authentication is needed
 
 
 const router = express.Router();
 
 // Get user profile
-router.get('/profile', authUser, getUserProfile); // Protect the route with authUser
+router.get('/profile', authUser, getUserProfile);
 
 // Get all users
 router.get('/all-users',authUser, getAllUsers)
 
 // Update user profile username
-router.put('/update-profile', authUser, updateUserProfile); // Protect the route with authUser
+router.put('/update-profile', authUser, updateUserProfile); 
 
 //Update user profile Picture
 router.put('/update-avatar', authUser, upload.single('profilePicture'), updateProfilePicture); // Protect the route with authUser and using multer

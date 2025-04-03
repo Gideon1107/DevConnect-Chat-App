@@ -60,7 +60,7 @@ export const Navbar = ({ onSignInClick }) => {
         </nav>
 
         {/* Mobile menu */}
-        <div className="md:hidden">
+        <div className="sm:hidden">
           <button className="text-gray-300 hover:text-white text-base" onClick={handleMobileMenu}>
             {isMenuOpen ? <RxCross1 size={24} /> : <HiOutlineMenuAlt3 size={24} />}
           </button>

@@ -23,6 +23,21 @@ input:-webkit-autofill:active {
   caret-color: white !important; /* Ensures cursor is visible */
 }
 
+input:-moz-placeholder {
+  color: white !important;
+  font-family: "Work Sans", sans-serif;
+  font-size: 16px;
+}
+
+.scrollbar-hidden {
+  scrollbar-width: none;
+}
+
+/* Hide scrollbar but allow scrolling */
+::-webkit-scrollbar {
+  display: none;
+}
+
 
 
 * {

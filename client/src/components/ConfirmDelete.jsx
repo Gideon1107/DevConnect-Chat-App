@@ -2,7 +2,6 @@ import {toast} from "sonner"
 import { useAppStore } from "@/store/store";
 import axios from "axios";
 import { HOST, DELETE_PROFILE_PICTURE_ROUTE } from "@/utils/constants";
-import { animate } from "framer-motion";
 
 
 

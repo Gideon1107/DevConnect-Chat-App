@@ -55,8 +55,8 @@ const Sidebar = ({ onSelectUser, selectedUser }) => {
         </button>
       </div>
 
-      {activeTab === 'messages' && <ChatList onSelectUser={onSelectUser} selectedUser={selectedUser} />}
-      {activeTab === 'users' && <UsersList onSelectUser={onSelectUser} />}
+      {activeTab === 'messages' && <ChatList />}
+      {activeTab === 'users' && <UsersList />}
       {activeTab === 'groups' && <GroupsList onSelectUser={onSelectUser} />}
 
         {/* Profile info */}
