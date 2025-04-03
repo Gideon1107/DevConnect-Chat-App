@@ -16,6 +16,18 @@ const s3 = new S3Client({
   },
 });
 
+// Allowed File Types
+const allowedTypes = [
+    "image/", "application/pdf", "video/", "application/msword",
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "text/plain", "application/zip", "application/x-tar",
+    "application/gzip", "application/x-7z-compressed",
+    "application/x-rar-compressed", "application/x-msdownload",
+    "application/x-sh", "application/json", "application/xml",
+    "application/x-httpd-php", "text/x-python", "text/x-java-source",
+    "text/x-c++src", "text/x-csrc", "text/javascript", "text/markdown"
+  ];
+
 
 // Configure multer storage with S3
 const messageFileUpload = multer({
@@ -31,14 +43,7 @@ const messageFileUpload = multer({
   }),
   limits: { fileSize: 5 * 1024 * 1024 }, // Limit file size to 5MB
   fileFilter: (req, file, cb) => {
-    const allowedTypes = [
-        "image/",           // Images (e.g., jpg, png, gif)
-        "application/pdf",  // PDF files
-        "video/",           // Videos (e.g., mp4, mov)
-        "application/msword",                   // .doc files
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.document", // .docx files
-        "text/plain"        // Plain text files (.txt)
-      ];
+    // Check if the file type is allowed
     if (!allowedTypes.some(type => file.mimetype.startsWith(type))) {
         const error = new multer.MulterError("LIMIT_UNEXPECTED_FILE", file.fieldname);
         error.message = "Selected file type not allowed!";
