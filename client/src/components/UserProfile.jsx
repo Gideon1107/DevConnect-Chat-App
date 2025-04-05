@@ -67,7 +67,7 @@ const UserProfile = () => {
       </div>
 
       {
-        isEditProfile ? <EditProfile isOpen={true} handleIsOpen={setisOpen}/> : ""
+        isEditProfile && <EditProfile isOpen={true} handleIsOpen={setisOpen}/>
       }
 
     </div>

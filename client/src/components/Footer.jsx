@@ -32,17 +32,17 @@ export const Footer = () => {
             <h3 className="text-white font-semibold mb-4">Product</h3>
             <ul className="space-y-2 font-light">
               <li>
-                <Link to="/features" className="text-gray-400 hover:text-white text-sm">
+                <Link to="/features" className="text-gray-400 hover:text-white text-sm font-light">
                   Features
                 </Link>
               </li>
               <li>
-                <Link to="/pricing" className="text-gray-400 hover:text-white text-sm">
+                <Link to="/pricing" className="text-gray-400 hover:text-white text-sm font-light">
                   Pricing
                 </Link>
               </li>
               <li>
-                <Link to="/docs" className="text-gray-400 hover:text-white text-sm">
+                <Link to="/docs" className="text-gray-400 hover:text-white text-sm font-light">
                   Documentation
                 </Link>
               </li>
@@ -52,17 +52,17 @@ export const Footer = () => {
             <h3 className="text-white font-semibold mb-4">Resources</h3>
             <ul className="space-y-2 font-light">
               <li>
-                <Link to="/docs" className="text-gray-400 hover:text-white text-sm">
+                <Link to="/docs" className="text-gray-400 hover:text-white text-sm font-light">
                   Documentation
                 </Link>
               </li>
               <li>
-                <Link to="/community" className="text-gray-400 hover:text-white text-sm">
+                <Link to="/community" className="text-gray-400 hover:text-white text-sm font-light">
                   Community
                 </Link>
               </li>
               <li>
-                <Link to="/blog" className="text-gray-400 hover:text-white text-sm">
+                <Link to="/blog" className="text-gray-400 hover:text-white text-sm font-light">
                   Blog
                 </Link>
               </li>
@@ -72,17 +72,17 @@ export const Footer = () => {
             <h3 className="text-white font-semibold mb-4">Company</h3>
             <ul className="space-y-2 font-light">
               <li>
-                <Link to="/about" className="text-gray-400 hover:text-white text-sm">
+                <Link to="/about" className="text-gray-400 hover:text-white text-sm font-light">
                   About Us
                 </Link>
               </li>
               <li>
-                <Link to="/contact" className="text-gray-400 hover:text-white text-sm">
+                <Link to="/contact" className="text-gray-400 hover:text-white text-sm font-light">
                   Contact
                 </Link>
               </li>
               <li>
-                <Link to="/blog" className="text-gray-400 hover:text-white text-sm">
+                <Link to="/blog" className="text-gray-400 hover:text-white text-sm font-light">
                   Blog
                 </Link>
               </li>
@@ -91,17 +91,17 @@ export const Footer = () => {
         </div>
         <div className="border-t border-slate-800 mt-12 pt-8 font-light">
           <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="text-gray-400 text-sm">
+            <div className="text-gray-400 text-sm font-light">
               &copy; {new Date().getFullYear()} DevConnect. All rights reserved.
             </div>
             <div className="flex space-x-6 mt-4 md:mt-0">
-              <Link to="/privacy" className="text-gray-400 hover:text-white text-sm">
+              <Link to="/privacy" className="text-gray-400 hover:text-white text-sm font-light">
                 Privacy Policy
               </Link>
-              <Link to="/terms" className="text-gray-400 hover:text-white text-sm">
+              <Link to="/terms" className="text-gray-400 hover:text-white text-sm font-light">
                 Terms of Service
               </Link>
-              <Link to="/cookies" className="text-gray-400 hover:text-white text-sm">
+              <Link to="/cookies" className="text-gray-400 hover:text-white text-sm font-light">
                 Cookie Policy
               </Link>
             </div>

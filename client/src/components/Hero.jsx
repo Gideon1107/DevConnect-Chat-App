@@ -26,11 +26,11 @@ export const Hero = ({ onGetStarted }) => {
             animate={{ x: 0, opacity: 1 }}
             transition={{ duration: 0.9, ease: "easeInOut" }}>
             <div className="text-center lg:text-left pt-5">
-              <div className="flex flex-col ">
-                <h1 className="text-4xl sm:text-6xl font-medium  text-white leading-loose ">
+              <div className="flex flex-col gap-1 sm:gap-2">
+                <h1 className="text-4xl sm:text-6xl font-medium  text-white  ">
                   Connect with
                 </h1>
-                <span className="text-blue-400 text-4xl sm:text-6xl sm:py-3">
+                <span className="text-blue-400 text-4xl sm:text-6xl sm:py-2">
                   <Typewriter
                     words={['Developers']}
                     loop={false}
@@ -41,10 +41,9 @@ export const Hero = ({ onGetStarted }) => {
                   // delaySpeed={1000}
                   />
                 </span>
-                <h1 className="text-4xl sm:text-6xl text-white mb-6 leading-loose font-medium ">
+                <h1 className="text-4xl sm:text-6xl text-white mb-6  font-medium ">
                   Worldwide
                 </h1>
-
               </div>
               <p className="text-lg text-gray-400 mb-8 max-w-2xl lg:max-w-none mx-auto font-light ">
                 Join a global community of developers. Share ideas, collaborate on
@@ -70,7 +69,7 @@ export const Hero = ({ onGetStarted }) => {
           <motion.div
             initial={{ x: 100, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
-            transition={{ duration: 0.8, ease: "easeInOut" }}
+            transition={{ duration: 0.6, ease: "easeInOut" }}
           >
             <div className="flex justify-center lg:justify-end">
               <img

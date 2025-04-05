@@ -67,8 +67,8 @@ export const SignInModal = ({ isOpen, onClose, onSwitchToSignUp }) => {
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
-      <div className="bg-slate-900 p-8 rounded-xl w-full max-w-md border border-slate-800">
+    <div className="fixed inset-0 bg-black/80 max-sm: flex items-center justify-center z-50">
+      <div className="bg-slate-900 p-8 sm:rounded-xl w-full max-w-md border border-slate-800">
 
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-white">Sign In</h2>
@@ -77,8 +77,8 @@ export const SignInModal = ({ isOpen, onClose, onSwitchToSignUp }) => {
           </button>
         </div>
 
-        <button className="w-full bg-white text-gray-900 px-4 py-2 rounded-md text-sm font-semibold hover:bg-gray-100 flex items-center justify-center gap-2 mb-4" onClick={onGoogleSignIn}>
-          <FcGoogle />
+        <button className="w-full bg-white text-gray-900 px-4 py-3 rounded-[3px] text-sm font-semibold hover:bg-gray-100 flex items-center justify-center gap-2 mb-4" onClick={onGoogleSignIn}>
+          <FcGoogle size={15}/>
           Continue with Google
         </button>
 
@@ -103,7 +103,7 @@ export const SignInModal = ({ isOpen, onClose, onSwitchToSignUp }) => {
             <input
               {...register("email")}
               type="email"
-              className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-md text-white focus:outline-none focus:border-blue-500 placeholder:opacity-40 placeholder:text-sm"
+              className="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-tr-xl rounded-bl-xl text-white focus:outline-none focus:border-blue-500 placeholder:opacity-40 placeholder:text-sm"
               placeholder="Enter Email"
               autoComplete="off"
             />
@@ -125,7 +125,7 @@ export const SignInModal = ({ isOpen, onClose, onSwitchToSignUp }) => {
               <input
                 {...register("password")}
                 type={showPassword ? "text" : "password"}
-                className="w-full px-4 py-2 bg-slate-800 border text-base border-slate-700 rounded-md text-white focus:outline-none focus:border-blue-500 placeholder:opacity-40 placeholder:text-sm"
+                className="w-full px-4 py-3 bg-slate-800 border text-base border-slate-700 rounded-tr-xl rounded-bl-xl text-white focus:outline-none focus:border-blue-500 placeholder:opacity-40 placeholder:text-sm"
                 placeholder="Enter Password"
               />
               {showPassword ? <FiEyeOff onClick={() => setShowPassword(!showPassword)} className="absolute text-white right-3 cursor-pointer" /> : <FiEye onClick={() => setShowPassword(!showPassword)} className="absolute text-white right-3 cursor-pointer" />}
@@ -152,7 +152,7 @@ export const SignInModal = ({ isOpen, onClose, onSwitchToSignUp }) => {
           {/* Sign In Button */}
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition-colors"
+            className="w-full bg-blue-600 text-white py-3 rounded-[3px] hover:bg-blue-700 transition-colors"
           >
             Sign In
           </button>

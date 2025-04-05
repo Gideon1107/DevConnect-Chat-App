@@ -118,8 +118,8 @@ const EditProfile = ({ isOpen, handleIsOpen }) => {
     return (
 
 
-        <div className="fixed inset-0 sm:bg-black/80 bg-slate-900 flex sm:items-center sm:justify-center z-50 ">
-            <div className="bg-slate-900 p-4 rounded-[8px] w-full max-w-2xl sm:border border-slate-800 flex flex-col gap-14 ">
+        <div className="absolute inset-0 sm:bg-black/80 bg-slate-900 flex sm:items-center sm:justify-center z-50 h-screen overflow-y-scroll ">
+            <div className="bg-slate-900 p-4 sm:rounded-[8px] w-full max-w-2xl sm:border border-slate-800 flex flex-col sm:gap-14 gap-4">
 
                 <div className="flex items-center justify-between border-b pb-3 border-slate-800">
                     <button onClick={handleIsOpen} className="flex items-center">
@@ -129,9 +129,9 @@ const EditProfile = ({ isOpen, handleIsOpen }) => {
                     <h1 className=" mr-6 ">Edit Profile</h1>
                 </div>
 
-                <div className="flex flex-col sm:flex-row justify-around gap-6 ">
+                <div className="flex flex-col sm:flex-row justify-around gap-5 ">
                     <div className="flex flex-col gap-3 items-center justify-center">
-                        <img src={selectedImage || user.profilePicture} alt="avatar" className="w-[150px] rounded-full" />
+                        <img src={selectedImage || user.profilePicture} alt="avatar" className="w-[130px] sm:w-[150px] rounded-full" />
                         <div className="space-x-4 flex items-center">
                             <button className="p-3 " title="Change avatar" onClick={handleEditClick}>
                                 <GrEdit size={20} className="text-slate-200" />
@@ -174,7 +174,7 @@ const EditProfile = ({ isOpen, handleIsOpen }) => {
                                 />
                             </div>
 
-                            <button className="p-3 mt-8 bg-slate-700 rounded-[5px] hover:bg-slate-600 font-light">Save Changes</button>
+                            <button className="p-3 my-3 bg-slate-700 rounded-[5px] hover:bg-slate-600 font-light">Save Changes</button>
 
                         </form>
                     </div>

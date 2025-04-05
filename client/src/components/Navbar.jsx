@@ -16,7 +16,7 @@ export const Navbar = ({ onSignInClick }) => {
 
   return (
     <>
-      <div className="py-5 sm:py-5 flex items-center w-full justify-between bg-slate-900/95 backdrop-blur-sm border-b border-slate-800 z-50 sticky top-0 px-4 sm:px-[5vw] md:px-[7vw] lg:px-[9vw]">
+      <div className="py-5 sm:py-5 flex items-center w-full justify-between bg-slate-900/95 backdrop-blur-sm sm:border-b border-slate-800 z-50 sticky top-0 px-4 sm:px-[5vw] md:px-[7vw] lg:px-[9vw]">
 
         <Link to="/" >
           <img src={Logo} alt="logo" width={180} />
@@ -69,12 +69,12 @@ export const Navbar = ({ onSignInClick }) => {
 
 
       {/* Mobile menu */}
-      <div className={`z-10 text-white fixed top-[64px] left-0 bg-slate-900/95 backdrop-blur-sm w-full  transition-all duration-500 ease-in-out  ${isMenuOpen ? "max-h-[600px] opacity-100 py-8" : "max-h-0 opacity-0 overflow-hidden "}`}>
+      <div className={`z-10 text-white fixed top-[64px] left-0 bg-slate-900/95 backdrop-blur-sm w-full border-b-[1px] border-slate-800 transition-all duration-500 ease-in-out  ${isMenuOpen ? "max-h-[600px] opacity-100 py-8" : "max-h-0 opacity-0 overflow-hidden "}`}>
         <ul className="flex flex-col gap-6 justify-center w-full items-center">
           <Link
             to="/"
             onClick={handleMobileMenu}
-            className={`text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm ${location.pathname === '/' ? 'text-white font-semibold' : ''
+            className={`text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm ${location.pathname === '/' ? 'text-white font-semibold' : 'font-light'
               }`}
           >
             Home
@@ -83,7 +83,7 @@ export const Navbar = ({ onSignInClick }) => {
           <Link
             to="/features"
             onClick={handleMobileMenu}
-            className={`text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm ${location.pathname === '/features' ? 'text-white font-semibold' : ''
+            className={`text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm ${location.pathname === '/features' ? 'text-white font-semibold' : 'font-light'
               }`}
           >
             Features
@@ -91,7 +91,7 @@ export const Navbar = ({ onSignInClick }) => {
           <Link
             to="/community"
             onClick={handleMobileMenu}
-            className={`text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm ${location.pathname === '/community' ? 'text-white font-semibold' : ''
+            className={`text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm ${location.pathname === '/community' ? 'text-white font-semibold' : 'font-light'
               }`}
           >
             Community
@@ -99,7 +99,7 @@ export const Navbar = ({ onSignInClick }) => {
           <Link
             to="/docs"
             onClick={handleMobileMenu}
-            className={`text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm ${location.pathname === '/docs' ? 'text-white font-semibold' : ''
+            className={`text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm ${location.pathname === '/docs' ? 'text-white font-semibold' : 'font-light'
               }`}
           >
             Docs

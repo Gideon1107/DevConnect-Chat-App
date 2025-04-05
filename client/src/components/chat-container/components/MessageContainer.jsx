@@ -4,7 +4,6 @@ import axios from "axios";
 import moment from "moment";
 import { useEffect, useRef } from "react";
 import { GoFileZip } from "react-icons/go";
-import { IoMdDownload } from "react-icons/io";
 import { HiDownload } from "react-icons/hi";
 
 
@@ -114,9 +113,9 @@ const MessageContainer = () => {
   
           {checkIfImage(message.mediaUrl) 
           ? <div className="cursor-pointer">
-              <img src={message.mediaUrl} alt="image" height={250} width={250}/>
+              <img src={message.mediaUrl} alt="image" className="w-[200px] h-[200px] sm:w-[250px] sm:h-[250px]"/>
             </div>
-          : <div className="flex items-center justify-center gap-5 px-2 py-1">
+          : <div className="flex items-center justify-center gap-3 px-2 py-1">
               <span className="text-white/80 text-2xl bg-black/20 rounded-full p-2">
                 <GoFileZip />
               </span>

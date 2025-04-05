@@ -48,6 +48,7 @@ input:-moz-placeholder {
     font-family: "Work Sans", sans-serif;
     font-optical-sizing: auto;
     box-sizing: border-box;
+    font-weight: 500;
 
 }
 
