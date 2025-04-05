@@ -1,6 +1,6 @@
 # DevConnect 💬
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/53dbacb6-45e5-4447-b1a7-50f6c38c3181" width="800" />
+  <img src="https://github.com/user-attachments/assets/53dbacb6-45e5-4447-b1a7-50f6c38c3181"  />
 </p>
 
 
@@ -77,9 +77,14 @@ cd client
 npm run dev
 ```
 
+
+<br/>
+
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/53dbacb6-45e5-4447-b1a7-50f6c38c3181" width="600" />
-  <img src="https://github.com/user-attachments/assets/fbc154d3-2f65-4363-8665-7e13ce48b4b2" width="600" />
+  <img src="https://github.com/user-attachments/assets/9f4b3da3-56fd-4e0d-aa91-4da468b2b79d" width="1000"/>
+  <br/>
+  <img src="https://github.com/user-attachments/assets/fbc154d3-2f65-4363-8665-7e13ce48b4b2" width="1000" />
+  <br/>
   <img src="https://github.com/user-attachments/assets/d3008447-c1d3-499c-b87b-79bd9535a28a" width="400" />
 </p>
 
