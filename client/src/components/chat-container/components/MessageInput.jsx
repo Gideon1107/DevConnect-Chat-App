@@ -8,6 +8,7 @@ import { useSocket } from "@/context/SocketContext";
 import axios from "axios";
 import { HOST, SEND_FILE_ROUTE } from "@/utils/constants";
 import { toast } from "sonner";
+import { set } from "react-hook-form";
 
 
 
@@ -18,7 +19,13 @@ const MessageInput = () => {
   const fileInputRef = useRef(null);
   const socket = useSocket()
   const [isEmojiPickerOpen, setIsEmojiPickerOpen] = useState(false)
-  const { selectedChatType, selectedChatData, user } = useAppStore()
+  const { 
+    selectedChatType, 
+    selectedChatData, 
+    user,
+    setIsUploading,
+    setFileUploadProgress,
+   } = useAppStore()
 
 
 
@@ -76,11 +83,18 @@ const MessageInput = () => {
       if (file) {
         const formData = new FormData();
         formData.append("file", file);
+        setIsUploading(true);
         const response = await axios.post(`${HOST}/${SEND_FILE_ROUTE}`, formData, {
           withCredentials: true,
+          onUploadProgress: (data) => {
+            setFileUploadProgress(Math.round((data.loaded * 100) / data.total));
+          }
         });
-        console.log(response.data)
+
+        // Check if the response is successful
         if (response.data.success && response.data) {
+          setIsUploading(false);
+          setFileUploadProgress(0);
           if (selectedChatType === "dm") {
             // Emit the file message to the server
             socket.emit("sendMessage", {
@@ -96,6 +110,7 @@ const MessageInput = () => {
         }
       }
     } catch (error) {
+      setIsUploading(false);
       if (error.response && error.response.data && error.response.data.message) {
         toast.error(error.response.data.message); // Show toast with error message
       } else {

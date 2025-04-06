@@ -8,7 +8,15 @@ import ChatContainer from "@/components/chat-container/ChatContainer";
 
 const Chat = () => {
 
-  const { user, selectedChatType, selectedChatData  } = useAppStore();
+  const { 
+    user, 
+    selectedChatType,
+    selectedChatData,
+    isUploading,
+    isDownloading,
+    fileUploadProgress,
+    fileDownloadProgress,
+  } = useAppStore();
 
 
   if (!user){
@@ -19,9 +27,30 @@ const Chat = () => {
   return (
     <div className="flex h-screen text-white overflow-hidden">
 
+      {
+        isUploading && ( <div className="h-[100vh] w-full fixed top-0 z-10 left-0 bg-black/80 flex items-center justify-center flex-col gap-5 backdrop-blur-md">
+          <h5 className="tet-4xl animate-pulse">Uploading File</h5>
+          {fileUploadProgress}%
+        </div>
+        )
+      }
+
+      {
+        isDownloading && ( <div className="h-[100vh] w-full fixed top-0 z-10 left-0 bg-black/80 flex items-center justify-center flex-col gap-5 backdrop-blur-md">
+          <h5 className="tet-4xl animate-pulse">Downloading File</h5>
+          {fileDownloadProgress}%
+        </div>
+        )
+      }
+
+
       <Sidebar/>
       {
-        selectedChatType === undefined ? <EmptyChatContainer/> : <ChatContainer/>
+        selectedChatType === undefined 
+        ? 
+        <EmptyChatContainer/> 
+        : 
+        <ChatContainer/>
       }
       
     </div>

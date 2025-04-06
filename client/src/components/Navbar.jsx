@@ -24,7 +24,7 @@ export const Navbar = ({ onSignInClick }) => {
 
 
         <nav className="hidden sm:block">
-          <ul className="flex lg:gap-10 md:gap-8">
+          <ul className="flex lg:gap-10 md:gap-2">
             <Link
               to="/features"
               className={`text-gray-300 font-light hover:text-white px-3 py-2 rounded-md text-base${location.pathname === '/features' ? 'text-white' : ''
