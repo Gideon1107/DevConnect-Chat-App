@@ -8,16 +8,26 @@ const ChatHeader = () => {
 
   return (
     <div className="p-4 border-b border-slate-700 flex justify-between items-center">
-
       <div className="flex items-center gap-4">
-        <img
-          src={selectedChatData.profilePicture}
-          alt={selectedChatData.username}
-          className="w-8 h-8 rounded-full"
-        />
-        <span className="font-medium text-white truncate">
+      {
+        selectedChatType === "dm" ? <img
+        src={selectedChatData.profilePicture}
+        alt={selectedChatData.username}
+        className="w-8 h-8 rounded-full"
+      /> : <img
+        src={`https://ui-avatars.com/api/?name=${selectedChatData.name}&background=random`}
+        alt={selectedChatData.name}
+        className="w-8 h-8 rounded-full"
+      />
+      }
+        
+        <span className="font-medium text-white truncate flex items-center">
           {
-            selectedChatType === "dm" && capitalizeUsername(selectedChatData.username)
+            selectedChatType === "dm" ? capitalizeUsername(selectedChatData.username)
+            : <div className="flex flex-col">
+              <span>{selectedChatData.name}</span>
+              <span className="text-[12px] text-gray-400 font-light text-wrap">{selectedChatData.description}</span>
+              </div>
           }
           
         </span>

@@ -21,4 +21,8 @@ export const SEND_FILE_ROUTE = `${MESSAGES_ROUTES}/upload-file`
 
 export const CHAT_LIST_ROUTE = "api/chat"
 export const GET_CHAT_LIST_FOR_DM_ROUTE = `${CHAT_LIST_ROUTE}/chat-list-for-dm`
+export const GET_ALL_USERS_ROUTE = `${CHAT_LIST_ROUTE}/all-users`
 
+export const GROUP_ROUTES = "api/group"
+export const CREATE_GROUP_ROUTE = `${GROUP_ROUTES}/create-group`
+export const GET_USER_GROUPS_ROUTE = `${GROUP_ROUTES}/get-user-groups`

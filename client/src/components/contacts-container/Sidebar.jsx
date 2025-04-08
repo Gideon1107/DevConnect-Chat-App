@@ -5,18 +5,23 @@ import UsersList from '../UsersList';
 import GroupsList from '../GroupsList';
 import logo from "../../assets/devLogo4.png"
 import { MdGroups2 } from "react-icons/md";
+import CreateGroupModal from '../CreateGroupModal';
 
-const Sidebar = ({ onSelectUser, selectedUser }) => {
+const Sidebar = () => {
   const [activeTab, setActiveTab] = useState('messages');
 
+  const [openGroupModal, setOpenGroupModal] = useState(false);
+
   return (
-    <div className="h-full  border-r border-slate-700 flex flex-col md:w-[35vw] lg:w-[30vw] xl:w-[20vw] bg-slate-800 w-full"> 
+    <div className="h-full  border-r border-slate-700 flex flex-col md:w-[35vw] lg:w-[30vw] xl:w-[21vw] bg-slate-800 w-full"> 
        <div className="pl-4 pt-6 cursor-pointer ">
       <img src={logo} alt="logo" className="w-[150px] mb-6"/>
       </div>
       
       <div className="p-4">
-        <button className="w-full bg-blue-600 text-white py-2 px-4 flex items-center justify-center gap-2 hover:bg-blue-700 rounded-tr-[12px] rounded-bl-[12px]">
+        <button className="w-full bg-blue-600 text-white py-2 px-4 flex items-center justify-center gap-2 hover:bg-blue-700 rounded-tr-[12px] rounded-bl-[12px]"
+        onClick={() => setOpenGroupModal(true)}
+        >
            <MdGroups2 size={30}/>
           <span className="">Create Group</span>
         </button>
@@ -57,10 +62,15 @@ const Sidebar = ({ onSelectUser, selectedUser }) => {
 
       {activeTab === 'messages' && <ChatList />}
       {activeTab === 'users' && <UsersList />}
-      {activeTab === 'groups' && <GroupsList onSelectUser={onSelectUser} />}
+      {activeTab === 'groups' && <GroupsList  />}
 
         {/* Profile info */}
       <UserProfile />
+
+      {
+        openGroupModal && 
+        <CreateGroupModal setOpenGroupModal={setOpenGroupModal}/>
+      }
     </div>
   );
 };

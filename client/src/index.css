@@ -77,3 +77,17 @@ input:-moz-placeholder {
   font-family: 'Outfit';
 }
 
+.react-select-container .react-select__control:hover {
+  border-color: #3b82f6 !important;
+}
+
+.react-select-container .react-select__control--is-focused {
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 0 1px #3b82f6 !important;
+}
+
+.react-select__input-container::placeholder {
+  font-weight: 400;
+}
+
+

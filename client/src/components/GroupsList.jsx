@@ -1,28 +1,53 @@
-import React from 'react';
+import { useAppStore } from "@/store/store";
+import { GET_USER_GROUPS_ROUTE, HOST } from "@/utils/constants";
+import { useEffect } from "react";
+import axios from "axios";
 
-const GroupsList = ({ onSelectUser }) => {
-  const groups = [
-    { id: 1, name: 'Frontend Team', members: 5, avatar: 'https://via.placeholder.com/32' },
-    { id: 2, name: 'Backend Team', members: 4, avatar: 'https://via.placeholder.com/32' },
-    // Add more groups as needed
-  ];
+const GroupsList = () => {
+  const { groups, setSelectedChatType, setSelectedChatData, setGroups, setSelectedChatMessages } = useAppStore()
+
+
+  // Fetch groups when the component mounts
+  useEffect(() => {
+    const fetchGroups = async () => {
+      try {
+        const response = await axios.get(`${HOST}/${GET_USER_GROUPS_ROUTE}`, {
+          withCredentials: true,
+        });
+        if (response.data.success) {
+          setGroups(response.data.groups)
+        }
+        
+      } catch (error) {
+        console.error('Error fetching groups:', error);
+      }
+    };
+
+    fetchGroups();
+  }, [setGroups]);
+
+
 
   return (
     <div className="flex-1 overflow-y-auto">
       {groups.map((group) => (
         <div
-          key={group.id}
-          onClick={() => onSelectUser(group)}
-          className="flex items-center gap-3 p-3 cursor-pointer hover:bg-blue-50"
+          key={group.name}
+          onClick={() => {
+            setSelectedChatType("group")
+            setSelectedChatData(group)
+            setSelectedChatMessages([])
+          }}
+          className="flex items-center gap-3 p-3 cursor-pointer hover:bg-slate-700"
         >
           <img
-            src={group.avatar}
+            src={`https://ui-avatars.com/api/?name=${group.name}&background=random`}
             alt={group.name}
             className="w-8 h-8 rounded-full"
           />
           <div className="flex-1 min-w-0">
             <div className="font-medium text-white truncate">{group.name}</div>
-            <div className="text-sm text-gray-400">{group.members} members</div>
+            <div className="text-sm text-gray-400">{group.members.length} members</div>
           </div>
         </div>
       ))}

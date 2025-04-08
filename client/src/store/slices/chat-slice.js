@@ -7,6 +7,8 @@ export const createChatSlice = (set, get) => ({
     isDownloading: false,
     fileUploadProgress: 0,
     fileDownloadProgress: 0,
+    groups: [],
+    setGroups: (groups) => set({ groups }),
     setIsUploading: (isUploading) => set({ isUploading }),
     setIsDownloading: (isDownloading) => set({ isDownloading }),
     setFileUploadProgress: (fileUploadProgress) => set({ fileUploadProgress }),
@@ -15,6 +17,10 @@ export const createChatSlice = (set, get) => ({
     setSelectedChatData: (selectedChatData) => set({ selectedChatData }),
     setSelectedChatMessages: (selectedChatMessages) => set({ selectedChatMessages }),
     setDirectMessagesList: (directMessagesList) => set({directMessagesList}),
+    addGroup: (group) => {
+        const groups = get().groups;
+        set({ groups: [...groups, group] });
+    },
     closeChat: () => set({
         selectedChatData:undefined,
         selectedChatType:undefined,

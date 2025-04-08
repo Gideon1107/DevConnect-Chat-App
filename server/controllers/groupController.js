@@ -1,19 +1,58 @@
-import Group from '../models/Group.js';
+import Group from '../models/Group.js'
+import User from '../models/User.js';
+import mongoose from "mongoose";
 
 // Create a Group
 export const createGroup = async (req, res) => {
   try {
-    const { name, description, createdBy } = req.body;
+    const { name, description, members } = req.body;
+    const userId = req.user.id; 
+    const admin = await User.findById(userId);
 
-    const newGroup = new Group({ name, description, members: [createdBy], createdBy });
+    if (!admin) return res.status(400).json({ message: 'Admin User not found' });
+
+    const validMembers = await User.find({ _id: { $in: members } });
+
+    if (validMembers.length !== members.length) {
+      return res.status(400).json({ message: 'Some members are not valid users' });
+    }
+
+    const newGroup = new Group({
+       name, 
+       description, 
+       members, 
+       createdBy: userId,
+
+     });
     await newGroup.save();
 
-    res.status(201).json({ message: 'Group created successfully', newGroup });
+    res.status(201).json({success: true, message: 'Group created successfully', newGroup });
 
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
+
+
+
+// Get User Groups
+export const getUserGroups = async (req, res) => {
+  try { 
+    const userId = new mongoose.Types.ObjectId(req.user.id);
+    const groups = await Group.find({
+      $or: [{ members: userId }, { createdBy: userId }]
+    }).sort({ updatedAt: -1 });
+
+    res.status(200).json({success: true, groups });
+
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+
+
 
 // Add User to Group
 export const addUserToGroup = async (req, res) => {

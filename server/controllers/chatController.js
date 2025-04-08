@@ -1,5 +1,41 @@
 import mongoose from "mongoose";
 import Message from "../models/Message.js";
+import User from "../models/User.js";
+
+
+
+export const getAllUsers = async (req, res) => {
+    try {
+        if (!req.user || !req.user.id) {
+            return res.status(401).json({   
+                success: false, 
+                message: 'User not authenticated' 
+            });
+        }
+
+        const allUsers = await User.find({
+            _id: { $ne: req.user.id } // Exclude the current user
+        }).select('username email profilePicture status lastSeenActive'); // Select only the needed fields
+
+        const user = allUsers.map((user) => ({
+            label: user.username,
+            value: user._id
+        }));
+
+        res.status(200).json({
+            success: true,
+            user
+        }); 
+
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        res.status(500).json({ 
+            success: false, 
+            message: 'Server error', 
+            error: error.message 
+        });
+    }
+};
 
 
 

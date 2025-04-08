@@ -9,6 +9,7 @@ import userRoutes from './routes/userRoutes.js'
 import adminRoutes from './routes/adminRoutes.js'
 import messagesRoutes from './routes/messagesRoutes.js'
 import chatRoutes from './routes/chatRoutes.js'
+import groupRoutes from './routes/groupRoutes.js'
 import connectDB from './config/mongodb.js';
 import cookieParser from 'cookie-parser';
 
@@ -26,9 +27,11 @@ const server = http.createServer(app);
 // Middleware
 app.use(cors({
   origin: process.env.ORIGIN ,
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   credentials: true,
+  exposedHeaders: ['Content-Disposition', 'Content-Type'],
 }));
+
 app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
 app.use(express.json()); // Parse JSON bodies
 app.use(session({ secret: process.env.SESSION_SECRET, resave: false, saveUninitialized: true }));
@@ -42,6 +45,7 @@ app.use('/api/user', userRoutes)
 app.use('/api/admin', adminRoutes)
 app.use('/api/messages', messagesRoutes)
 app.use('/api/chat', chatRoutes)
+app.use('/api/group', groupRoutes)
 
 
 app.get("/", (req, res) => {

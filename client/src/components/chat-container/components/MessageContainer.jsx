@@ -6,18 +6,19 @@ import { useEffect, useRef, useState } from "react";
 import { GoFileZip } from "react-icons/go";
 import { HiDownload } from "react-icons/hi";
 import { RxCross1 } from "react-icons/rx";
+import { toast } from "sonner";
 
 
 const MessageContainer = () => {
 
-  const { 
-    selectedChatType, 
+  const {
+    selectedChatType,
     selectedChatData,
-    selectedChatMessages, 
+    selectedChatMessages,
     setSelectedChatMessages,
     setFileDownloadProgress,
     setIsDownloading,
-   } = useAppStore()
+  } = useAppStore()
 
   const scrollRef = useRef();
   const [showImage, setShowImage] = useState(false);
@@ -29,8 +30,8 @@ const MessageContainer = () => {
     const getMessages = async () => {
       try {
         const response = await axios.post(`${HOST}/${GET_ALL_MESSAGES_ROUTE}`,
-          {id: selectedChatData._id},
-          {withCredentials: true})
+          { id: selectedChatData._id },
+          { withCredentials: true })
         if (response.data.messages) {
           setSelectedChatMessages(response.data.messages)
         }
@@ -44,12 +45,12 @@ const MessageContainer = () => {
         getMessages();
       }
     }
-  },[selectedChatData, selectedChatType, setSelectedChatMessages])
+  }, [selectedChatData, selectedChatType, setSelectedChatMessages])
 
 
   useEffect(() => {
     if (scrollRef.current) {
-      scrollRef.current.scrollIntoView({ behavior: "instant" , block: "end" });
+      scrollRef.current.scrollIntoView({ behavior: "instant", block: "end" });
     }
   }, [selectedChatMessages])
 
@@ -88,83 +89,108 @@ const MessageContainer = () => {
   }
 
   // Function to handle file download
-  // This function will create a link element and trigger a download
   const handleDownloadFileMessage = async (fileLink) => {
     setIsDownloading(true);
     setFileDownloadProgress(0);
-    const link = document.createElement("a");
-    link.href = fileLink;
-    link.setAttribute("download", fileLink.split("/").pop().replace(/%20/g, " "));
-    document.body.appendChild(link);
 
+    let progress = 0;
+    const interval = setInterval(() => {
+      progress += 2; //Slower increment
+      if (progress <= 95) { // Cap at 95% until actual download completes
+        setFileDownloadProgress(progress);
+      }
+    }, 50); // Faster updates for smoother progress
 
-    // simulate a progress bar
-    setTimeout(() => {
-      setFileDownloadProgress(35);
-    }, 1000);
-    setTimeout(() => {
-      setFileDownloadProgress(70);
-    }, 2000);
-    setTimeout(() => {
+    //initial delay to ensure loading state is visible
+    await new Promise(resolve => setTimeout(resolve, 500));
+
+    try {
+      // Create and trigger download
+      const link = document.createElement("a");
+      link.href = fileLink;
+      link.setAttribute(
+        "download",
+        decodeURIComponent(fileLink.split("/").pop())
+      );
+      document.body.appendChild(link);
+
+      // Delay the actual download slightly
+      setTimeout(() => {
+        link.click();
+        link.remove();
+      }, 300);
+
+      // Wait for "download" to complete
+      await new Promise(resolve => setTimeout(resolve, 1500));
+
+      // Complete the progress to 100%
+      clearInterval(interval);
       setFileDownloadProgress(100);
-      link.click();
-    }, 3000);
-    setTimeout(() => {
-      setIsDownloading(false)
+      toast.success("File downloaded successfully", { duration: 1000 });
+
+      // Reset states after a short delay
+      setTimeout(() => {
+        setIsDownloading(false);
+        setFileDownloadProgress(0);
+      }, 1000);
+
+    } catch (error) {
+      clearInterval(interval);
+      console.error('Download error:', error);
+      toast.error("Failed to download file");
+      setIsDownloading(false);
       setFileDownloadProgress(0);
-    }, 4000);
-  
-    // Remove the link element from the DOM
-    link.remove();
-  }
+    }
+  };
+
 
 
   const renderDMMessages = (message) => (
 
     <div className={`${message.sender === selectedChatData._id ? "text-left " : "text-right"} text-sm mb-2`}>
-      
+
       {/* chat messages */}
       {
         message.messageType === "text" && (
-        <div className={`${message.sender !== selectedChatData._id
-          ? "bg-slate-400/50 text-white/80 border-slate-400/50 rounded-tr-2xl rounded-bl-2xl"
-          : "bg-gray-600/50 text-white/80 border-gray-500/50 rounded-tl-2xl rounded-br-2xl"} border inline-block p-2 px-4 sm:max-w-[50%] break-words text-sm`}>
-  
-          {message.content}
-        </div> 
-      )}
+          <div className={`${message.sender !== selectedChatData._id
+            ? "bg-slate-400/50 text-white/80 border-slate-400/50 rounded-tr-2xl rounded-bl-2xl"
+            : "bg-gray-600/50 text-white/80 border-gray-500/50 rounded-tl-2xl rounded-br-2xl"} border inline-block p-2 px-4 sm:max-w-[50%] break-words text-sm`}>
+
+            {message.content}
+          </div>
+        )}
 
       {/* File messages */}
       {
         message.messageType === "file" && (
-        <div className={`${message.sender !== selectedChatData._id
-          ? "bg-slate-400/50 text-white/80 border-slate-400/50 rounded-tr-2xl rounded-bl-2xl"
-          : "bg-gray-600/50 text-white/80 border-gray-500/50 rounded-tl-2xl rounded-br-2xl"} inline-block  sm:max-w-[55%] break-words text-sm`}>
-  
-          {checkIfImage(message.mediaUrl) 
-          ? <div className="cursor-pointer"
-              onClick={() => {
-                setImageUrl(message.mediaUrl);
-                setShowImage(true);
-              }
-              }
-            >
-              <img src={message.mediaUrl} alt="image" className="w-[200px] h-[200px] sm:w-[250px] sm:h-[250px]"/>
-            </div>
-          : <div className="flex items-center justify-center gap-3 px-2 py-1">
-              <span className="text-white/80 text-2xl bg-black/20 rounded-full p-2">
-                <GoFileZip />
-              </span>
-              <span className="text-sm text-slate-200 w-2/3 ">
-                {message.mediaUrl.split("/").pop().replace(/%20/g, " ")}
-              </span>
-              <span className="bg-black/20 rounded-full p-1 cursor-pointer">
-                <HiDownload size={20} onClick={() => handleDownloadFileMessage(message.mediaUrl)}/>
-              </span>
-            </div>
-        }
-        </div> 
-      )}  
+          <div className={`${message.sender !== selectedChatData._id
+            ? "bg-slate-400/50 text-white/80 border-slate-400/50 rounded-tr-2xl rounded-bl-2xl"
+            : "bg-gray-600/50 text-white/80 border-gray-500/50 rounded-tl-2xl rounded-br-2xl"} inline-block  sm:max-w-[55%] break-words text-sm`}>
+
+            {checkIfImage(message.mediaUrl)
+              ? <div className="cursor-pointer"
+                onClick={() => {
+                  setImageUrl(message.mediaUrl);
+                  setShowImage(true);
+                }
+                }
+              >
+                <img src={message.mediaUrl} alt="image" width={200} height={200} />
+              </div>
+              : <div className="flex items-center justify-center gap-3 px-2 py-1">
+                <span className="text-white/80 text-2xl bg-black/20 rounded-full p-2">
+                  <GoFileZip />
+                </span>
+                <span className="text-sm text-slate-200 w-2/3 ">
+                  {decodeURIComponent(message.mediaUrl.split("/").pop())}
+                </span>
+                <span className="bg-black/20 rounded-full p-1 cursor-pointer">
+                  <HiDownload size={20} onClick={() => handleDownloadFileMessage(message.mediaUrl)} />
+                </span>
+              </div>
+            }
+          </div>
+        )}
 
 
 
@@ -182,20 +208,20 @@ const MessageContainer = () => {
 
       {
         showImage && (
-          <div className="fixed top-0 left-0 w-full h-screen bg-black/80 flex items-center justify-center z-50">
+          <div className="fixed top-0 left-0 w-full h-screen bg-black/80 flex items-center justify-center z-10">
             <img src={imageUrl} alt="image" className="w-[90%] h-[80%] object-contain" />
             <div className="flex gap-8 fixed top-0 mt-5">
-              <button 
-              onClick={() => handleDownloadFileMessage(imageUrl)} 
-              className="bg-black/20 rounded-full p-1 cursor-pointer">
-                <HiDownload size={25}/>
+              <button
+                onClick={() => handleDownloadFileMessage(imageUrl)}
+                className="bg-black/20 rounded-full p-1 cursor-pointer">
+                <HiDownload size={25} />
               </button>
-              <button className="bg-black/20 rounded-full p-1 cursor-pointer" 
-              onClick={() => { 
-                setShowImage(false)
-                setImageUrl(null)
-              }}>
-                <RxCross1 size={25}/>
+              <button className="bg-black/20 rounded-full p-1 cursor-pointer"
+                onClick={() => {
+                  setShowImage(false)
+                  setImageUrl(null)
+                }}>
+                <RxCross1 size={25} />
               </button>
             </div>
           </div>
