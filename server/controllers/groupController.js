@@ -152,10 +152,12 @@ export const editGroup = async (req, res) => {
 export const deleteGroup = async (req, res) => {
   const { groupId } = req.body;
   const userId = req.user.id;
+  console.log(groupId, userId)
 
   if (!groupId) return res.status(400).json({ message: 'Group ID is required' });
 
   if (!userId) return res.status(400).json({ message: 'User ID is required' });
+  
 
   try {
     const group = await Group.findById(groupId);
@@ -165,7 +167,7 @@ export const deleteGroup = async (req, res) => {
       return res.status(403).json({ message: 'Only group admin can delete the group' });
     }
     await Group.findByIdAndDelete(groupId);
-    res.status(200).json({ message: 'Group deleted successfully' });
+    res.status(200).json({success: true, message: 'Group deleted successfully' });
   } catch (error) {
     console.log(error)
     res.status(500).json({ message: 'Internal Server error', error: error.message });

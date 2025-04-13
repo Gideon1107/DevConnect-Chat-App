@@ -1,4 +1,4 @@
-import { GET_GROUP_ADMIN_ROUTE, HOST, EDIT_GROUP_ROUTE } from "@/utils/constants";
+import { GET_GROUP_ADMIN_ROUTE, HOST, EDIT_GROUP_ROUTE, DELETE_GROUP_ROUTE } from "@/utils/constants";
 import { useAppStore } from "@/store/store";
 import { RxCross1 } from "react-icons/rx";
 import axios from "axios";
@@ -71,6 +71,27 @@ const GroupDetailsModal = ({ members, setSelectedChatData, setSelectedChatType, 
         } catch (error) {
             console.log(error)
             toast.error("Failed to edit group", error.message)
+        }
+    }
+
+
+    // This function handles deleting the group
+    const handleDeleteGroup = async () => {
+        try {
+            const response = await axios.delete(`${HOST}/${DELETE_GROUP_ROUTE}`, {
+                data: { groupId: selectedChatData._id },
+                withCredentials: true,
+            });
+            if (response.data.success) {
+                toast.success("Group deleted successfully")
+                setGroupDetailsModal(false)
+                useAppStore.getState().closeChat() // to close the chat
+            } else {
+                toast.error(response.data.message)
+            }
+        } catch (error) {
+            console.log(error)
+            toast.error("Failed to delete group", error.message)
         }
     }
 
@@ -215,7 +236,9 @@ const GroupDetailsModal = ({ members, setSelectedChatData, setSelectedChatType, 
                                     <button className="p-2 px-4 bg-slate-700/90 rounded-sm hover:bg-slate-800 transition-all duration-300 text-sm"
                                     onClick={() => setIsEditing(true)}
                                     >Edit Group</button>
-                                    <button className="p-2 px-4 bg-red-700 rounded-sm text-sm hover:bg-red-700/80 transition-all duration-300">Delete Group</button>
+                                    <button className="p-2 px-4 bg-red-700 rounded-sm text-sm hover:bg-red-700/80 transition-all duration-300"
+                                    onClick={handleDeleteGroup}
+                                    >Delete Group</button>
                                 </div> : <button className="p-2 px-4 bg-red-700 rounded-sm text-sm hover:bg-red-700/80 transition-all duration-300">Leave Group</button>
                             }
                         </div>
