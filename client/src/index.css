@@ -91,3 +91,22 @@ input:-moz-placeholder {
 }
 
 
+.custom-scrollbar {
+  scrollbar-width: thin;  /* Firefox */
+  scrollbar-color: #334155 #1e293b;  /* Firefox */
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;  /* width of the entire scrollbar */
+  display: block;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #1e293b;  /* color of the tracking area */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #334155;  /* color of the scroll thumb */
+  border-radius: 20px;  /* roundness of the scroll thumb */
+}
+

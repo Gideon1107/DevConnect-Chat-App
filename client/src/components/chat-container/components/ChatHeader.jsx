@@ -1,13 +1,46 @@
 import { RxCross1 } from "react-icons/rx";
 import { useAppStore } from "@/store/store";
 import { capitalizeUsername } from "@/utils/capitalize";
+import { HOST, GET_GROUP_MEMBERS_ROUTE } from "@/utils/constants";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import GroupDetailsModal from "@/components/GroupDetailsModal";
 
 const ChatHeader = () => {
 
-  const { closeChat, selectedChatData, selectedChatType } = useAppStore()
+  const { closeChat, selectedChatData, selectedChatType, setSelectedChatData, setSelectedChatType } = useAppStore()
+  const [members, setMembers] = useState([])
+  const [groupDetailsModal, setGroupDetailsModal] = useState(false)
+
+  const getGroupMembers = async (members) => {
+    try {
+      const response = await axios.get(`${HOST}/${GET_GROUP_MEMBERS_ROUTE}`, {
+        params: {
+          members: members
+        },
+        withCredentials: true,
+      })
+      if (response.data.success) {
+        setMembers(response.data.members)
+      }
+
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    if (selectedChatData.members) {
+      getGroupMembers(selectedChatData.members)
+    }
+  }, [selectedChatData])
+  
 
   return (
-    <div className="p-4 border-b border-slate-700 flex justify-between items-center">
+    <div className={`p-4 border-b border-slate-700 flex justify-between items-center ${selectedChatType === "group" ? "cursor-pointer" : ""}`}
+    onClick={selectedChatType === "group" ? () => {
+      setGroupDetailsModal(true)
+    }: null }>
       <div className="flex items-center gap-4">
       {
         selectedChatType === "dm" ? <img
@@ -26,7 +59,7 @@ const ChatHeader = () => {
             selectedChatType === "dm" ? capitalizeUsername(selectedChatData.username)
             : <div className="flex flex-col">
               <span>{selectedChatData.name}</span>
-              <span className="text-[12px] text-gray-400 font-light text-wrap">{selectedChatData.description}</span>
+              <span className="text-[12px] text-gray-400 font-light text-wrap">tap here for group info</span>
               </div>
           }
           
@@ -38,7 +71,20 @@ const ChatHeader = () => {
       >
         <RxCross1 className="text-xl"/>
       </button>
+
+      {
+        groupDetailsModal && 
+        <GroupDetailsModal 
+        setSelectedChatData={setSelectedChatData} 
+        setSelectedChatType={setSelectedChatType} 
+        members={members} 
+        setGroupDetailsModal={setGroupDetailsModal}
+        groupDetailsModal={groupDetailsModal}
+        />
+      }
     </div>
+
+ 
   );
 };
 

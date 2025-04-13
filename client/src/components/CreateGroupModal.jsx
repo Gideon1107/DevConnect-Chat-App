@@ -113,6 +113,8 @@ const CreateGroupModal = ({ setOpenGroupModal }) => {
                     toast.success(`Group: ${name} created successfully`)
                     addGroup(response.data.newGroup)
                     setOpenGroupModal(false)
+                } else {
+                    toast.error(response.data.message)
                 }
             }
             

@@ -26,3 +26,7 @@ export const GET_ALL_USERS_ROUTE = `${CHAT_LIST_ROUTE}/all-users`
 export const GROUP_ROUTES = "api/group"
 export const CREATE_GROUP_ROUTE = `${GROUP_ROUTES}/create-group`
 export const GET_USER_GROUPS_ROUTE = `${GROUP_ROUTES}/get-user-groups`
+export const GET_GROUP_MEMBERS_ROUTE = `${GROUP_ROUTES}/get-group-members`
+export const GET_GROUP_ADMIN_ROUTE = `${GROUP_ROUTES}/get-group-admin`
+export const EDIT_GROUP_ROUTE = `${GROUP_ROUTES}/edit-group`
+export const DELETE_GROUP_ROUTE = `${GROUP_ROUTES}/delete-group`
