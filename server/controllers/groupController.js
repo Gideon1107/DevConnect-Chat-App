@@ -49,7 +49,7 @@ export const createGroup = async (req, res) => {
 // Get User Groups
 export const getUserGroups = async (req, res) => {
   try { 
-    const userId = new mongoose.Types.ObjectId(req.user.id);
+    const userId = req.user.id;
     const groups = await Group.find({
       $or: [{ members: userId }, { createdBy: userId }]
     }).sort({ updatedAt: -1 });
@@ -152,7 +152,6 @@ export const editGroup = async (req, res) => {
 export const deleteGroup = async (req, res) => {
   const { groupId } = req.body;
   const userId = req.user.id;
-  console.log(groupId, userId)
 
   if (!groupId) return res.status(400).json({ message: 'Group ID is required' });
 
@@ -175,22 +174,95 @@ export const deleteGroup = async (req, res) => {
 }
 
 
-// // Add User to Group
-// export const addUserToGroup = async (req, res) => {
-//   try {
-//     const { groupId, userId } = req.body;
-//     const group = await Group.findById(groupId);
+// Leave Group
+export const leaveGroup = async (req, res) => {
+  const { groupId } = req.body;
+  const userId = req.user.id;
+
+  if (!groupId) return res.status(400).json({ message: 'Group ID is required' });
+
+  if (!userId) return res.status(400).json({ message: 'User ID is required' });
+
+  try {
+    const group = await Group.findById(groupId);
+    if (!group) return res.status(404).json({ message: 'Group not found' });
+
+    if (group.createdBy.toString() === userId) {
+      return res.status(403).json({ message: 'Group admin cannot leave the group' });
+    }
+    group.members = group.members.filter(memberId => memberId.toString() !== userId);
+    await group.save();
+    res.status(200).json({success: true, message: 'Left group successfully' });
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ message: 'Internal Server error', error: error.message });
+  }
+}
+
+
+// Add User to Group
+export const addGroupMember = async (req, res) => {
+  try {
+    const { groupId, newMembers } = req.body;
+    const userId = req.user.id;
+
+    if (!userId) return res.status(400).json({ message: 'Not Authorized' });
     
-//     if (!group) return res.status(404).json({ message: 'Group not found' });
+    if (!groupId || !newMembers) {
+      return res.status(400).json({ message: 'Group ID and new members are required' });
+    }
 
-//     if (!group.members.includes(userId)) {
-//       group.members.push(userId);
-//       await group.save();
-//     }
+    const validMembers = await User.find({ _id: { $in: newMembers } });
 
-//     res.status(200).json({ message: 'User added to group', group });
+    if (validMembers.length !== newMembers.length) {
+      return res.status(400).json({ message: 'Some members are not valid users' });
+    }
 
-//   } catch (error) {
-//     res.status(500).json({ message: 'Server error', error: error.message });
-//   }
-// };
+    const group = await Group.findById(groupId);
+    
+    if (!group) return res.status(404).json({ message: 'Group not found' });
+
+    if (group.createdBy.toString() !== userId) {
+      return res.status(403).json({ message: 'Only group admin can add members' });
+    }
+
+    if (group.members.some(memberId => newMembers.includes(memberId.toString()))) {
+      return res.status(400).json({ message: 'Some members are already in the group' });
+    }
+
+
+    group.members = [...group.members, ...newMembers]; // Update the members array
+    await group.save();
+
+    const newMembersData = await User.find({ _id: { $in: newMembers } }).select('username profilePicture');
+
+    res.status(200).json({success: true, message: 'User added to group', newMembersData });
+
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+// Remove User from Group
+export const removeUSerFromGroup = async (req, res) => {
+  const userId = req.user.id    // Getting userid from middleware
+  const {memberId, groupId} = req.body 
+  
+  if (!userId) {
+    res.status(400).json({success: false, message: "User not authorized"})
+  }
+
+  if (!memberId || !groupId) {
+    res.status(400).json({success: false, message: "Member ID and Group ID are required"})
+  }
+  try {
+    const group = await Group.findById(groupId)
+    console.log(group) 
+
+    // To me implemented
+    
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({success: true, message: "Internal Server error", error: error.message})
+  }
+}

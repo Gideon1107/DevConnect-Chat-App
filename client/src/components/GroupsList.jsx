@@ -41,7 +41,7 @@ const GroupsList = () => {
           className="flex items-center gap-3 p-3 cursor-pointer hover:bg-slate-700"
         >
           <img
-            src={`https://ui-avatars.com/api/?name=${group.name}&background=random`}
+            src={group.image}
             alt={group.name}
             className="w-8 h-8 rounded-full"
           />

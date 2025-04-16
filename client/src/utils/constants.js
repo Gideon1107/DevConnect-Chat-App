@@ -30,3 +30,6 @@ export const GET_GROUP_MEMBERS_ROUTE = `${GROUP_ROUTES}/get-group-members`
 export const GET_GROUP_ADMIN_ROUTE = `${GROUP_ROUTES}/get-group-admin`
 export const EDIT_GROUP_ROUTE = `${GROUP_ROUTES}/edit-group`
 export const DELETE_GROUP_ROUTE = `${GROUP_ROUTES}/delete-group`
+export const LEAVE_GROUP_ROUTE = `${GROUP_ROUTES}/leave-group`
+export const ADD_GROUP_MEMBER_ROUTE = `${GROUP_ROUTES}/add-group-members`
+export const REMOVE_GROUP_MEMBER_ROUTE = `${GROUP_ROUTES}/remove-group-member`

@@ -1,6 +1,16 @@
-import { GET_GROUP_ADMIN_ROUTE, HOST, EDIT_GROUP_ROUTE, DELETE_GROUP_ROUTE } from "@/utils/constants";
+import { 
+    GET_GROUP_ADMIN_ROUTE, 
+    HOST, EDIT_GROUP_ROUTE, 
+    DELETE_GROUP_ROUTE, 
+    LEAVE_GROUP_ROUTE, 
+    GET_ALL_USERS_ROUTE, 
+    ADD_GROUP_MEMBER_ROUTE, 
+    GET_USER_GROUPS_ROUTE, 
+    REMOVE_GROUP_MEMBER_ROUTE } from "@/utils/constants";
+
 import { useAppStore } from "@/store/store";
 import { RxCross1 } from "react-icons/rx";
+import { IoIosAdd } from "react-icons/io";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { capitalizeUsername } from "@/utils/capitalize";
@@ -8,19 +18,43 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import { toast } from "sonner";
+import AsyncSelect from 'react-select/async';
+import customStyles from '@/utils/customStyles';
 
 
-const GroupDetailsModal = ({ members, setSelectedChatData, setSelectedChatType, setGroupDetailsModal, groupDetailsModal }) => {
+const GroupDetailsModal = ({ members, setMembers, setSelectedChatData, setSelectedChatType, setGroupDetailsModal, groupDetailsModal }) => {
 
-    const { selectedChatData } = useAppStore() // Getting the selected chat data from the store, could be dm or group
+    const { selectedChatData, setGroups, groups } = useAppStore() // Getting the selected chat data from the store, could be dm or group
     const [admin, setAdmin] = useState("")
     const [isEditing, setIsEditing] = useState(false)
+    const [showAddUser, setShowAddUser] = useState(false);
+    const [allUsers, setAllUsers] = useState([]);
+    const [newSelectedMembers, setNewSelectedMembers] = useState([]) // State to store the selected users for adding user to a group
+
+
+    // Fetch groups 
+    useEffect(() => {
+        const fetchGroups = async () => {
+            try {
+                const response = await axios.get(`${HOST}/${GET_USER_GROUPS_ROUTE}`, {
+                    withCredentials: true,
+                });
+                if (response.data.success) {
+                    setGroups(response.data.groups)
+                }
+
+            } catch (error) {
+                console.error('Error fetching groups:', error);
+            }
+        };
+
+        fetchGroups();
+    }, [setMembers, setGroups, newSelectedMembers, setNewSelectedMembers]);
 
 
     // This function close the modal
     const handleClose = () => {
         setGroupDetailsModal(false)
-
     }
 
     // Edit group schema
@@ -49,6 +83,85 @@ const GroupDetailsModal = ({ members, setSelectedChatData, setSelectedChatType, 
     })
 
 
+    // This function to fetch all users
+    const fetchUsers = async () => {
+        try {
+            const response = await axios.get(`${HOST}/${GET_ALL_USERS_ROUTE}`, {
+                withCredentials: true
+            });
+            if (response.data.success) {
+                // Filter out users who are already members
+                const filteredUsers = response.data.user.filter(
+                    user => !members.some(member => member._id === user.value)
+                );
+                setAllUsers(filteredUsers);
+            }
+        } catch (error) {
+            console.error('Error fetching users:', error);
+            toast.error('Failed to fetch users');
+        }
+    };
+
+    //loadOptions function for AsyncSelect
+    const loadOptions = async (inputValue) => {
+        if (!inputValue) return [];
+        return allUsers.filter(user =>
+            user.label.toLowerCase().includes(inputValue.toLowerCase())
+        );
+    };
+
+    // Add this function to handle AsyncSelect changes
+    const handleSelectChange = (selected) => {
+        setNewSelectedMembers(selected || []);
+    };
+
+    // This function handles adding users
+    const handleAddMembers = async () => {
+        if (!newSelectedMembers.length) {
+            toast.error('Please select users to add');
+            return;
+        }
+        try {
+            const response = await axios.put(`${HOST}/${ADD_GROUP_MEMBER_ROUTE}`, {
+                groupId: selectedChatData._id,
+                newMembers: newSelectedMembers.map(user => user.value)
+            }, {
+                withCredentials: true
+            });
+
+            if (response.data.success) {
+                toast.success('Members added successfully');
+                // Update members list
+                setMembers([...members, ...response.data.newMembersData]);
+                setShowAddUser(false);
+                setNewSelectedMembers([])
+            }
+
+        } catch (error) {
+            console.log(error)
+            toast.error(error.response?.data?.message || 'Failed to add members');
+        }
+    };
+
+
+    // This function handles remove members
+    const handleRemoveMember = (memberId) => async () => {
+        try {
+            const response = await axios.put(`${HOST}/${REMOVE_GROUP_MEMBER_ROUTE}`,
+                {
+                    memberId: memberId,
+                    groupId: selectedChatData._id
+                },
+                {withCredentials: true}
+            )
+        } catch (error) {
+            console.log(error)
+            toast.error("Failed to remove user")
+        }
+    }
+
+
+
     // This function handles the edit group form submission
     const onEditGroupSubmit = async (data) => {
         const { name, description } = data;
@@ -67,7 +180,7 @@ const GroupDetailsModal = ({ members, setSelectedChatData, setSelectedChatType, 
             } else {
                 toast.error(response.data.message)
             }
-            
+
         } catch (error) {
             console.log(error)
             toast.error("Failed to edit group", error.message)
@@ -85,13 +198,35 @@ const GroupDetailsModal = ({ members, setSelectedChatData, setSelectedChatType, 
             if (response.data.success) {
                 toast.success("Group deleted successfully")
                 setGroupDetailsModal(false)
-                useAppStore.getState().closeChat() // to close the chat
+                useAppStore.getState().closeChat() // This will set selectedChatdata, selectedChatType and selectedChatMessages to undefined
+                setGroups(groups.filter(group => group._id !== selectedChatData._id)) // Remove the deleted group from the groups list
             } else {
                 toast.error(response.data.message)
             }
         } catch (error) {
             console.log(error)
             toast.error("Failed to delete group", error.message)
+        }
+    }
+
+    // This function handles leaving the group
+    const handleLeaveGroup = async () => {
+        try {
+            const response = await axios.put(`${HOST}/${LEAVE_GROUP_ROUTE}`,
+                { groupId: selectedChatData._id, },
+                { withCredentials: true, }
+            );
+            if (response.data.success) {
+                toast.success(`Youv've left ${selectedChatData.name} group successfully`)
+                setGroupDetailsModal(false)
+                useAppStore.getState().closeChat() // This will set selectedChatdata, selectedChatType and selectedChatMessages to undefined
+                setGroups(groups.filter(group => group._id !== selectedChatData._id)) // Remove the left group from the groups list
+            } else {
+                toast.error(response.data.message)
+            }
+        } catch (error) {
+            console.log(error)
+            toast.error("Failed to leave group", error.message)
         }
     }
 
@@ -123,128 +258,208 @@ const GroupDetailsModal = ({ members, setSelectedChatData, setSelectedChatType, 
         <div className="fixed inset-0 bg-black/80 max-sm: flex sm:items-center sm:justify-center z-10">
             <div className={`bg-slate-900 p-4 sm:rounded-lg ${isEditing ? "max-w-lg w-full" : "w-full max-w-xl"} border border-slate-800`}>
                 {
-                    isEditing ? 
-                    <div className="p-4">
-                        <div className="flex justify-between border-b-[1px] border-slate-800 pb-2">
-                            <h2 className="text-lg font-medium text-white">Edit Group</h2>
-                            <button onClick={(e) => {
-                                e.stopPropagation();
-                                setIsEditing(false)
-                            }}
-                                className="p-2">
-                                <RxCross1 className="text-gray-400 hover:text-white transition-all duration-300 cursor-pointer" />
-                            </button>
-                        </div>
+                    showAddUser ? (
+                        // Add User Form
+                        <div className="p-4 flex flex-col gap-4">
+                            <div className="flex justify-between border-b-[1px] border-slate-800 pb-2">
+                                <h2 className="text-lg font-medium text-white">Add Members</h2>
+                                <button
+                                    onClick={() => {
+                                        setShowAddUser(false);
+                                        setNewSelectedMembers([])
+                                    }}
+                                    className="p-2"
+                                >
+                                    <RxCross1 className="text-gray-400 hover:text-white transition-all duration-300 cursor-pointer" />
+                                </button>
+                            </div>
 
-                        {/* Edit Group Form */}
-                        <form className="flex flex-col gap-6  flex-1 mt-5"
-                        onSubmit={handleSubmit(onEditGroupSubmit)}
-                        >
-                            {/* Group Name Field */}
-                            <div className="flex flex-col gap-2">
-                                <label htmlFor="" className="text-sm text-gray-200">Group Name</label>
-                                <input
-                                    {...register("name")}
-                                    type="text" className="flex-1 pl-3 p-2 text-white focus:outline-none rounded-tr-[10px] rounded-bl-[10px]  bg-slate-800 border text-base border-slate-700 "
-                                    autoComplete="off"
+                            <div className="mt-4">
+                                <AsyncSelect
+                                    isMulti
+                                    cacheOptions
+                                    defaultOptions={[]}
+                                    loadOptions={loadOptions}
+                                    onChange={handleSelectChange}
+                                    value={newSelectedMembers}
+                                    styles={customStyles}
+                                    className="react-select-container"
+                                    classNamePrefix="react-select"
+                                    placeholder="Search users by username..."
+                                    noOptionsMessage={({ inputValue }) =>
+                                        !inputValue ? "Start typing to search users" : "No users found"
+                                    }
                                 />
-                                {
-                                    errors.name && (<p className="text-red-600 text-sm">{errors.name.message}</p>)
-                                }
                             </div>
 
-                            {/* Group Description Field */}
-                            <div className="flex flex-col gap-2">
-                                <label htmlFor="" className="text-sm text-gray-200">Group Description</label>
-                                <textarea
-                                    {...register("description")}
-                                    type="text" className="flex-1 pl-3 p-2 text-white focus:outline-none rounded-tr-[10px] rounded-bl-[10px]  bg-slate-800 border text-base border-slate-700 "
-                                    autoComplete="off"
-                                />
-                                {
-                                    errors.description && (<p className="text-red-600 text-sm">{errors.description.message}</p>)
-                                }
-                            </div>
+                            <button className="p-2 px-4 bg-slate-700/90 rounded-sm hover:bg-slate-800 transition-all duration-300 text-sm mt-4"
+                                onClick={handleAddMembers}
+                            >Add Members</button>
 
-                            {/* Submit */}
-                            <button className="p-3 my-3 bg-slate-700 rounded-[5px] hover:bg-slate-600 font-light mt-8 sm:mt-4">
-                                Save Changes
-                            </button>
-                        </form>
-                    </div>
-                    : members &&
-                    <div className="p-2 flex  gap-6 flex-col">
-                        <div className="flex justify-between items-center border-b border-slate-800 pb-3 ">
-                            <div className="flex flex-col gap-1 ">
-                                <h2 className="text-xl font-semibold text-white">{selectedChatData.name}</h2>
-                                <h3 className="text-sm text-gray-400 font-light">{selectedChatData.description}</h3>
-                            </div>
 
-                            <button onClick={(e) => {
-                                e.stopPropagation();
-                                handleClose()
-                            }}
-                                className="p-2">
-                                <RxCross1 className="text-gray-400 hover:text-white transition-all duration-300 cursor-pointer" />
-                            </button>
 
                         </div>
+                    ) : (
+                        isEditing ?
+                            // Show Edit Group
+                            <div className="p-4">
+                                <div className="flex justify-between border-b-[1px] border-slate-800 pb-2">
+                                    <h2 className="text-lg font-medium text-white">Edit Group</h2>
+                                    <button onClick={(e) => {
+                                        e.stopPropagation();
+                                        setIsEditing(false)
+                                    }}
+                                        className="p-2">
+                                        <RxCross1 className="text-gray-400 hover:text-white transition-all duration-300 cursor-pointer" />
+                                    </button>
+                                </div>
 
-                        <div className="flex flex-col">
-                            <div className="mb-6">
-                                <span className="text-sm text-gray-400">Created by: </span>
-                                <span className="text-sm text-white pl-2 font-normal">{admin._id === useAppStore.getState().user._id ? "You" : capitalizeUsername(admin.username)}</span>
-                            </div>
-
-                            <span className="text-sm text-gray-400 font-normal mb-2">{members.length} members:</span>
-
-                            {/* Members */}
-                            <div className="bg-slate-800/20 rounded-sm mb-4 overflow-y-auto sm:max-h-[200px] max-h-[65vh] custom-scrollbar ">
-                            {
-                                members.map((member) => {
-                                    const isCurrentUser = member._id === useAppStore.getState().user._id; // Check if member is current user
-                                    return (
-                                    <div key={member._id}
-                                        className={`flex items-center gap-2 border-b-[1px] border-slate-800 hover:bg-slate-800/50 py-3 rounded-md ${isCurrentUser ? 'cursor-not-allowed' : 'cursor-pointer'}`}
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            if (!isCurrentUser) { // Check if member is not current user
-                                                setSelectedChatType("dm")
-                                                setSelectedChatData(member)
-                                                handleClose()
-                                            }
-                                        }}
-                                        aria-disabled={isCurrentUser}
-                                        title={`${isCurrentUser && "You" }`}
-                                    >
-                                        <img src={member.profilePicture} alt="member.username" className="w-6 h-6 rounded-full" key={member._id}/>
-                                        <span className="text-white font-normal text-sm">{member.username}</span>
+                                {/* Edit Group Form */}
+                                <form className="flex flex-col gap-6  flex-1 mt-5"
+                                    onSubmit={handleSubmit(onEditGroupSubmit)}
+                                >
+                                    {/* Group Name Field */}
+                                    <div className="flex flex-col gap-2">
+                                        <label htmlFor="" className="text-sm text-gray-200 font-normal">Group Name</label>
+                                        <input
+                                            {...register("name")}
+                                            type="text" className="flex-1 pl-3 p-2 text-white focus:outline-none rounded-tr-[10px] rounded-bl-[10px] font-light bg-slate-800 border text-sm border-slate-700 "
+                                            autoComplete="off"
+                                        />
+                                        {
+                                            errors.name && (<p className="text-red-600 text-sm">{errors.name.message}</p>)
+                                        }
                                     </div>
-                                    )
-                                })
-                            }
 
+                                    {/* Group Description Field */}
+                                    <div className="flex flex-col gap-2">
+                                        <label htmlFor="" className="text-sm text-gray-200 font-normal">Group Description</label>
+                                        <textarea
+                                            {...register("description")}
+                                            type="text" className="flex-1 pl-3 p-2 text-white focus:outline-none rounded-tr-[10px] rounded-bl-[10px] font-light bg-slate-800 border text-sm border-slate-700 "
+                                            autoComplete="off"
+                                        />
+                                        {
+                                            errors.description && (<p className="text-red-600 text-sm">{errors.description.message}</p>)
+                                        }
+                                    </div>
+
+                                    {/* Submit */}
+                                    <button className="p-3 my-3 bg-slate-700 rounded-[5px] hover:bg-slate-600 font-normal mt-8 sm:mt-4">
+                                        Save Changes
+                                    </button>
+                                </form>
                             </div>
-                            
-                        </div>
+                            //  Show Group Details
+                            : members &&
+                            <div className="p-2 flex  gap-6 flex-col">
+                                <div className="flex justify-between items-center border-b border-slate-800 pb-3 ">
+                                    <div className="flex flex-col gap-1 ">
+                                        <h2 className="text-xl font-semibold text-white">{selectedChatData.name}</h2>
+                                        <h3 className="text-sm text-gray-400 font-light">{selectedChatData.description}</h3>
+                                    </div>
 
-                        {/* Action Button */}
-                        <div>
-                            {
-                                admin._id === useAppStore.getState().user._id ?
-                                <div className="flex justify-between">
-                                    <button className="p-2 px-4 bg-slate-700/90 rounded-sm hover:bg-slate-800 transition-all duration-300 text-sm"
-                                    onClick={() => setIsEditing(true)}
-                                    >Edit Group</button>
-                                    <button className="p-2 px-4 bg-red-700 rounded-sm text-sm hover:bg-red-700/80 transition-all duration-300"
-                                    onClick={handleDeleteGroup}
-                                    >Delete Group</button>
-                                </div> : <button className="p-2 px-4 bg-red-700 rounded-sm text-sm hover:bg-red-700/80 transition-all duration-300">Leave Group</button>
-                            }
-                        </div>
-                    </div>
+                                    <button onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleClose()
+                                    }}
+                                        className="p-2">
+                                        <RxCross1 className="text-gray-400 hover:text-white transition-all duration-300 cursor-pointer" />
+                                    </button>
+
+                                </div>
+
+                                <div className="flex flex-col">
+                                    <div className="flex items-center gap-2 mb-6">
+                                        <span className="text-sm text-gray-400">Created by: </span>
+                                        <span className="text-sm text-white pl-2 font-normal">{admin._id === useAppStore.getState().user._id ? "You" : capitalizeUsername(admin.username)}</span>
+                                    </div>
+
+
+                                    <div className="flex justify-between items-center mb-3">
+                                        <span className="text-sm text-gray-400 font-normal ">{members.length} members:</span>
+
+                                        {/* Add user button */}
+                                        {
+                                            selectedChatData.createdBy === useAppStore.getState().user._id &&
+                                            <button className="" title="Add User"
+                                                onClick={() => {
+                                                    setShowAddUser(true)
+                                                    fetchUsers();
+                                                }
+                                                }
+                                            >
+                                                <IoIosAdd size={25} className="text-gray-400 hover:text-white transition-all duration-300 cursor-pointer" />
+                                            </button>
+                                        }
+
+                                    </div>
+
+                                    {/* Members */}
+                                    <div className="bg-slate-800/20 rounded-sm mb-4 overflow-y-auto sm:max-h-[200px] max-h-[65vh] custom-scrollbar max-sm:min-h-[50vh] ">
+                                        {
+                                            members.map((member) => {
+                                                const isCurrentUser = member._id === useAppStore.getState().user._id; // Check if member is current user
+                                                return (
+                                                    <div className={`flex items-center gap-2 border-b-[1px] border-slate-800 hover:bg-slate-800/50 py-3 rounded-md ${isCurrentUser ? 'cursor-not-allowed' : 'cursor-pointer'}`} key={member._id}>
+                                                    
+                                                    {/* Each Member container */}
+                                                    <div className="flex items-center gap-2 w-full pl-3"
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            if (!isCurrentUser) { // Check if member is not current user
+                                                                setSelectedChatType("dm")
+                                                                setSelectedChatData(member)
+                                                                handleClose()
+                                                            }
+                                                        }}
+                                                        aria-disabled={isCurrentUser}
+                                                        title={`${isCurrentUser ? "You" : "Tap to chat"}`}
+                                                    >
+                                                        <img src={member.profilePicture} alt="member.username" className="w-6 h-6 rounded-full" key={member._id} />
+                                                        <span className="text-white font-normal text-sm">{member.username}</span>
+                                                        
+                                                    </div>
+
+                                                    {/* Remove user button */}
+                                                    <div>
+                                                        {
+                                                        selectedChatData.createdBy === useAppStore.getState().user._id && 
+                                                        !isCurrentUser &&
+                                                        <button className="text-xs font-light text-red-300 text-right ml-auto pr-3 hover:underline" 
+                                                        onClick={handleRemoveMember(member._id)}>remove</button>
+                                                        }
+                                                    </div>
+                                                    </div>
+                                                )
+                                            })
+                                        }
+
+                                    </div>
+
+                                </div>
+
+                                {/* Action Button */}
+                                <div>
+                                    {
+                                        admin._id === useAppStore.getState().user._id ?  // If the current user is the admin of the group Show Edit and Delete buttons
+                                            <div className="flex justify-between">
+                                                <button className="p-2 px-4 bg-slate-700/90 rounded-sm hover:bg-slate-800 transition-all duration-300 text-sm"
+                                                    onClick={() => setIsEditing(true)}
+                                                >Edit Group</button>
+                                                <button className="p-2 px-4 bg-red-700 rounded-sm text-sm hover:bg-red-700/80 transition-all duration-300"
+                                                    onClick={handleDeleteGroup}
+                                                >Delete Group</button>
+                                            </div> : // If the current user is not the admin of the group Show Leave button
+                                            <button className="p-2 px-4 bg-red-700 rounded-sm text-sm hover:bg-red-700/80 transition-all duration-300"
+                                                onClick={handleLeaveGroup}
+                                            >Leave Group</button>
+                                    }
+                                </div>
+                            </div>
+                    )
                 }
-               
+
             </div>
         </div>
     )

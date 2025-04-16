@@ -9,6 +9,7 @@ import AsyncSelect from 'react-select/async';
 import * as Yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import customStyles  from '@/utils/customStyles';
 
 
 // Create group schema
@@ -31,7 +32,7 @@ const createGroupSchema = Yup.object().shape({
 const CreateGroupModal = ({ setOpenGroupModal }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [allUsers, setAllUsers] = useState([]);
-    const { user, addGroup, setSelectedChatType, setSelectedChatData } = useAppStore();
+    const { user, addGroup } = useAppStore();
 
 
     const {
@@ -110,7 +111,7 @@ const CreateGroupModal = ({ setOpenGroupModal }) => {
 
                 if (response.data.success) {
                     reset()
-                    toast.success(`Group: ${name} created successfully`)
+                    toast.success(`Group: "${name}" created`)
                     addGroup(response.data.newGroup)
                     setOpenGroupModal(false)
                 } else {
@@ -125,73 +126,12 @@ const CreateGroupModal = ({ setOpenGroupModal }) => {
         }
     };
 
-    const customStyles = {
-        control: (base) => ({
-            ...base,
-            background: '#1e293b', // bg-slate-800
-            borderColor: '#334155', // border-slate-700
-            '&:hover': {
-                borderColor: '#3b82f6' // blue-600
-            }
-        }),
-        menu: (base) => ({
-            ...base,
-            background: '#1e293b', // bg-slate-800
-            border: '1px solid #334155' // border-slate-700
-        }),
-        option: (base, state) => ({
-            ...base,
-            backgroundColor: state.isFocused
-                ? '#475569' // blue-400
-                : state.isSelected
-                    ? '#1d4ed8' // blue-700
-                    : '#1e293b', // bg-slate-800
-            color: '#ffffff',
-            '&:active': {
-                backgroundColor: '#1d4ed8' // blue-700
-            },
-            cursor: 'pointer'
-        }),
-        multiValue: (base) => ({
-            ...base,
-            backgroundColor: '#2563eb', // blue-600
-            borderRadius: '4px'
-        }),
-        multiValueLabel: (base) => ({
-            ...base,
-            color: '#ffffff'
-        }),
-        multiValueRemove: (base) => ({
-            ...base,
-            color: '#ffffff',
-            '&:hover': {
-                backgroundColor: '#1d4ed8', // blue-700
-                color: '#ffffff'
-            }
-        }),
-        input: (base) => ({
-            ...base,
-            color: '#ffffff',
-            paddingTop: '4px',
-            paddingBottom: '4px'
-        }),
-        placeholder: (base) => ({
-            ...base,
-            color: '#94a3b8', // slate-400
-            fontWeight: '400', // light font weight
-            fontSize: '14px'
-        }),
-        singleValue: (base) => ({
-            ...base,
-            color: '#ffffff'
-        })
-    };
 
     return (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex sm:items-center sm:justify-center z-50">
             <div className="bg-slate-900 p-8 sm:rounded-xl w-full max-w-xl border border-slate-800">
                 <div className="flex justify-between items-center mb-6 border-b border-slate-800 pb-3">
-                    <h2 className="text-xl font-bold text-white">Create New Group</h2>
+                    <h2 className="text-lg font-medium text-white">Create New Group</h2>
                     <button
                         onClick={() => setOpenGroupModal(false)}
                         className="text-gray-400 hover:text-white"
@@ -202,14 +142,14 @@ const CreateGroupModal = ({ setOpenGroupModal }) => {
 
                 <form onSubmit={handleSubmit(handleCreateGroup)} className="space-y-6 sm:space-y-4">
                     <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-1">
+                        <label className="block text-sm font-normal text-gray-300 mb-1">
                             Group Name
                         </label>
                         <input
                             type="text"
                             {...register('name')}
                             onChange={(e) => handleInputChange('name', e.target.value)}
-                            className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-md text-white focus:outline-none focus:border-blue-500 placeholder:text-sm font-normal"
+                            className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-md text-white focus:outline-none focus:border-blue-500 placeholder:text-sm font-light placeholder:text-gray-500"
                             placeholder="Enter group name"
                             autoComplete='off'
                         />
@@ -219,13 +159,13 @@ const CreateGroupModal = ({ setOpenGroupModal }) => {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-1">
+                        <label className="block text-sm font-normal text-gray-300 mb-1">
                             Description
                         </label>
                         <textarea
                             {...register('description')}
                             onChange={(e) => handleInputChange('description', e.target.value)}
-                            className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-md text-white focus:outline-none focus:border-blue-500 placeholder:text-sm font-normal"
+                            className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-md text-white focus:outline-none focus:border-blue-500 placeholder:text-sm font-light placeholder:text-gray-500"
                             placeholder="Enter group description"
                             rows="3"
                             autoComplete='off'
@@ -236,7 +176,7 @@ const CreateGroupModal = ({ setOpenGroupModal }) => {
                     </div>
 
                     <div className='pb-6'>
-                        <label className="block text-sm font-medium text-gray-300 mb-1">
+                        <label className="block text-sm font-normal text-gray-300 mb-1">
                             Search and Add Members
                         </label>
                         <AsyncSelect
@@ -262,7 +202,8 @@ const CreateGroupModal = ({ setOpenGroupModal }) => {
                     <button
                         type="submit"
                         disabled={isLoading}
-                        className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed 
+                        font-normal"
                     >
                         {isLoading ? 'Creating...' : 'Create Group'}
                     </button>

@@ -9,8 +9,8 @@ import GroupDetailsModal from "@/components/GroupDetailsModal";
 const ChatHeader = () => {
 
   const { closeChat, selectedChatData, selectedChatType, setSelectedChatData, setSelectedChatType } = useAppStore()
-  const [members, setMembers] = useState([])
-  const [groupDetailsModal, setGroupDetailsModal] = useState(false)
+  const [members, setMembers] = useState([])  // Store group members to display in the group details modal
+  const [groupDetailsModal, setGroupDetailsModal] = useState(false) // State to show group details modal
 
   const getGroupMembers = async (members) => {
     try {
@@ -48,7 +48,7 @@ const ChatHeader = () => {
         alt={selectedChatData.username}
         className="w-8 h-8 rounded-full"
       /> : <img
-        src={`https://ui-avatars.com/api/?name=${selectedChatData.name}&background=random`}
+        src={selectedChatData.image}
         alt={selectedChatData.name}
         className="w-8 h-8 rounded-full"
       />
@@ -78,6 +78,7 @@ const ChatHeader = () => {
         setSelectedChatData={setSelectedChatData} 
         setSelectedChatType={setSelectedChatType} 
         members={members} 
+        setMembers={setMembers}
         setGroupDetailsModal={setGroupDetailsModal}
         groupDetailsModal={groupDetailsModal}
         />
