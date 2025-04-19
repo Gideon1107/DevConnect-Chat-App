@@ -1,6 +1,7 @@
 import { log } from "console";
 import { Server as SocketIOServer} from "socket.io"
 import Message from "./models/Message.js";
+import Group from "./models/Group.js";
 
 const setupSocket = (server) => {
     const io = new SocketIOServer(server, {
@@ -43,6 +44,47 @@ const setupSocket = (server) => {
         }
     }
 
+    const sendGroupMessage = async (message) => {
+        const { groupId, sender, content, messageType, mediaUrl} = message;
+
+        const createdMessage = await Message.create({
+            sender,
+            recipient: null,
+            content,
+            messageType,
+            timestamp: new Date(),
+            mediaUrl
+        })
+
+        const messageData = await Message.findById(createdMessage._id)
+        .populate("sender", "id email username profilePicture")
+        .exec();
+
+        await Group.findByIdAndUpdate(groupId, {
+            $push: { messages: createdMessage._id } 
+        })
+
+        const group = await Group.findById(groupId)
+        .populate("members")
+
+        const finalData = { ...messageData._doc, groupId: group._id}
+
+        if (group && group.members) {
+            group.members.forEach(member => {
+                const memberSocketId = userSocketMap.get(member._id.toString())
+                if (memberSocketId) {
+                    io.to(memberSocketId).emit("receiveChannelMessage", finalData )
+                }
+
+                // const adminSocketId = userSocketMap.get(group.createdBy.toString())
+                // if (adminSocketId) {
+                //     io.to(adminSocketId).emit("receiveChannelMessage", finalData )
+                // }
+            })
+        }
+    }
+
+
     io.on("connection", (socket) => {
         const userId = socket.handshake.query.userId;
         
@@ -56,6 +98,7 @@ const setupSocket = (server) => {
         }
 
         socket.on("sendMessage", sendMessage )
+        socket.on("send-group-message", sendGroupMessage)
         socket.on("disconnect", () => disconnect(socket))
 
     });

@@ -15,7 +15,8 @@ export const getMessages = async (req, res) => {
       $or: [
         {sender: user1, recipient: user2},
         {sender: user2, recipient: user1},
-      ]
+      ],
+      // deletedFor: { $ne: user1 }  // Don't include messages marked as deleted for this user
     }).sort({timestamp: 1});
 
     return res.status(200).json({messages});

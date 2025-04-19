@@ -22,11 +22,13 @@ export const SEND_FILE_ROUTE = `${MESSAGES_ROUTES}/upload-file`
 export const CHAT_LIST_ROUTE = "api/chat"
 export const GET_CHAT_LIST_FOR_DM_ROUTE = `${CHAT_LIST_ROUTE}/chat-list-for-dm`
 export const GET_ALL_USERS_ROUTE = `${CHAT_LIST_ROUTE}/all-users`
+export const DELETE_CHAT_ROUTE = `${CHAT_LIST_ROUTE}/delete-chat`
 
 export const GROUP_ROUTES = "api/group"
 export const CREATE_GROUP_ROUTE = `${GROUP_ROUTES}/create-group`
 export const GET_USER_GROUPS_ROUTE = `${GROUP_ROUTES}/get-user-groups`
 export const GET_GROUP_MEMBERS_ROUTE = `${GROUP_ROUTES}/get-group-members`
+export const GET_GROUP_MESSAGES_ROUTE = `${GROUP_ROUTES}/get-group-messages`
 export const GET_GROUP_ADMIN_ROUTE = `${GROUP_ROUTES}/get-group-admin`
 export const EDIT_GROUP_ROUTE = `${GROUP_ROUTES}/edit-group`
 export const DELETE_GROUP_ROUTE = `${GROUP_ROUTES}/delete-group`

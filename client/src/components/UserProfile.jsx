@@ -23,7 +23,7 @@ const UserProfile = () => {
       });
 
       if (response.data.success) {
-        toast.success(response.data.message, { theme: "light" });
+        toast.success(response.data.message, { theme: "light" , duration: 2000});
         setTimeout(() => {
           setUser(undefined)
           window.location.href = '/'; // Redirect to login page
@@ -42,7 +42,7 @@ const UserProfile = () => {
 
   return (
 
-    <div className="p-4 flex items-center gap-6 justify-between">
+    <div className="p-4 flex items-center gap-6 justify-between border-t-[1px] border-slate-700">
       <div className="flex items-center gap-3">
         <img
           src={user.profilePicture ? user.profilePicture : "https://ui-avatars.com/api/?name=User&background=random"}

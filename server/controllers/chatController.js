@@ -49,7 +49,8 @@ export const getChatListForDm = async (req, res) => {
     const chatList = await Message.aggregate([
         {
             $match: {
-                $or: [{ sender: userId }, { recipient: userId}]
+                $or: [{ sender: userId }, { recipient: userId}],
+                deletedFor: { $ne: userId }  // Don't include messages marked as deleted for this user
             },
         },
         {
@@ -102,3 +103,30 @@ export const getChatListForDm = async (req, res) => {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
+
+export const deleteChat = async (req, res) => {
+
+    try {
+        const userId = req.user.id
+        const {chatId} = req.body   // chatId is the other user's ID
+    
+    
+        // Update all messages between these users to mark as deleted for the requesting user
+        await Message.updateMany(
+            {
+                $or: [
+                    { sender: userId, recipient: chatId },
+                    { sender: chatId, recipient: userId }
+                ]
+            },
+            {
+                $addToSet: { deletedFor: userId }  // Add userId to deletedFor array
+            }
+        );
+    
+        res.status(200).json({ success: true, message: 'Chat deleted successfully' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: 'Error deleting chat' });
+    }
+}

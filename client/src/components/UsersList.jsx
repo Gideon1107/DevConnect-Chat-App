@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { useAppStore } from "@/store/store";
 import { capitalizeUsername } from "@/utils/capitalize";
+import { CiSearch } from "react-icons/ci";
 
 
 
@@ -85,7 +86,7 @@ const UsersList = () => {
                   className="w-8 h-8 rounded-full"
                 />
                 <span className={`absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full ${
-                  user.status === 'online' ? 'bg-green-500' : 'bg-gray-400'
+                  user.status === 'online' ? 'bg-green-400' : 'bg-gray-400'
                 }`}></span>
               </div>
               <div className="flex-1 min-w-0">
@@ -94,7 +95,12 @@ const UsersList = () => {
               </div>
             </div>
           ))
-        ) : <p className="text-center py-5 font-light">No users found</p>
+        ) : 
+        <div className="flex flex-col items-center mt-20">
+          <CiSearch size={50} className="text-gray-400"/>
+          <p className="text-center py-5 font-light">No users found</p>
+        </div>
+        
       }
     </div>
   );

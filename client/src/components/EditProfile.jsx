@@ -11,7 +11,8 @@ import axios from "axios";
 import {
     HOST,
     ADD_PROFILE_PICTURE_ROUTE,
-    UPDATE_PROFILE_ROUTE
+    UPDATE_PROFILE_ROUTE,
+    DELETE_PROFILE_PICTURE_ROUTE
 } from "@/utils/constants";
 import { toast } from "sonner";
 import ConfirmDelete from "./ConfirmDelete";
@@ -109,6 +110,26 @@ const EditProfile = ({ isOpen, handleIsOpen }) => {
         setIsModalOpen(true);
     };
 
+    // This function delete user picture
+    const handleDeleteProfilePicture = async () => {
+    setIsModalOpen(false) //Close the modal
+    try {
+        const response = await axios.delete(`${HOST}/${DELETE_PROFILE_PICTURE_ROUTE}`, {
+            withCredentials: true, // Important: Sends cookies with the request
+            })
+            
+        if (response.data.success) {
+            setSelectedImage(null)
+            setUser(response.data.user)  //Set user to the new user received so state update properly
+            toast.success("Profile picture deleted")
+        } else {
+            toast.error("Error deleting profile picture, try again!")
+        }
+    } catch (error) {
+        console.log(error);
+        
+    }
+    }
 
 
     if (!isOpen) {
@@ -190,8 +211,11 @@ const EditProfile = ({ isOpen, handleIsOpen }) => {
 
              <ConfirmDelete
                     isModalOpen={isModalOpen}
-                    setIsModalOpen={setIsModalOpen}
-                    setSelectedImage={setSelectedImage}
+                    title="Delete profile picture?"
+                    body="Deleting this picture will permanently remove it from your profile."
+                    buttonText="Yes, delete"
+                    onConfirm={handleDeleteProfilePicture}
+                    onCancel={() => setIsModalOpen(false)}
                 />
         </div>
     );

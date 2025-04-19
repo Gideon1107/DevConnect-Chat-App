@@ -83,6 +83,31 @@ export const getGroupMembers = async (req, res) => {
 }
 
 
+// Get Group messages
+export const getGroupMessages = async (req, res) => {
+  try {
+    const {groupId} = req.params;
+    const group = await Group.findById(groupId).populate({
+      path: "messages",
+      populate: {
+        path: "sender",
+        select: "email username _id profilePicture"
+      }
+    })
+
+    if (!group) {
+      return res.status(404).json({success: false, message: "Group not found"})
+    }
+
+    const messages = group.messages;
+    return res.status(200).json({success: true, messages});
+  } catch (error) {
+    console.log(error)
+    return res.status(500).json({success: true, message: "Internal Server error"})
+  }
+}
+
+
 // Get Group Admin
 export const getGroupAdmin = async (req, res) => {
   try {
@@ -124,12 +149,15 @@ export const editGroup = async (req, res) => {
       }
     }
 
+    const sanitizedUsername = name.replace(/\s+/g, '-').toLowerCase(); // Replace spaces with hyphens and convert to lowercase
+
     // Update group
     const updatedGroup = await Group.findByIdAndUpdate(
       groupId,
       { 
         name, 
         description,
+        image: `https://ui-avatars.com/api/?name=${sanitizedUsername}&background=random`,  // Update the group Image
         updatedAt: Date.now()
       },
       { new: true } // Return updated document
@@ -157,7 +185,6 @@ export const deleteGroup = async (req, res) => {
 
   if (!userId) return res.status(400).json({ message: 'User ID is required' });
   
-
   try {
     const group = await Group.findById(groupId);
     if (!group) return res.status(404).json({ message: 'Group not found' });
@@ -244,25 +271,42 @@ export const addGroupMember = async (req, res) => {
 };
 
 // Remove User from Group
-export const removeUSerFromGroup = async (req, res) => {
+export const removeUserFromGroup = async (req, res) => {
   const userId = req.user.id    // Getting userid from middleware
   const {memberId, groupId} = req.body 
   
   if (!userId) {
-    res.status(400).json({success: false, message: "User not authorized"})
+    return res.status(400).json({success: false, message: "User not authorized"})
   }
 
   if (!memberId || !groupId) {
-    res.status(400).json({success: false, message: "Member ID and Group ID are required"})
+    return res.status(400).json({success: false, message: "Member ID and Group ID are required"})
   }
   try {
     const group = await Group.findById(groupId)
-    console.log(group) 
 
-    // To me implemented
-    
+    // Check if group exist
+    if (!group) {
+      return res.status(404).json({success: false, message: "Group not found"})
+    }
+
+    //check if current user is the group admin
+    if ( group.createdBy.toString() !== userId) {
+      return res.status(400).json({success: false, message: "Only group admin can remove a user"})
+    }
+
+    // check if admin is the member to be removed
+    if (group.createdBy.toString() === memberId) {
+      return res.status(400).json({success: false, message: "Group admin cannot be removed"})
+    }
+
+    group.members = group.members.filter((member) => member.toString() !== memberId) // Filter out the memberId that is to be removed 
+    await group.save()
+
+    res.status(200).json({success: true, message: "User removed successfully"})
+
   } catch (error) {
     console.log(error)
-    res.status(500).json({success: true, message: "Internal Server error", error: error.message})
+    res.status(500).json({success: false, message: "Internal Server error", error: error.message})
   }
 }

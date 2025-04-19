@@ -109,7 +109,7 @@ const App = () => {
       <ScrollToTop />
       <div className="bg-slate-900 min-h-screen z-10">
         <BackToTop />
-        <Toaster position='top-center' />
+        <Toaster position='top-center' duration={3000}/>
         {!user && <Navbar onSignInClick={handleOpenSignIn} />}
 
         <Routes>

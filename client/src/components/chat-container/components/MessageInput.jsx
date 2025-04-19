@@ -58,6 +58,14 @@ const MessageInput = () => {
         messageType: "text",
         mediaUrl: undefined,
       })
+    } else if (selectedChatType === "group") {
+      socket.emit("send-group-message", {
+        sender: user._id,
+        content: message,
+        messageType: "text",
+        mediaUrl: undefined,
+        groupId: selectedChatData._id
+      })
     }
     setMessage(""); //Clear the message input box
   }
@@ -103,6 +111,14 @@ const MessageInput = () => {
               recipient: selectedChatData._id,
               messageType: "file",
               mediaUrl: response.data.fileUrl,
+            })
+          } else if (selectedChatType === "group") {
+            socket.emit("send-group-message", {
+              sender: user._id,
+              content: undefined,
+              messageType: "file",
+              mediaUrl: response.data.fileUrl,
+              groupId: selectedChatData._id
             })
           }
         } else {

@@ -27,15 +27,15 @@ export const SocketProvider = ({ children }) => {
             });
 
             const handleReceiveMessage = (message) => {
-                const { selectedChatData, selectedChatType, addMessage, directMessagesList } = useAppStore.getState()
+                const { selectedChatData, selectedChatType, addMessage, directMessagesList, addChatInDirectMessagesList } = useAppStore.getState()
                 if (selectedChatType !== undefined && (selectedChatData._id === message.sender._id || selectedChatData._id === message.recipient._id)) {
                     addMessage(message)
-
                 }
 
+                addChatInDirectMessagesList(message)
 
-                // Update the directMessagesList 
                 
+                // Update the directMessagesList for real time last message display
                 const updatedList = [...directMessagesList];
                 const index = updatedList.findIndex(
                     (chat) => chat._id === message.sender._id || chat._id === message.recipient._id
@@ -61,11 +61,20 @@ export const SocketProvider = ({ children }) => {
                 }
                 
                 setDirectMessagesList(updatedList)
-            
+            };
+
+            const handleReceiveGroupMessage = (message) => {
+                const { selectedChatData, selectedChatType, addMessage, addGroupInGroupList } = useAppStore.getState()
+                if (selectedChatType !== undefined && selectedChatData._id === message.groupId) {
+                    addMessage(message)
+                }
+
+                addGroupInGroupList(message)
+
             };
 
             socket.current.on("receiveMessage", handleReceiveMessage)
-
+            socket.current.on("receiveChannelMessage", handleReceiveGroupMessage)
             return () => {
                 socket.current.disconnect();
             }

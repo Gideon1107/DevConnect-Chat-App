@@ -10,6 +10,7 @@ const messageSchema = new mongoose.Schema({
     mediaUrl: { type: String, required : function () {
         return this.messageType === "file";
     } },
+    deletedFor: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Users', required: false }],
     createdAt: { type: Date, default: Date.now }
 }, { timestamps: true });
 

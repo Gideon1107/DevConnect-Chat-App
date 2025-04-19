@@ -44,4 +44,32 @@ export const createChatSlice = (set, get) => ({
             ]
         })
     },
+    addGroupInGroupList: (message) => {
+        const groups = get().groups;
+        const data = groups.find((group) => group._id === message.groupId)
+        const index = groups.findIndex(
+            (group) => group._id === message.groupId
+        )
+        if (index !== -1 && index !== undefined) {
+            groups.splice(index, 1)
+            groups.unshift(data)
+        }
+    },
+
+    addChatInDirectMessagesList: (message) => {
+        const userId = get().user._id
+        const fromId = message.sender._id === userId ? message.recipient._id : message.sender._id
+        const fromData = message.sender._id === userId ? message.recipient : message.sender
+        const DMList = get().directMessagesList;
+        const data = DMList.find((chat) => chat._id === fromId)
+        const index = DMList.findIndex(
+            (chat) => chat._id === fromId
+        )
+        if (index !== -1 && index !== undefined) {
+            DMList.splice(index, 1)
+            DMList.unshift(data)
+        } else {
+            DMList.unshift(fromData)
+        }
+    },
 });
