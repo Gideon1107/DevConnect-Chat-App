@@ -75,17 +75,17 @@ export const registerUser = async (req, res) => {
         // Store the refresh token in an httpOnly cookie
         res.cookie('refreshToken', refreshToken, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production', // Ensure it's only sent over HTTPS in production
-            sameSite: 'Strict', // Helps prevent CSRF attacks
+            secure: true, 
+            sameSite: 'None', 
             maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days expiration
         });
 
 
         // Store the auth token in an httpOnly cookie
         res.cookie('authToken', authToken, {
-            httpOnly: true,  // Prevents access to cookie via JavaScript (XSS protection)
-            secure: process.env.NODE_ENV === 'production',  // Only sent over HTTPS in production
-            sameSite: 'Strict',  // Helps prevent CSRF attacks
+            httpOnly: true,  
+            secure: true,  
+            sameSite: 'None',  
             maxAge: 2 * 60 * 60 * 1000,  // 2 hour expiration
         });
 
@@ -127,17 +127,17 @@ export const loginUser = async (req, res) => {
             // Store the refresh token in an httpOnly cookie
             res.cookie('refreshToken', refreshToken, {
                 httpOnly: true,
-                secure: process.env.NODE_ENV === 'production', // Ensure it's only sent over HTTPS in production
-                sameSite: 'Strict', // Helps prevent CSRF attacks
+                secure: true, 
+                sameSite: 'None', 
                 maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days expiration
             });
 
 
             // Store the auth token in an httpOnly cookie
             res.cookie('authToken', authToken, {
-                httpOnly: true,  // Prevents access to cookie via JavaScript (XSS protection)
-                secure: process.env.NODE_ENV === 'production',  // Only sent over HTTPS in production
-                sameSite: 'Strict',  // Helps prevent CSRF attacks
+                httpOnly: true, 
+                secure: true,  
+                sameSite: 'None', 
                 maxAge: 2 * 60 * 60 * 1000,  // 2 hour expiration
             });
 
@@ -162,8 +162,8 @@ export const googleLogin = async (req, res) => {
         // Store the refresh token in an httpOnly cookie
         res.cookie('refreshToken', refreshToken, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production', // Ensure it's only sent over HTTPS in production
-            sameSite: 'Strict', // Helps prevent CSRF attacks
+            secure: true, 
+            sameSite: 'None', 
             maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days expiration
         });
 
@@ -171,8 +171,8 @@ export const googleLogin = async (req, res) => {
         // Store the auth token in an httpOnly cookie
         res.cookie('authToken', authToken, {
             httpOnly: true,  // Prevents access to cookie via JavaScript (XSS protection)
-            secure: process.env.NODE_ENV === 'production',  // Only sent over HTTPS in production
-            sameSite: 'Strict',  // Helps prevent CSRF attacks
+            secure: true,  
+            sameSite: 'None',  
             maxAge: 2 * 60 * 60 * 1000,  // 2 hour expiration
         });
 
@@ -199,14 +199,14 @@ export const logoutUser = async (req, res) => {
     // Clear the tokens from the cookie
     res.clearCookie('authToken', {
         httpOnly: true, // Ensures the cookie cannot be accessed via JavaScript
-        secure: process.env.NODE_ENV === 'production', // Set to true only in production
-        sameSite: 'Strict', // Helps prevent CSRF attacks
+        secure: true, // Set to true only in production
+        sameSite: 'None', // Helps prevent CSRF attacks
     });
 
     res.clearCookie('refreshToken', {
         httpOnly: true, // Ensures the cookie cannot be accessed via JavaScript
-        secure: process.env.NODE_ENV === 'production', 
-        sameSite: 'Strict',
+        secure: true, 
+        sameSite: 'None',
     });
 
     // Send a response indicating successful logout

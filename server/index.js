@@ -30,6 +30,7 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   credentials: true,
   exposedHeaders: ['Content-Disposition', 'Content-Type'],
+  allowedHeaders: ['Content-Disposition', 'Content-Type'],
 }));
 
 app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
@@ -38,6 +39,7 @@ app.use(session({ secret: process.env.SESSION_SECRET, resave: false, saveUniniti
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(cookieParser());
+app.set('trust proxy', 1)
 
 // Routes
 app.use('/api/auth', authRoutes);
