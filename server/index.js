@@ -41,6 +41,7 @@ app.use(passport.session());
 app.use(cookieParser());
 app.set('trust proxy', 1)
 
+
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes)
