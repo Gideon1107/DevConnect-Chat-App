@@ -29,9 +29,15 @@ app.use(cors({
   origin: process.env.ORIGIN ,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   credentials: true,
-  exposedHeaders: ['Content-Disposition', 'Content-Type'],
   allowedHeaders: ['Content-Disposition', 'Content-Type'],
 }));
+
+// Add these headers to all responses
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.header('Access-Control-Allow-Origin', process.env.CLIENT_URL);
+  next();
+});
 
 app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
 app.use(express.json()); // Parse JSON bodies
