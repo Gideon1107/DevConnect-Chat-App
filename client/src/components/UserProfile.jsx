@@ -43,7 +43,9 @@ const UserProfile = () => {
   return (
 
     <div className="p-4 flex items-center gap-6 justify-between border-t-[1px] border-slate-800">
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 cursor-pointer"
+      onClick={() => setIsEditProfile(true)}
+      >
         <div className="w-10 h-10 rounded-full overflow-hidden">
         <img
           src={user.profilePicture ? user.profilePicture : "https://ui-avatars.com/api/?name=User&background=random"}
@@ -59,7 +61,7 @@ const UserProfile = () => {
         </span>
       </div>
 
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-5 sm:gap-3">
       <button onClick={() => setIsEditProfile(true)} title="Edit Profile">
         <CiSettings size={24} className=" text-white rounded-xl cursor-pointer hover:text-gray-200" />
       </button>
