@@ -25,7 +25,7 @@ export const getAllUsers = async (req, res) => {
         const allUsers = await User.find({
             $and: [{ _id: { $ne: req.user.id}}],
         })
-        res.status(200).json(allUsers);
+        res.status(200).json({success:true, allUsers });
 
     } catch (error) {
         res.status(500).json({ message: 'Server error', error: error.message });

@@ -42,7 +42,7 @@ const App = () => {
     setIsSignInOpen(true)
   }
 
-  const { user, setUser, users, setUsers } = useAppStore();
+  const { user, setUser, setUsers } = useAppStore();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -85,7 +85,7 @@ const App = () => {
 
       } catch (error) {
         console.error('Error fetching all users:', error.response?.data?.message || error.message);
-        setUser(undefined)
+        setUsers(undefined)
       }
       
   }
@@ -111,7 +111,7 @@ const App = () => {
   return (
     <Router>
       <ScrollToTop />
-      <div className="bg-slate-900 h-[100dvh] z-10">
+      <div className="bg-slate-900 h-[100dvh] z-10 scrollbar-hidden">
         {showBackToTop && <BackToTop />}
         <Toaster position='top-center' duration={3000}/>
         {!user && <Navbar onSignInClick={handleOpenSignIn} />}

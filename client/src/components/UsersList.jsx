@@ -1,14 +1,16 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useAppStore } from "@/store/store";
 import { capitalizeUsername } from "@/utils/capitalize";
 import { CiSearch } from "react-icons/ci";
+import { CHECK_AUTH_ROUTE, GETALLUSERS_ROUTE, HOST } from "@/utils/constants";
+import axios from "axios";
 
 
 
 const UsersList = () => {
 
 
-  const { users, setSelectedChatType, setSelectedChatData } = useAppStore()
+  const { users, setSelectedChatType, setSelectedChatData, setUsers } = useAppStore()
   const [searchTerm, setSearchTerm] = useState("");
 
   const [sortBy, setSortBy] = useState("all")
@@ -42,11 +44,32 @@ const UsersList = () => {
       setSelectedChatType("dm");
       setSelectedChatData(userData);
     }
+
+
+     const fetchAllUsers = async () => {
+          try {
+              const response = await axios.get(`${HOST}/${GETALLUSERS_ROUTE}`, {
+                withCredentials: true
+              })
+              if (response.data.success) {
+                setUsers(response.data.allUsers)
+              }
+    
+          } catch (error) {
+            console.error('Error fetching all users:', error.response?.data?.message || error.message);
+            setUsers(undefined)
+          }
+          
+      }
+
+      useEffect(() => {
+        fetchAllUsers()
+      },[])
   
 
 
   return (
-    <div className="flex-1 overflow-y-auto ">
+    <div className="flex-1 overflow-y-auto scrollbar-hidden">
   
       <div className="flex flex-1 relative px-4 items-center  overflow-hidden mb-4">
         <input type="text" className="w-full p-2  text-gray-900 outline-none focus:outline-none caret-black placeholder:italic rounded-tr-lg rounded-bl-lg pr-12 pl-2" 
