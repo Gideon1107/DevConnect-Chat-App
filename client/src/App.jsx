@@ -23,6 +23,7 @@ import { useEffect } from 'react';
 import axios from 'axios';
 import { HOST, GETUSER_ROUTE, CHECK_AUTH_ROUTE, GETALLUSERS_ROUTE } from './utils/constants';
 import ChangePassword from './components/ChangePassword';
+import { useLocation } from 'react-router-dom';
 
 
 
@@ -103,12 +104,15 @@ const App = () => {
     return <div className='bg-slate-900'>Loading...</div>
   }
 
+  // Don't show BackToTop on chat page
+  const showBackToTop = location.pathname !== '/chat';
+
 
   return (
     <Router>
       <ScrollToTop />
-      <div className="bg-slate-900 min-h-screen z-10">
-        <BackToTop />
+      <div className="bg-slate-900 h-[100dvh] z-10">
+        {showBackToTop && <BackToTop />}
         <Toaster position='top-center' duration={3000}/>
         {!user && <Navbar onSignInClick={handleOpenSignIn} />}
 
