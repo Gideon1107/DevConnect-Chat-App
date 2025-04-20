@@ -10,12 +10,6 @@ const setupSocket = (server) => {
         methods: ["GET", "POST"],
         credentials: true,
       },
-      transports: ['websocket'], // Prefer WebSocket only
-        allowEIO3: true,
-        pingTimeout: 60000,
-        pingInterval: 25000,
-        secure: true,
-        rejectUnauthorized: false // Important for Vercel deployment
     });
 
     const userSocketMap = new Map()

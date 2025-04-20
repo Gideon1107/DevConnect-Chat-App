@@ -19,11 +19,7 @@ export const SocketProvider = ({ children }) => {
         if (user) {
             socket.current = io(HOST, {
                 withCredentials: true,
-                transports: ['websocket', 'polling'],
-                query: { userId: user._id },
-                reconnection: true,
-                reconnectionAttempts: 5,
-                reconnectionDelay: 1000,
+                query: { userId: user._id }
             });
 
             socket.current.on("connect", () => {
