@@ -9,12 +9,7 @@ const setupSocket = (server) => {
         origin: process.env.ORIGIN,
         methods: ["GET", "POST"],
         credentials: true,
-        allowedHeaders: ['Content-Type', 'Authorization'],
-        transports: ['websocket', 'polling'],
       },
-      allowEIO3: true,
-        pingTimeout: 60000,
-        pingInterval: 25000,
     });
 
     const userSocketMap = new Map()
