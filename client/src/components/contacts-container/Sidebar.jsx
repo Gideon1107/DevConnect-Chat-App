@@ -27,7 +27,7 @@ const Sidebar = () => {
         </button>
       </div>
 
-      <div className="flex px-4 gap-2 mb-4 text-sm md:text-base border-b border-slate-700">
+      <div className="flex px-4 gap-2 mb-4 text-sm md:text-base border-b border-slate-800">
         <button 
           onClick={() => setActiveTab('messages')}
           className={`flex-1 py-2 truncate font-light text-opacity-90  ${

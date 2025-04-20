@@ -100,8 +100,8 @@ const ChatList = () => {
               }`}></span>
             </div>
             <div className="flex-1 min-w-0 ">
-              <div className="font-normal text-white truncate ">{chat.username}</div>
-              <div className={`text-sm text-gray-400 truncate ${chat.messageType === "file" && "italic" }`}>{ chat.messageType === "text" ? chat.lastMessage : "file"}</div>
+              <div className="font-medium text-white truncate font-base">{chat.username}</div>
+              <div className={`text-sm text-gray-400 truncate ${chat.messageType === "file" && "italic" } font-light`}>{ chat.messageType === "text" ? chat.lastMessage : "file"}</div>
             </div>
           </div>
 
@@ -116,19 +116,19 @@ const ChatList = () => {
             }
             }
             >
-              <PiTrashLight size={14} className="text-gray-400 hover:text-white"/>
+              <PiTrashLight size={14} className="text-gray-500 hover:text-white"/>
             </button>
           }
 
           {/* Mobile delete */}
-          <button className="pr-2 items-center sm:hidden flex"
+          <button className="pr-4 items-center sm:hidden flex"
             onClick={() => {
               setShowDeleteChatModal(true)
               setCurrentChat(chat)
             }
             }
             >
-              <PiTrashLight size={12} className="text-gray-400 hover:text-white"/>
+              <PiTrashLight size={12} className="text-gray-500 hover:text-white"/>
             </button>
           </div>
         )) :

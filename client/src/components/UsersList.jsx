@@ -101,7 +101,7 @@ const UsersList = () => {
             <div
               key={user._id}
               onClick={() => selectNewUser(user)}
-              className="flex items-center gap-3 p-3 cursor-pointer sm:hover:bg-slate-800 "
+              className="flex items-center gap-3 p-3 cursor-pointer sm:hover:bg-slate-800 max-sm:active:bg-slate-800"
             >
               <div className="relative">
                 <div className="w-8 h-8 overflow-hidden rounded-full">
@@ -115,7 +115,7 @@ const UsersList = () => {
                   }`}></span>
               </div>
               <div className="flex-1 min-w-0">
-                <div className="font-normal text-white truncate font-base">{capitalizeUsername(user.username)}</div>
+                <div className="font-medium text-white truncate font-base">{capitalizeUsername(user.username)}</div>
                 <div className="text-xs text-gray-400 font-light">{user.status}</div>
               </div>
             </div>
