@@ -112,23 +112,23 @@ const EditProfile = ({ isOpen, handleIsOpen }) => {
 
     // This function delete user picture
     const handleDeleteProfilePicture = async () => {
-    setIsModalOpen(false) //Close the modal
-    try {
-        const response = await axios.delete(`${HOST}/${DELETE_PROFILE_PICTURE_ROUTE}`, {
-            withCredentials: true, // Important: Sends cookies with the request
+        setIsModalOpen(false) //Close the modal
+        try {
+            const response = await axios.delete(`${HOST}/${DELETE_PROFILE_PICTURE_ROUTE}`, {
+                withCredentials: true, // Important: Sends cookies with the request
             })
-            
-        if (response.data.success) {
-            setSelectedImage(null)
-            setUser(response.data.user)  //Set user to the new user received so state update properly
-            toast.success("Profile picture deleted")
-        } else {
-            toast.error("Error deleting profile picture, try again!")
+
+            if (response.data.success) {
+                setSelectedImage(null)
+                setUser(response.data.user)  //Set user to the new user received so state update properly
+                toast.success("Profile picture deleted")
+            } else {
+                toast.error("Error deleting profile picture, try again!")
+            }
+        } catch (error) {
+            console.log(error);
+
         }
-    } catch (error) {
-        console.log(error);
-        
-    }
     }
 
 
@@ -152,7 +152,13 @@ const EditProfile = ({ isOpen, handleIsOpen }) => {
 
                 <div className="flex flex-col sm:flex-row justify-around gap-5 ">
                     <div className="flex flex-col gap-3 items-center justify-center">
-                        <img src={selectedImage || user.profilePicture} alt="avatar" className="w-[130px] sm:w-[150px] rounded-full" />
+                        <div className="w-[130px] h-[130px] sm:w-[150px] sm:h-[150px] overflow-hidden rounded-full">
+                            <img
+                                src={selectedImage || user.profilePicture}
+                                alt="avatar"
+                                className="w-full h-full object-cover"
+                            />
+                        </div>
                         <div className="space-x-4 flex items-center">
                             <button className="p-3 " title="Change avatar" onClick={handleEditClick}>
                                 <GrEdit size={20} className="text-slate-200" />
@@ -209,14 +215,14 @@ const EditProfile = ({ isOpen, handleIsOpen }) => {
 
             </div>
 
-             <ConfirmDelete
-                    isModalOpen={isModalOpen}
-                    title="Delete profile picture?"
-                    body="Deleting this picture will permanently remove it from your profile."
-                    buttonText="Yes, delete"
-                    onConfirm={handleDeleteProfilePicture}
-                    onCancel={() => setIsModalOpen(false)}
-                />
+            <ConfirmDelete
+                isModalOpen={isModalOpen}
+                title="Delete profile picture?"
+                body="Deleting this picture will permanently remove it from your profile."
+                buttonText="Yes, delete"
+                onConfirm={handleDeleteProfilePicture}
+                onCancel={() => setIsModalOpen(false)}
+            />
         </div>
     );
 }
