@@ -42,13 +42,16 @@ const UserProfile = () => {
 
   return (
 
-    <div className="p-4 flex items-center gap-6 justify-between border-t-[1px] border-slate-700">
+    <div className="p-4 flex items-center gap-6 justify-between border-t-[1px] border-slate-800">
       <div className="flex items-center gap-3">
+        <div className="w-10 h-10 rounded-full overflow-hidden">
         <img
           src={user.profilePicture ? user.profilePicture : "https://ui-avatars.com/api/?name=User&background=random"}
           alt="avatar"
-          className="w-10 h-10 rounded-full"
+          className="w-full h-full object-cover"
         />
+        </div>
+        
         <span className="font-semibold truncate text-white">
           {
             user.username ? capitalizeUsername(user.username) : ""
