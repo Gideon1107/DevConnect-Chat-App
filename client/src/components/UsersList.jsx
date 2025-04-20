@@ -77,7 +77,7 @@ const UsersList = () => {
             <div
               key={user._id}
               onClick={() => selectNewUser(user)}
-              className="flex items-center gap-3 p-3 cursor-pointer hover:bg-slate-700"
+              className="flex items-center gap-3 p-3 cursor-pointer sm:hover:bg-slate-800 active:bg-slate-800"
             >
               <div className="relative">
                 <img

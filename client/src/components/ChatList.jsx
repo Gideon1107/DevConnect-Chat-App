@@ -77,13 +77,13 @@ const ChatList = () => {
       {
         directMessagesList.length > 0 ?
         directMessagesList.map((chat) => (
-          <div key={chat._id} className={`flex ${selectedChatData?.id === chat._id ? '' : 'hover:bg-slate-700'}`}
+          <div key={chat._id} className={`flex ${selectedChatData?.id === chat._id ? '' : 'sm:hover:bg-slate-800'}`}
             onMouseEnter={() => setHoveredUser(chat._id)}
             onMouseLeave={() => setHoveredUser(null)}
           >
           <div
             onClick={() => handleClick(chat)}
-            className={`flex items-center gap-3 p-3 cursor-pointer w-full
+            className={`flex items-center gap-3 p-3 cursor-pointer w-full active:bg-slate-800
               `}
             
           >

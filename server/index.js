@@ -26,18 +26,7 @@ const server = http.createServer(app);
 
 // Middleware
 app.use(cors({
-  origin: function(origin, callback) {
-    // Allow requests with no origin (like mobile apps or curl requests)
-    if(!origin) return callback(null, true);
-
-    // Check if the origin is in the allowed list
-    const allowedOrigins = process.env.ORIGIN.split(',');
-    if(allowedOrigins.indexOf(origin) !== -1) {
-      return callback(null, true);
-    } else {
-      return callback(null, false);
-    }
-  },
+  origin: process.env.ORIGIN,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   credentials: true,
   allowedHeaders: ['Content-Disposition', 'Content-Type', 'Authorization'],
@@ -62,7 +51,7 @@ app.use('/api/chat', chatRoutes)
 app.use('/api/group', groupRoutes)
 
 
-app.get("/", (_, res) => {
+app.get("/", (req, res) => {
   res.send("API Working")
 })
 

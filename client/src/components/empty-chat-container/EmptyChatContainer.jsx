@@ -9,7 +9,7 @@ const animationData = {
 
 const EmptyChatContainer = () => {
   return (
-    <div className="flex-1 md:flex md:flex-col gap-4 bg-slate-800 justify-center items-center duration-1000 transition-all hidden">
+    <div className="flex-1 md:flex md:flex-col gap-4 bg-slate-900/50 justify-center items-center duration-1000 transition-all hidden">
         <Lottie
         isClickToPauseDisabled={true}
         height={150}

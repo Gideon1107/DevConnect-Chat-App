@@ -13,7 +13,7 @@ const Sidebar = () => {
   const [openGroupModal, setOpenGroupModal] = useState(false);
 
   return (
-    <div className="h-full  border-r border-slate-700 flex flex-col md:w-[35vw] lg:w-[30vw] xl:w-[21vw] bg-slate-800 w-full"> 
+    <div className="h-full  border-r border-slate-800 flex flex-col md:w-[35vw] lg:w-[30vw] xl:w-[21vw] bg-slate-900 w-full"> 
        <div className="pl-4 pt-6 cursor-pointer ">
       <img src={logo} alt="logo" className="w-[150px] mb-6"/>
       </div>
@@ -27,7 +27,7 @@ const Sidebar = () => {
         </button>
       </div>
 
-      <div className="flex px-4 gap-2 mb-4 text-sm md:text-base ">
+      <div className="flex px-4 gap-2 mb-4 text-sm md:text-base border-b border-slate-700">
         <button 
           onClick={() => setActiveTab('messages')}
           className={`flex-1 py-2 truncate font-light text-opacity-90  ${
