@@ -139,7 +139,7 @@ const EditProfile = ({ isOpen, handleIsOpen }) => {
     return (
 
 
-        <div className="absolute inset-0 sm:bg-black/80 bg-slate-900 flex sm:items-center sm:justify-center z-50 h-screen overflow-y-scroll ">
+        <div className=" fixed inset-0 sm:bg-black/80 bg-slate-900 flex sm:items-center sm:justify-center z-50 h-screen overflow-y-scroll ">
             <div className="bg-slate-900 p-4 sm:rounded-[8px] w-full max-w-2xl sm:border border-slate-800 flex flex-col sm:gap-14 gap-4">
 
                 <div className="flex items-center justify-between border-b pb-3 border-slate-800">
