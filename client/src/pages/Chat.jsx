@@ -25,7 +25,7 @@ const Chat = () => {
 
 
   return (
-    <div className="flex h-screen text-white overflow-hidden">
+    <div className="flex h-[100dvh] text-white overflow-hidden">
 
       {
         isUploading && ( <div className="h-[100vh] w-full fixed top-0 z-20 left-0 bg-black/80 flex items-center justify-center flex-col gap-5 backdrop-blur-md">
