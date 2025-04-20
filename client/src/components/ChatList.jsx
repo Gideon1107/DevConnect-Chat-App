@@ -100,7 +100,7 @@ const ChatList = () => {
               }`}></span>
             </div>
             <div className="flex-1 min-w-0 ">
-              <div className="font-medium text-white truncate ">{chat.username}</div>
+              <div className="font-normal text-white truncate ">{chat.username}</div>
               <div className={`text-sm text-gray-400 truncate ${chat.messageType === "file" && "italic" }`}>{ chat.messageType === "text" ? chat.lastMessage : "file"}</div>
             </div>
           </div>
@@ -133,7 +133,7 @@ const ChatList = () => {
           </div>
         )) :
         <div className="flex items-center justify-center my-6">
-            <p className="text-sm text-gray-200/50 max-w-32 text-center">Select a User from User&apos;s tab</p>
+            <p className="text-sm text-gray-200/50 max-w-32 text-center font-normal">Select a User from User&apos;s tab</p>
         </div>
       }
 
