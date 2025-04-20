@@ -16,15 +16,16 @@ const authUser = async (req, res, next) => {
     if (!token && refreshToken) {
         try {
             const decodedRefreshToken = jwt.verify(refreshToken, process.env.JWT_SECRET);
-            
+
             token = createAuthToken(decodedRefreshToken.id); // Generate new auth token
 
             // Set the new auth token in the cookie
             res.cookie('authToken', token, {
                 httpOnly: true,
-                secure: process.env.NODE_ENV === 'production',
-                sameSite: 'Strict',
+                secure: true,
+                sameSite: 'None',
                 maxAge: 2 * 60 * 60 * 1000, // 2hours expiration
+                path: '/',
             });
 
             req.user = { id: decodedRefreshToken.id };
@@ -54,9 +55,10 @@ const authUser = async (req, res, next) => {
                 // Set the new access token in the cookie
                 res.cookie('authToken', newAuthToken, {
                     httpOnly: true,
-                    secure: process.env.NODE_ENV === 'production',
-                    sameSite: 'Strict',
+                    secure: true,
+                    sameSite: 'None',
                     maxAge: 2 * 60 * 60 * 1000, // 2hours expiration
+                    path: '/',
                 });
 
                 req.user = { id: decodedRefreshToken.id };

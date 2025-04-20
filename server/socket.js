@@ -6,7 +6,18 @@ import Group from "./models/Group.js";
 const setupSocket = (server) => {
     const io = new SocketIOServer(server, {
       cors: {
-        origin: process.env.ORIGIN,
+        origin: function(origin, callback) {
+          // Allow requests with no origin (like mobile apps or curl requests)
+          if(!origin) return callback(null, true);
+
+          // Check if the origin is in the allowed list
+          const allowedOrigins = process.env.ORIGIN.split(',');
+          if(allowedOrigins.indexOf(origin) !== -1) {
+            return callback(null, true);
+          } else {
+            return callback(null, false);
+          }
+        },
         methods: ["GET", "POST"],
         credentials: true,
       },
@@ -61,7 +72,7 @@ const setupSocket = (server) => {
         .exec();
 
         await Group.findByIdAndUpdate(groupId, {
-            $push: { messages: createdMessage._id } 
+            $push: { messages: createdMessage._id }
         })
 
         const group = await Group.findById(groupId)
@@ -87,12 +98,12 @@ const setupSocket = (server) => {
 
     io.on("connection", (socket) => {
         const userId = socket.handshake.query.userId;
-        
+
 
         if (userId) {
             userSocketMap.set(userId, socket.id)
             console.log(`User connected: ${userId} with socket ID: ${socket.id}`);
-            
+
         } else {
             console.log("User ID not provided during connection");
         }

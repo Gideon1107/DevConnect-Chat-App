@@ -26,10 +26,22 @@ const server = http.createServer(app);
 
 // Middleware
 app.use(cors({
-  origin: process.env.ORIGIN ,
+  origin: function(origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if(!origin) return callback(null, true);
+
+    // Check if the origin is in the allowed list
+    const allowedOrigins = process.env.ORIGIN.split(',');
+    if(allowedOrigins.indexOf(origin) !== -1) {
+      return callback(null, true);
+    } else {
+      return callback(null, false);
+    }
+  },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   credentials: true,
-  allowedHeaders: ['Content-Disposition', 'Content-Type'],
+  allowedHeaders: ['Content-Disposition', 'Content-Type', 'Authorization'],
+  exposedHeaders: ['set-cookie'],
 }));
 
 app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
@@ -50,7 +62,7 @@ app.use('/api/chat', chatRoutes)
 app.use('/api/group', groupRoutes)
 
 
-app.get("/", (req, res) => {
+app.get("/", (_, res) => {
   res.send("API Working")
 })
 

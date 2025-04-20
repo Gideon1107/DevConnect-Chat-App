@@ -75,18 +75,20 @@ export const registerUser = async (req, res) => {
         // Store the refresh token in an httpOnly cookie
         res.cookie('refreshToken', refreshToken, {
             httpOnly: true,
-            secure: true, 
-            sameSite: 'None', 
+            secure: true,
+            sameSite: 'None',
             maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days expiration
+            path: '/',
         });
 
 
         // Store the auth token in an httpOnly cookie
         res.cookie('authToken', authToken, {
-            httpOnly: true,  
-            secure: true,  
-            sameSite: 'None',  
+            httpOnly: true,
+            secure: true,
+            sameSite: 'None',
             maxAge: 2 * 60 * 60 * 1000,  // 2 hour expiration
+            path: '/',
         });
 
         res.status(201).json({ success: true, message: 'User registered successfully', authToken });
@@ -127,18 +129,20 @@ export const loginUser = async (req, res) => {
             // Store the refresh token in an httpOnly cookie
             res.cookie('refreshToken', refreshToken, {
                 httpOnly: true,
-                secure: true, 
-                sameSite: 'None', 
+                secure: true,
+                sameSite: 'None',
                 maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days expiration
+                path: '/',
             });
 
 
             // Store the auth token in an httpOnly cookie
             res.cookie('authToken', authToken, {
-                httpOnly: true, 
-                secure: true,  
-                sameSite: 'None', 
+                httpOnly: true,
+                secure: true,
+                sameSite: 'None',
                 maxAge: 2 * 60 * 60 * 1000,  // 2 hour expiration
+                path: '/',
             });
 
             res.status(200).json({ success: true, message: 'User logged in successfully', authToken });
@@ -162,18 +166,20 @@ export const googleLogin = async (req, res) => {
         // Store the refresh token in an httpOnly cookie
         res.cookie('refreshToken', refreshToken, {
             httpOnly: true,
-            secure: true, 
-            sameSite: 'None', 
+            secure: true,
+            sameSite: 'None',
             maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days expiration
+            path: '/',
         });
 
 
         // Store the auth token in an httpOnly cookie
         res.cookie('authToken', authToken, {
             httpOnly: true,  // Prevents access to cookie via JavaScript (XSS protection)
-            secure: true,  
-            sameSite: 'None',  
+            secure: true,
+            sameSite: 'None',
             maxAge: 2 * 60 * 60 * 1000,  // 2 hour expiration
+            path: '/',
         });
 
 
@@ -201,12 +207,14 @@ export const logoutUser = async (req, res) => {
         httpOnly: true, // Ensures the cookie cannot be accessed via JavaScript
         secure: true, // Set to true only in production
         sameSite: 'None', // Helps prevent CSRF attacks
+        path: '/',
     });
 
     res.clearCookie('refreshToken', {
         httpOnly: true, // Ensures the cookie cannot be accessed via JavaScript
-        secure: true, 
+        secure: true,
         sameSite: 'None',
+        path: '/',
     });
 
     // Send a response indicating successful logout
