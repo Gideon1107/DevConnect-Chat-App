@@ -254,13 +254,13 @@ const MessageContainer = () => {
                 }
                 }
               >
-                <img src={message.mediaUrl} alt="image" width={200} height={200} />
+                <img src={message.mediaUrl} alt="image" width={160} height={160} />
               </div>
-              : <div className="flex items-center justify-center gap-3 px-2 py-1">
+              : <div className="flex items-center justify-center gap-2 px-2 py-1">
                 <span className="text-white/80 text-2xl bg-black/20 rounded-full p-2">
                   <GoFileZip />
                 </span>
-                <span className="text-sm text-slate-200 w-2/3 ">
+                <span className="text-sm text-slate-200 w-2/3">
                   {decodeURIComponent(message.mediaUrl.split("/").pop())}
                 </span>
                 <span className="bg-black/20 rounded-full p-1 cursor-pointer">
@@ -275,7 +275,9 @@ const MessageContainer = () => {
       {
         message.sender._id !== user._id ? 
         <div className="flex items-center justify-start gap-2">
-          <img src={message.sender.profilePicture} alt={message.sender.username} className="w-6 h-6 rounded-full"/>
+          <div className="w-6 h-6 overflow-hidden rounded-full">
+            <img src={message.sender.profilePicture} alt={message.sender.username} className="w-full h-full object-cover "/>
+          </div>
           <span className="text-sm text-white/60 font-light">{message.sender.username}</span>
           <span className="text-sm text-white/60 font-light">{moment(message.createdAt).format("LT")}</span>
         </div> 

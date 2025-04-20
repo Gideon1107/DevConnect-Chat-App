@@ -73,7 +73,7 @@ const ChatList = () => {
 
 
   return (
-    <div className="flex-1 overflow-y-auto ">
+    <div className="flex-1 overflow-y-auto scrollbar-hidden">
       {
         directMessagesList.length > 0 ?
         directMessagesList.map((chat) => (
@@ -87,11 +87,18 @@ const ChatList = () => {
               `}
             
           >
-            <img
-              src={chat.profilePicture}
-              alt={chat.username}
-              className="w-8 h-8 rounded-full"
-            />
+            <div className="relative">
+              <div className="w-8 h-8 overflow-hidden rounded-full">
+                <img
+                  src={chat.profilePicture}
+                  alt={chat.username}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <span className={`absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full ${
+                chat.status === 'online' ? 'bg-green-400' : 'bg-gray-400'
+              }`}></span>
+            </div>
             <div className="flex-1 min-w-0 ">
               <div className="font-medium text-white truncate ">{chat.username}</div>
               <div className={`text-sm text-gray-400 truncate ${chat.messageType === "file" && "italic" }`}>{ chat.messageType === "text" ? chat.lastMessage : "file"}</div>

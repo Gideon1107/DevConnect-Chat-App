@@ -80,11 +80,13 @@ const UsersList = () => {
               className="flex items-center gap-3 p-3 cursor-pointer sm:hover:bg-slate-800 active:bg-slate-800"
             >
               <div className="relative">
-                <img
-                  src={user.profilePicture}
-                  alt={user.name}
-                  className="w-8 h-8 rounded-full"
-                />
+                <div className="w-8 h-8 overflow-hidden rounded-full">
+                  <img
+                    src={user.profilePicture}
+                    alt={user.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
                 <span className={`absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full ${
                   user.status === 'online' ? 'bg-green-400' : 'bg-gray-400'
                 }`}></span>

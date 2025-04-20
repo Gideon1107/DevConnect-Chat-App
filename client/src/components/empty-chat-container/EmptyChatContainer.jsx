@@ -16,7 +16,6 @@ const EmptyChatContainer = () => {
         width={150}
         options={animationData}
         speed={0.5}
-        be
         />
 
         <div>

@@ -89,7 +89,9 @@ export const getChatListForDm = async (req, res) => {
                 messageType: 1,
                 email: "$chatInfo.email",
                 username: "$chatInfo.username",
-                profilePicture: "$chatInfo.profilePicture"
+                profilePicture: "$chatInfo.profilePicture",
+                status: "$chatInfo.status",
+                lastSeenActive: "$chatInfo.lastSeenActive"
             }
         },
         {
