@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Toaster } from 'sonner';
+import { Toaster, toast } from 'sonner';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { Navbar } from './components/Navbar'
 import { Footer } from './components/Footer'
@@ -47,6 +47,17 @@ const App = () => {
 
   const { user, setUser, setUsers } = useAppStore();
   const [loading, setLoading] = useState(true);
+
+  // Clean up any lingering toasts
+  useEffect(() => {
+    const pendingToastId = sessionStorage.getItem('pendingGoogleSignIn');
+    if (pendingToastId) {
+      // Dismiss the toast
+      toast.dismiss(pendingToastId);
+      // Clear from sessionStorage
+      sessionStorage.removeItem('pendingGoogleSignIn');
+    }
+  }, []);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -113,7 +124,7 @@ const App = () => {
   return (
     <Router>
       <ScrollToTop />
-      <div className="bg-slate-900 h-[100dvh] z-10">
+      <div className="bg-slate-900 min-h-[100dvh] relative">
         {showBackToTop && <BackToTop />}
         <Toaster position='top-center' duration={3000}/>
         {!user && <Navbar onSignInClick={handleOpenSignIn} />}

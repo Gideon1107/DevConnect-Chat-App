@@ -5,7 +5,7 @@ import * as Yup from "yup"
 import { useForm } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
 import { FiEye, FiEyeOff } from "react-icons/fi";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axiosInstance from "@/utils/axiosConfig";
 import { HOST, LOGIN_ROUTE, GOOGLE_LOGIN_ROUTE } from "@/utils/constants";
 import { toast } from 'sonner';
@@ -72,9 +72,34 @@ export const SignInModal = ({ isOpen, onClose, onSwitchToSignUp }) => {
   };
 
   const onGoogleSignIn = async () => {
-    toast.loading("Redirecting to Google Sign In", { theme: "light" });
-    setTimeout(() => { window.location.href = `${HOST}/${GOOGLE_LOGIN_ROUTE}`; }, 1000);
+    // Create a unique ID for this toast
+    const toastId = `google-signin-${Date.now()}`;
+
+    // Store the toast ID in sessionStorage
+    sessionStorage.setItem('pendingGoogleSignIn', toastId);
+
+    // Show the toast with the ID
+    toast.loading("Redirecting to Google Sign In", {
+      id: toastId,
+      theme: "light",
+      duration: 2000 // Auto dismiss after 2 seconds even if not redirected
+    });
+
+    setTimeout(() => {
+      window.location.href = `${HOST}/${GOOGLE_LOGIN_ROUTE}`;
+    }, 1000);
   };
+
+  // Check for and dismiss any lingering toasts when component mounts
+  useEffect(() => {
+    const pendingToastId = sessionStorage.getItem('pendingGoogleSignIn');
+    if (pendingToastId) {
+      // Dismiss the toast
+      toast.dismiss(pendingToastId);
+      // Clear from sessionStorage
+      sessionStorage.removeItem('pendingGoogleSignIn');
+    }
+  }, []);
 
 
   const [showPassword, setShowPassword] = useState(false);
