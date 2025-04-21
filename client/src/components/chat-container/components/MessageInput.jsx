@@ -12,7 +12,7 @@ import { toast } from "sonner";
 
 
 
-const MessageInput = () => {
+const MessageInput = ({ isKeyboardOpen }) => {
 
   const [message, setMessage] = useState("");
   const emojiRef = useRef();
@@ -136,7 +136,7 @@ const MessageInput = () => {
 
 
   return (
-    <div className="h-[10vh] bg-slate-900 flex justify-center items-center p-4 sm:px-8 sm:mb-6 mb-1 gap-4">
+    <div className={`${isKeyboardOpen ? 'py-2' : 'h-[10vh]'} bg-slate-900 flex justify-center items-center p-4 sm:px-8 sm:mb-6 mb-1 gap-4 transition-all duration-200`}>
       <div className="flex-1 flex  items-center gap-4 pr-5 bg-slate-800 rounded-tr-[12px] rounded-bl-[12px]">
         {/* Message input field */}
         <input type="text" className="flex-1 p-3 bg-transparent rounded-lg focus:border-none focus:outline-none placeholder:text-sm" placeholder="Start Typing..."
@@ -158,7 +158,7 @@ const MessageInput = () => {
             <RiEmojiStickerLine className="text-xl" />
           </button>
 
-          {/* Emoji display */} 
+          {/* Emoji display */}
           <div className="absolute bottom-12 -right-16 sm:right-0" ref={emojiRef}>
             <EmojiPicker theme="auto" width={320} height={440}
               open={isEmojiPickerOpen}
