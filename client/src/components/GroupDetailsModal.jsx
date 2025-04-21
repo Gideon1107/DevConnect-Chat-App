@@ -405,7 +405,7 @@ const GroupDetailsModal = ({ members, setMembers, setSelectedChatData, setSelect
                                         </div>
 
                                         {/* Members */}
-                                        <div className="bg-slate-800/20 rounded-sm mb-4 overflow-y-auto sm:max-h-[200px] max-h-[65vh] custom-scrollbar max-sm:min-h-[50vh] ">
+                                        <div className="bg-slate-800/20 rounded-sm mb-4 overflow-y-auto sm:max-h-[200px] max-h-[65vh] scrollbar-hidden max-sm:min-h-[50vh]">
                                             {
                                                 members.map((member) => {
                                                     const isCurrentUser = member._id === useAppStore.getState().user._id; // Check if member is current user

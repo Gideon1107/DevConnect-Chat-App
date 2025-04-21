@@ -17,12 +17,19 @@ html, body {
   min-height: 100vh;
   box-sizing: border-box;
   color: white;
+  overflow-x: hidden; /* Prevent horizontal scrolling */
+  -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
+  -webkit-touch-callout: none; /* Disable callout on long-press */
+  -webkit-user-select: none; /* Disable text selection */
+  user-select: none; /* Disable text selection */
 }
 
 /* Improve initial loading state */
 #root {
   min-height: 100vh;
   background-color: #0f172a !important; /* bg-slate-900 */
+  overscroll-behavior: none; /* Prevent bounce effect on iOS */
+  touch-action: manipulation; /* Optimize for touch */
 }
 
 /* Animation for the loading spinner */
@@ -117,23 +124,24 @@ input:-moz-placeholder {
   scrollbar-width: none;
 }
 
-/* Hide scrollbar but allow scrolling */
+/* Hide scrollbar but allow scrolling globally */
 ::-webkit-scrollbar {
   display: none;
 }
 
-
-
+/* Apply global styles to all elements */
 * {
-    /* font-family: "Poiret One", serif; */
-    /* font-family: "Montserrat", serif !important; */
-    /* font-family: "Roboto", sans-serif; */
-    /* font-family: "Roboto Mono", monospace; */
+    /* Font settings */
     font-family: "Work Sans", sans-serif;
     font-optical-sizing: auto;
-    box-sizing: border-box;
     font-weight: 500;
 
+    /* Box model */
+    box-sizing: border-box;
+
+    /* Scrollbar hiding */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
 }
 
 .roboto {
@@ -175,22 +183,26 @@ input:-moz-placeholder {
 }
 
 
+/* Custom scrollbar class is now also hidden for app-like feel */
 .custom-scrollbar {
-  scrollbar-width: thin;  /* Firefox */
-  scrollbar-color: #334155 #1e293b;  /* Firefox */
+  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none;  /* IE and Edge */
 }
 
 .custom-scrollbar::-webkit-scrollbar {
-  width: 8px;  /* width of the entire scrollbar */
-  display: block;
+  display: none;
 }
 
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: #1e293b;  /* color of the tracking area */
+/* Allow text selection in inputs and textareas */
+input, textarea, [contenteditable="true"] {
+  user-select: text !important;
+  -webkit-user-select: text !important;
+  -webkit-touch-callout: default !important;
 }
 
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: #334155;  /* color of the scroll thumb */
-  border-radius: 20px;  /* roundness of the scroll thumb */
+/* App-like momentum scrolling for overflow containers */
+.overflow-scroll, .overflow-y-auto, .overflow-x-auto {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
 }
 
