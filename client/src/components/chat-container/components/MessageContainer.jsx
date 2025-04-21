@@ -293,36 +293,86 @@ const MessageContainer = () => {
       {renderMessages()}
       <div ref={scrollRef} />
 
-      {
-        showImage && (
+      {showImage && (
+        <div
+          id="image-preview-portal"
+          className="fixed top-0 left-0 right-0 bottom-0 w-screen h-screen bg-black flex flex-col items-center justify-center z-[9999999]"
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            width: '100vw',
+            height: '100vh',
+            backgroundColor: 'rgba(0,0,0,0.98)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 9999999,
+            overflow: 'hidden'
+          }}
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setShowImage(false);
+              setImageUrl(null);
+            }
+          }}
+        >
+          <img
+            src={imageUrl}
+            alt="image"
+            style={{
+              maxWidth: '90%',
+              maxHeight: '70%',
+              objectFit: 'contain',
+              marginTop: '20px'
+            }}
+          />
+
           <div
-            className="fixed top-0 left-0 w-full h-full bg-black/95 flex flex-col items-center justify-center z-[999999] inset-0"
-            onClick={(e) => {
-              // Close when clicking on the background (not on the image or buttons)
-              if (e.target === e.currentTarget) {
-                setShowImage(false);
-                setImageUrl(null);
-              }
+            style={{
+              position: 'absolute',
+              top: '20px',
+              right: '20px',
+              display: 'flex',
+              gap: '16px',
+              justifyContent: 'flex-end',
             }}
           >
-            <img src={imageUrl} alt="image" className="w-[85%] h-[50%] sm:h-[70%] object-contain max-h-[calc(100vh-180px)]" style={{marginTop: '-20px'}} />
-            <div className="flex gap-8 fixed top-[80px] sm:top-[40px] w-full justify-center">
-              <button
-                onClick={() => handleDownloadFileMessage(imageUrl)}
-                className="bg-gray-800 rounded-full p-3 cursor-pointer shadow-lg">
-                <HiDownload size={25} className="text-blue-400" />
-              </button>
-              <button className="bg-gray-800 rounded-full p-3 cursor-pointer shadow-lg"
-                onClick={() => {
-                  setShowImage(false)
-                  setImageUrl(null)
-                }}>
-                <RxCross1 size={25} className="text-red-400" />
-              </button>
-            </div>
+            <button
+              onClick={() => handleDownloadFileMessage(imageUrl)}
+              style={{
+                backgroundColor: '#1f2937',
+                borderRadius: '9999px',
+                padding: '12px',
+                cursor: 'pointer',
+                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                
+              }}
+            >
+              <HiDownload size={25} style={{ color: '#60a5fa' }} />
+            </button>
+
+            <button
+              onClick={() => {
+                setShowImage(false);
+                setImageUrl(null);
+              }}
+              style={{
+                backgroundColor: '#1f2937',
+                borderRadius: '9999px',
+                padding: '12px',
+                cursor: 'pointer',
+                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                
+              }}
+            >
+              <RxCross1 size={25} style={{ color: '#f87171' }} />
+            </button>
           </div>
-        )
-      }
+        </div>
+      )}
     </div>
   )
 }
