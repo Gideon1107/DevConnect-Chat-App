@@ -12,7 +12,7 @@ import {
 import { useAppStore } from "@/store/store";
 import { RxCross1 } from "react-icons/rx";
 import { IoIosAdd } from "react-icons/io";
-import axios from "axios";
+import axiosInstance from "@/utils/axiosConfig";
 import { useEffect, useState } from "react";
 import { capitalizeUsername } from "@/utils/capitalize";
 import { useForm } from "react-hook-form";
@@ -39,17 +39,14 @@ const GroupDetailsModal = ({ members, setMembers, setSelectedChatData, setSelect
     const [memberIdToRemove, setMemberIdToRemove] = useState(null) // State to store member Id to remove which will be passed as props to confirm modal
     const [memberToRemove, setMemberToRemoe] = useState("") //State to store member username to be removed which will be passed as props to confirm modal
 
-    // Fetch groups 
+    // Fetch groups
     useEffect(() => {
         const fetchGroups = async () => {
             try {
-                const response = await axios.get(`${HOST}/${GET_USER_GROUPS_ROUTE}`, {
-                    withCredentials: true,
-                });
+                const response = await axiosInstance.get(`${HOST}/${GET_USER_GROUPS_ROUTE}`);
                 if (response.data.success) {
                     setGroups(response.data.groups)
                 }
-
             } catch (error) {
                 console.error('Error fetching groups:', error);
             }
@@ -93,9 +90,7 @@ const GroupDetailsModal = ({ members, setMembers, setSelectedChatData, setSelect
     // This function to fetch all users
     const fetchUsers = async () => {
         try {
-            const response = await axios.get(`${HOST}/${GET_ALL_USERS_ROUTE}`, {
-                withCredentials: true
-            });
+            const response = await axiosInstance.get(`${HOST}/${GET_ALL_USERS_ROUTE}`);
             if (response.data.success) {
                 // Filter out users who are already members
                 const filteredUsers = response.data.user.filter(
@@ -105,7 +100,7 @@ const GroupDetailsModal = ({ members, setMembers, setSelectedChatData, setSelect
             }
         } catch (error) {
             console.error('Error fetching users:', error);
-            toast.error('Failed to fetch users');
+            toast.error(error.response?.data?.message || 'Failed to fetch users');
         }
     };
 
@@ -131,11 +126,9 @@ const GroupDetailsModal = ({ members, setMembers, setSelectedChatData, setSelect
             return;
         }
         try {
-            const response = await axios.put(`${HOST}/${ADD_GROUP_MEMBER_ROUTE}`, {
+            const response = await axiosInstance.put(`${HOST}/${ADD_GROUP_MEMBER_ROUTE}`, {
                 groupId: selectedChatData._id,
                 newMembers: newSelectedMembers.map(user => user.value)
-            }, {
-                withCredentials: true
             });
 
             if (response.data.success) {
@@ -147,7 +140,7 @@ const GroupDetailsModal = ({ members, setMembers, setSelectedChatData, setSelect
             }
 
         } catch (error) {
-            console.log(error)
+            console.error('Error adding members:', error);
             toast.error(error.response?.data?.message || 'Failed to add members');
         }
     };
@@ -156,12 +149,11 @@ const GroupDetailsModal = ({ members, setMembers, setSelectedChatData, setSelect
     // This function handles remove members
     const handleRemoveMember = (memberId) => async () => {
         try {
-            const response = await axios.put(`${HOST}/${REMOVE_GROUP_MEMBER_ROUTE}`,
+            const response = await axiosInstance.put(`${HOST}/${REMOVE_GROUP_MEMBER_ROUTE}`,
                 {
                     memberId: memberId,
                     groupId: selectedChatData._id
-                },
-                { withCredentials: true }
+                }
             )
             if (response.data.success) {
                 setMembers(members.filter((member) => member._id !== memberId))
@@ -171,8 +163,8 @@ const GroupDetailsModal = ({ members, setMembers, setSelectedChatData, setSelect
                 setMemberToRemoe("")
             }
         } catch (error) {
-            console.log(error)
-            toast.error("Failed to remove user")
+            console.error('Error removing member:', error);
+            toast.error(error.response?.data?.message || "Failed to remove user")
         }
     }
 
@@ -182,12 +174,10 @@ const GroupDetailsModal = ({ members, setMembers, setSelectedChatData, setSelect
     const onEditGroupSubmit = async (data) => {
         const { name, description } = data;
         try {
-            const response = await axios.put(`${HOST}/${EDIT_GROUP_ROUTE}`, {
+            const response = await axiosInstance.put(`${HOST}/${EDIT_GROUP_ROUTE}`, {
                 groupId: selectedChatData._id,
                 name: name,
                 description: description
-            }, {
-                withCredentials: true,
             })
             if (response.data.success) {
                 toast.success("Group updated successfully", {duration: 2000})
@@ -199,8 +189,8 @@ const GroupDetailsModal = ({ members, setMembers, setSelectedChatData, setSelect
             }
 
         } catch (error) {
-            console.log(error)
-            toast.error("Failed to edit group", {duration: 2000})
+            console.error('Error editing group:', error);
+            toast.error(error.response?.data?.message || "Failed to edit group", {duration: 2000})
         }
     }
 
@@ -208,9 +198,8 @@ const GroupDetailsModal = ({ members, setMembers, setSelectedChatData, setSelect
     // This function handles deleting the group
     const handleDeleteGroup = async () => {
         try {
-            const response = await axios.delete(`${HOST}/${DELETE_GROUP_ROUTE}`, {
-                data: { groupId: selectedChatData._id },
-                withCredentials: true,
+            const response = await axiosInstance.delete(`${HOST}/${DELETE_GROUP_ROUTE}`, {
+                data: { groupId: selectedChatData._id }
             });
             if (response.data.success) {
                 toast.success("Group deleted successfully", {duration: 2000})
@@ -221,8 +210,8 @@ const GroupDetailsModal = ({ members, setMembers, setSelectedChatData, setSelect
                 toast.error(response.data.message, {duration: 2000})
             }
         } catch (error) {
-            console.log(error)
-            toast.error("Failed to delete group", {duration: 2000})
+            console.error('Error deleting group:', error);
+            toast.error(error.response?.data?.message || "Failed to delete group", {duration: 2000})
         }
     }
 
@@ -230,9 +219,8 @@ const GroupDetailsModal = ({ members, setMembers, setSelectedChatData, setSelect
     // This function handles leaving the group
     const handleLeaveGroup = async () => {
         try {
-            const response = await axios.put(`${HOST}/${LEAVE_GROUP_ROUTE}`,
-                { groupId: selectedChatData._id, },
-                { withCredentials: true, }
+            const response = await axiosInstance.put(`${HOST}/${LEAVE_GROUP_ROUTE}`,
+                { groupId: selectedChatData._id }
             );
             if (response.data.success) {
                 toast.success(`You've left ${selectedChatData.name} group successfully`, {duration: 2000})
@@ -243,8 +231,8 @@ const GroupDetailsModal = ({ members, setMembers, setSelectedChatData, setSelect
                 toast.error(response.data.message, {duration: 2000})
             }
         } catch (error) {
-            console.log(error)
-            toast.error("Failed to leave group", {duration: 2000})
+            console.error('Error leaving group:', error);
+            toast.error(error.response?.data?.message || "Failed to leave group", {duration: 2000})
         }
     }
 
@@ -254,20 +242,20 @@ const GroupDetailsModal = ({ members, setMembers, setSelectedChatData, setSelect
         const admindId = selectedChatData.createdBy
 
         try {
-            const response = await axios.get(`${HOST}/${GET_GROUP_ADMIN_ROUTE}`, {
+            const response = await axiosInstance.get(`${HOST}/${GET_GROUP_ADMIN_ROUTE}`, {
                 params: {
                     adminId: admindId
-                },
-                withCredentials: true,
+                }
             })
             setAdmin(response.data.admin)  // Set admin to the admin received
         } catch (error) {
-            console.log(error)
+            console.error('Error getting group admin:', error);
         }
     }
 
     useEffect(() => {
         getGroupAdmin()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
 
@@ -504,7 +492,7 @@ const GroupDetailsModal = ({ members, setMembers, setSelectedChatData, setSelect
 
             {/* Confirm Modal for Deleting group */}
             {
-                showConfirmGroupDeleteModal && 
+                showConfirmGroupDeleteModal &&
                 <ConfirmDelete
                     isModalOpen={showConfirmGroupDeleteModal}
                     title="Delete group?"
@@ -518,7 +506,7 @@ const GroupDetailsModal = ({ members, setMembers, setSelectedChatData, setSelect
 
             {/* Conform modal for leaving group */}
             {
-                showConfirmLeaveGroupModal && 
+                showConfirmLeaveGroupModal &&
                 <ConfirmDelete
                 isModalOpen={showConfirmLeaveGroupModal}
                 title="Leave group?"

@@ -1,5 +1,5 @@
 import { useAppStore } from "@/store/store";
-import axios from "axios"
+import axiosInstance from "@/utils/axiosConfig";
 import { toast } from "sonner"
 import { HOST, LOGOUT_ROUTE } from "@/utils/constants";
 import { IoIosLogOut } from "react-icons/io";
@@ -7,6 +7,7 @@ import { CiSettings } from "react-icons/ci";
 import EditProfile from "./EditProfile";
 import { useState } from "react";
 import { capitalizeUsername } from "@/utils/capitalize";
+import { removeTokens } from "@/utils/authUtils";
 
 
 const UserProfile = () => {
@@ -18,20 +19,24 @@ const UserProfile = () => {
 
   const onLogout = async () => {
     try {
-      const response = await axios.post(`${HOST}/${LOGOUT_ROUTE}`, {}, {
-        withCredentials: true, // Important: Sends cookies with the request
-      });
+      // Send logout request using our custom axios instance
+      const response = await axiosInstance.post(`${HOST}/${LOGOUT_ROUTE}`, {});
 
-      if (response.data.success) {
-        toast.success(response.data.message, { theme: "light" , duration: 2000});
-        setTimeout(() => {
-          setUser(undefined)
-          window.location.href = '/'; // Redirect to login page
-        }, 1000);
-        return;
-      }
+      // Clear tokens from localStorage
+      removeTokens();
+
+      // Update UI
+      toast.success(response.data?.message || 'Logged out successfully', { theme: "light" , duration: 2000});
+      setTimeout(() => {
+        setUser(undefined)
+        window.location.href = '/'; // Redirect to login page
+      }, 1000);
     } catch (error) {
-      toast.error(error.message);
+      // Even if the server request fails, we should still clear local tokens
+      removeTokens();
+      setUser(undefined);
+      toast.error(error.message || 'Logged out with errors');
+      window.location.href = '/';
     }
   };
 
@@ -53,7 +58,7 @@ const UserProfile = () => {
           className="w-full h-full object-cover"
         />
         </div>
-        
+
         <span className="font-semibold truncate text-white">
           {
             user.username ? capitalizeUsername(user.username) : ""

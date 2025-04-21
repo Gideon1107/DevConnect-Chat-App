@@ -29,8 +29,8 @@ app.use(cors({
   origin: process.env.ORIGIN,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   credentials: true,
-  allowedHeaders: ['Content-Disposition', 'Content-Type', 'Authorization'],
-  exposedHeaders: ['set-cookie'],
+  allowedHeaders: ['Content-Disposition', 'Content-Type', 'Authorization', 'x-refresh-token'],
+  exposedHeaders: ['set-cookie', 'X-New-Auth-Token'],
 }));
 
 app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies

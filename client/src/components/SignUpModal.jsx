@@ -6,9 +6,12 @@ import { useForm } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { useState } from "react";
-import axios from "axios";
+import axiosInstance from "@/utils/axiosConfig";
 import { HOST, SIGNUP_ROUTE, GOOGLE_LOGIN_ROUTE } from "@/utils/constants";
 import { toast } from 'sonner';
+import { storeTokens } from "@/utils/authUtils";
+import { useAppStore } from "@/store/store";
+import { useNavigate } from "react-router-dom";
 
 
 // Sign Up Schema
@@ -26,6 +29,8 @@ const signUpSchemna = Yup.object().shape({
 
 
 export const SignUpModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
+  const { setUser } = useAppStore();
+  const navigate = useNavigate();
 
   const {
     register,
@@ -35,30 +40,39 @@ export const SignUpModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
   } = useForm({ resolver: yupResolver(signUpSchemna) }); // Integrate Yup validation with React Hook Form
 
   const onSubmit = async (data) => {
-    console.log(data);
     try {
-      // Call sign-in API
-      const response = await axios.post(`${HOST}/${SIGNUP_ROUTE}`, data, {
-        withCredentials: true, // Important: Sends cookies with the request
-      });
-      
+      // Call sign-up API using our custom axios instance
+      const response = await axiosInstance.post(`${HOST}/${SIGNUP_ROUTE}`, data);
+
       if (response.data.success) {
+        // Store tokens in localStorage instead of cookies
+        const { authToken, refreshToken, user } = response.data;
+        storeTokens(authToken, refreshToken);
+
+        // Set user in the global store immediately
+        if (user) {
+          setUser(user);
+        }
+
         toast.success(response.data.message, {theme: "light"});
+
+        // Reset the form
+        reset();
+        onClose(); // Close the modal
+
+        // Use React Router's navigate instead of window.location for a smoother transition
         setTimeout(() => {
-          window.location.href = '/chat'; // Redirect after 1 seconds then redirect to chat page
-      }, 1000);
+          navigate('/chat');
+        }, 1000);
       } else {
         toast.error(response.data.message, {theme: "light"});
-      }
-
-      // Reset the form if sign up is successful
-      if (response.data.success) {
-      reset();
       }
 
     } catch (error) {
       if (error.response && error.response.status === 409) {
         toast.error(error.message);
+      } else {
+        toast.error(error.response?.data?.message || 'Registration failed');
       }
     }
   };
@@ -152,7 +166,7 @@ export const SignUpModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
             />
               {showPassword ? <FiEyeOff onClick={() => setShowPassword(!showPassword)} className="absolute text-white right-3 cursor-pointer" /> : <FiEye onClick={() => setShowPassword(!showPassword)} className="absolute text-white right-3 cursor-pointer" />}
             </div>
-            
+
             {/* Password Error message */}
             {errors.password && (
               <span className="text-red-600 text-sm mt-1">{errors.password.message}</span>

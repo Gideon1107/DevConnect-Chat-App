@@ -1,6 +1,6 @@
 import { useAppStore } from "@/store/store";
 import { GET_CHAT_LIST_FOR_DM_ROUTE, HOST, DELETE_CHAT_ROUTE } from "@/utils/constants";
-import axios from "axios";
+import axiosInstance from "@/utils/axiosConfig";
 import { useEffect, useState } from "react";
 import { PiTrashLight } from "react-icons/pi";
 import ConfirmDelete from "./ConfirmDelete";
@@ -9,13 +9,13 @@ import { toast } from "sonner";
 
 
 const ChatList = () => {
- 
+
   const [ isGroup, setIsGroup] = useState(false)
   const [hoveredUser, setHoveredUser] = useState(null)  // Store the hover state on each chat to show the delete icon
   const [showDeleteChatModal, setShowDeleteChatModal] = useState(false)  // Stores the state of the delete chat modal
   const [currentChat, setCurrentChat] = useState({}) // Stores the current chat which its delete icon is clicked
-  const { 
-    directMessagesList, 
+  const {
+    directMessagesList,
     setDirectMessagesList,
     selectedChatType,
     selectedChatData,
@@ -26,18 +26,19 @@ const ChatList = () => {
     closeChat
    } = useAppStore()
 
-   
+
 
   useEffect(() => {
     const getChatList = async () => {
-      const response = await axios.get(`${HOST}/${GET_CHAT_LIST_FOR_DM_ROUTE}`, {
-        withCredentials: true
-      })
-      
-      if (response.data.chatList) {
-        setDirectMessagesList(response.data.chatList)
+      try {
+        const response = await axiosInstance.get(`${HOST}/${GET_CHAT_LIST_FOR_DM_ROUTE}`)
+
+        if (response.data.chatList) {
+          setDirectMessagesList(response.data.chatList)
+        }
+      } catch (error) {
+        console.error('Error fetching chat list:', error)
       }
-      
     }
 
     getChatList()
@@ -58,7 +59,7 @@ const ChatList = () => {
 
   const handleDeleteChat = async (chatId) => {
     try {
-      const response = await axios.post(`${HOST}/${DELETE_CHAT_ROUTE}`, {chatId}, {withCredentials: true})
+      const response = await axiosInstance.post(`${HOST}/${DELETE_CHAT_ROUTE}`, {chatId})
       if (response.data.success) {
         setDirectMessagesList(directMessagesList.filter((chat) => chat._id !== chatId)) // Filter out the chat to be deleted
         setShowDeleteChatModal(false) //Close cnfirm modal
@@ -66,10 +67,10 @@ const ChatList = () => {
       }
       toast.success("Chat deleted", {duration: 1000})
     } catch (error) {
-      console.log(error)
+      console.error('Error deleting chat:', error)
       toast.error(`Error deleting chat with ${currentChat.username}`)
     }
-  } 
+  }
 
 
   return (
@@ -85,7 +86,7 @@ const ChatList = () => {
             onClick={() => handleClick(chat)}
             className={`flex items-center gap-3 p-3 cursor-pointer w-full active:bg-slate-800
               `}
-            
+
           >
             <div className="relative">
               <div className="w-8 h-8 overflow-hidden rounded-full">
@@ -108,7 +109,7 @@ const ChatList = () => {
           {/* Delete butyon */}
           {/* Desktop and tablet Delete button */}
           {
-            hoveredUser === chat._id && 
+            hoveredUser === chat._id &&
             <button className="pr-2 sm:flex items-center hidden"
             onClick={() => {
               setShowDeleteChatModal(true)
@@ -137,7 +138,7 @@ const ChatList = () => {
         </div>
       }
 
-      {showDeleteChatModal && 
+      {showDeleteChatModal &&
       <ConfirmDelete
       isModalOpen={showDeleteChatModal}
       title={`Delete chat with ${capitalizeUsername(currentChat.username)}?`}

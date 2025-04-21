@@ -1,14 +1,65 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" style="background-color: #0f172a;">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/devIcon.png" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600&display=swap">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>DevConnect</title>
+    <style>
+      html, body {
+        margin: 0;
+        padding: 0;
+        background-color: #0f172a;
+        color: white;
+        font-family: 'Work Sans', sans-serif;
+        height: 100%;
+      }
+      #root {
+        height: 100%;
+        background-color: #0f172a;
+      }
+      @keyframes spinner {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+      .initial-spinner {
+        border: 2px solid rgba(59, 130, 246, 0.1);
+        border-top-color: #3b82f6;
+        border-radius: 50%;
+        width: 48px;
+        height: 48px;
+        animation: spinner 0.8s cubic-bezier(0.4, 0.1, 0.3, 1) infinite;
+        margin: 0 auto;
+        box-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
+        position: relative;
+      }
+      .initial-spinner::after {
+        content: '';
+        position: absolute;
+        top: -4px;
+        left: -4px;
+        right: -4px;
+        bottom: -4px;
+        border-radius: 50%;
+        border: 1px solid rgba(59, 130, 246, 0.1);
+        animation: spinner 1.2s linear infinite reverse;
+      }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <div style="display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #0f172a;">
+        <div style="text-align: center;">
+          <div class="initial-spinner"></div>
+          <p style="margin-top: 16px; font-size: 16px; color: white;">Loading DevConnect...</p>
+        </div>
+      </div>
+    </div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

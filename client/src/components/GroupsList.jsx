@@ -1,7 +1,7 @@
 import { useAppStore } from "@/store/store";
 import { GET_USER_GROUPS_ROUTE, HOST } from "@/utils/constants";
 import { useEffect } from "react";
-import axios from "axios";
+import axiosInstance from "@/utils/axiosConfig";
 
 const GroupsList = () => {
   const { groups, setSelectedChatType, setSelectedChatData, setGroups, setSelectedChatMessages } = useAppStore()
@@ -11,13 +11,10 @@ const GroupsList = () => {
   useEffect(() => {
     const fetchGroups = async () => {
       try {
-        const response = await axios.get(`${HOST}/${GET_USER_GROUPS_ROUTE}`, {
-          withCredentials: true,
-        });
+        const response = await axiosInstance.get(`${HOST}/${GET_USER_GROUPS_ROUTE}`);
         if (response.data.success) {
           setGroups(response.data.groups)
         }
-        
       } catch (error) {
         console.error('Error fetching groups:', error);
       }

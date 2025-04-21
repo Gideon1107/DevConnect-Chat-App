@@ -2,8 +2,8 @@ import { useState, useMemo, useEffect } from "react";
 import { useAppStore } from "@/store/store";
 import { capitalizeUsername } from "@/utils/capitalize";
 import { CiSearch } from "react-icons/ci";
-import { CHECK_AUTH_ROUTE, GETALLUSERS_ROUTE, HOST } from "@/utils/constants";
-import axios from "axios";
+import { GETALLUSERS_ROUTE, HOST } from "@/utils/constants";
+import axiosInstance from "@/utils/axiosConfig";
 
 
 
@@ -15,7 +15,7 @@ const UsersList = () => {
 
   const [sortBy, setSortBy] = useState("all")
 
-  // filtering & sorting 
+  // filtering & sorting
   const filteredAndSortedUsers = useMemo(() => {
     let updatedUsers = users;
 
@@ -48,22 +48,19 @@ const UsersList = () => {
 
   const fetchAllUsers = async () => {
     try {
-      const response = await axios.get(`${HOST}/${GETALLUSERS_ROUTE}`, {
-        withCredentials: true
-      })
+      const response = await axiosInstance.get(`${HOST}/${GETALLUSERS_ROUTE}`)
       if (response.data.success) {
         setUsers(response.data.allUsers)
       }
-
     } catch (error) {
       console.error('Error fetching all users:', error.response?.data?.message || error.message);
       setUsers(undefined)
     }
-
   }
 
   useEffect(() => {
     fetchAllUsers()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
 

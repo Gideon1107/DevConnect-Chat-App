@@ -7,7 +7,7 @@ import { IoIosArrowRoundBack } from "react-icons/io";
 import * as Yup from "yup"
 import { useForm } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
-import axios from "axios";
+import axiosInstance from "@/utils/axiosConfig";
 import {
     HOST,
     ADD_PROFILE_PICTURE_ROUTE,
@@ -61,9 +61,7 @@ const EditProfile = ({ isOpen, handleIsOpen }) => {
     const onSubmit = async (data) => {
         const { username } = data
         try {
-            const response = await axios.put(`${HOST}/${UPDATE_PROFILE_ROUTE}`, { username }, {
-                withCredentials: true, // Important: Sends cookies with the request
-            })
+            const response = await axiosInstance.put(`${HOST}/${UPDATE_PROFILE_ROUTE}`, { username })
             if (response.data.success) {
                 setUser(response.data.user)
                 toast.success("Username updated successfully")
@@ -72,8 +70,8 @@ const EditProfile = ({ isOpen, handleIsOpen }) => {
                 toast.error(response.data.message)
             }
         } catch (error) {
-            console.log(error);
-
+            console.error('Error updating username:', error);
+            toast.error(error.response?.data?.message || 'Failed to update username');
         }
     }
 
@@ -92,17 +90,17 @@ const EditProfile = ({ isOpen, handleIsOpen }) => {
         const imageUrl = URL.createObjectURL(file) //Create a local copy of selected image
 
         try {
-            const response = await axios.put(`${HOST}/${ADD_PROFILE_PICTURE_ROUTE}`, formData, {
-                withCredentials: true, // Important: Sends cookies with the request
-            })
+            const response = await axiosInstance.put(`${HOST}/${ADD_PROFILE_PICTURE_ROUTE}`, formData)
             if (response.data.success) {
                 setUser(response.data.user)  //Set user to the new user received so state update properly
                 setSelectedImage(imageUrl)
+                toast.success("Profile picture updated")
+            } else {
+                toast.error(response.data.message || 'Failed to update profile picture')
             }
-            toast.success("Profile picture updated")
         } catch (error) {
-            console.log(error);
-
+            console.error('Error updating profile picture:', error);
+            toast.error(error.response?.data?.message || 'Failed to update profile picture');
         }
     }
 
@@ -114,9 +112,7 @@ const EditProfile = ({ isOpen, handleIsOpen }) => {
     const handleDeleteProfilePicture = async () => {
         setIsModalOpen(false) //Close the modal
         try {
-            const response = await axios.delete(`${HOST}/${DELETE_PROFILE_PICTURE_ROUTE}`, {
-                withCredentials: true, // Important: Sends cookies with the request
-            })
+            const response = await axiosInstance.delete(`${HOST}/${DELETE_PROFILE_PICTURE_ROUTE}`)
 
             if (response.data.success) {
                 setSelectedImage(null)
@@ -126,8 +122,8 @@ const EditProfile = ({ isOpen, handleIsOpen }) => {
                 toast.error("Error deleting profile picture, try again!")
             }
         } catch (error) {
-            console.log(error);
-
+            console.error('Error deleting profile picture:', error);
+            toast.error(error.response?.data?.message || 'Failed to delete profile picture');
         }
     }
 

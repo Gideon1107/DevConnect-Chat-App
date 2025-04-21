@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { X } from "lucide-react";
-import axios from 'axios';
+import axiosInstance from '@/utils/axiosConfig';
 import { HOST, GET_ALL_USERS_ROUTE, CREATE_GROUP_ROUTE } from '@/utils/constants';
 import { useAppStore } from '@/store/store';
 import { toast } from 'sonner';
@@ -41,7 +41,7 @@ const CreateGroupModal = ({ setOpenGroupModal }) => {
         formState: { errors },
         setValue,
         watch,
-        trigger, 
+        trigger,
         reset
     } = useForm({
         resolver: yupResolver(createGroupSchema),
@@ -67,15 +67,13 @@ const CreateGroupModal = ({ setOpenGroupModal }) => {
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const response = await axios.get(`${HOST}/${GET_ALL_USERS_ROUTE}`, {
-                    withCredentials: true
-                });
+                const response = await axiosInstance.get(`${HOST}/${GET_ALL_USERS_ROUTE}`);
                 if (response.data.success) {
                     setAllUsers(response.data.user);
                 }
             } catch (error) {
                 console.error('Error fetching users:', error);
-                toast.error('Failed to fetch users');
+                toast.error(error.response?.data?.message || 'Failed to fetch users');
             }
         };
 
@@ -101,13 +99,12 @@ const CreateGroupModal = ({ setOpenGroupModal }) => {
         setIsLoading(true);
         try {
             if (name.length > 0 && members.length > 0 ) {
-                const response = await axios.post(`${HOST}/${CREATE_GROUP_ROUTE}`, {
+                const response = await axiosInstance.post(`${HOST}/${CREATE_GROUP_ROUTE}`, {
                     name: name,
                     description: description,
                     members: members.map(user => user.value),
                     createdBy: user.id,
-                    
-                }, {withCredentials: true});
+                });
 
                 if (response.data.success) {
                     reset()
@@ -118,7 +115,7 @@ const CreateGroupModal = ({ setOpenGroupModal }) => {
                     toast.error(response.data.message)
                 }
             }
-            
+
         } catch (error) {
             toast.error(error.response?.data?.message || 'Failed to create group');
         } finally {
@@ -202,7 +199,7 @@ const CreateGroupModal = ({ setOpenGroupModal }) => {
                     <button
                         type="submit"
                         disabled={isLoading}
-                        className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed 
+                        className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed
                         font-normal"
                     >
                         {isLoading ? 'Creating...' : 'Create Group'}

@@ -71,27 +71,19 @@ export const registerUser = async (req, res) => {
         const authToken = createAuthToken(user._id)
         const refreshToken = createRefreshToken(user._id);
 
-
-        // Store the refresh token in an httpOnly cookie
-        res.cookie('refreshToken', refreshToken, {
-            httpOnly: true,
-            secure: true,
-            sameSite: 'None',
-            maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days expiration
-            path: '/',
+        // Return tokens in response body for localStorage storage on client
+        res.status(201).json({
+            success: true,
+            message: 'User registered successfully',
+            authToken,
+            refreshToken,
+            user: {
+                _id: user._id,
+                username: user.username,
+                email: user.email,
+                profilePicture: user.profilePicture
+            }
         });
-
-
-        // Store the auth token in an httpOnly cookie
-        res.cookie('authToken', authToken, {
-            httpOnly: true,
-            secure: true,
-            sameSite: 'None',
-            maxAge: 2 * 60 * 60 * 1000,  // 2 hour expiration
-            path: '/',
-        });
-
-        res.status(201).json({ success: true, message: 'User registered successfully', authToken });
 
     } catch (error) {
         res.status(400).json({ message: 'Error registering user', error: error.message });
@@ -126,26 +118,19 @@ export const loginUser = async (req, res) => {
             const authToken = createAuthToken(user._id)
             const refreshToken = createRefreshToken(user._id);
 
-            // Store the refresh token in an httpOnly cookie
-            res.cookie('refreshToken', refreshToken, {
-                httpOnly: true,
-                secure: true,
-                sameSite: 'None',
-                maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days expiration
-                path: '/',
+            // Return tokens in response body for localStorage storage on client
+            res.status(200).json({
+                success: true,
+                message: 'User logged in successfully',
+                authToken,
+                refreshToken,
+                user: {
+                    _id: user._id,
+                    username: user.username,
+                    email: user.email,
+                    profilePicture: user.profilePicture
+                }
             });
-
-
-            // Store the auth token in an httpOnly cookie
-            res.cookie('authToken', authToken, {
-                httpOnly: true,
-                secure: true,
-                sameSite: 'None',
-                maxAge: 2 * 60 * 60 * 1000,  // 2 hour expiration
-                path: '/',
-            });
-
-            res.status(200).json({ success: true, message: 'User logged in successfully', authToken });
 
         } else {
             res.status(200).json({ success: false, message: 'Incorrect password' });
@@ -159,32 +144,15 @@ export const loginUser = async (req, res) => {
 export const googleLogin = async (req, res) => {
     try {
         // Successful authentication, generate a JWT token
-
         const authToken = createAuthToken(req.user.id)
         const refreshToken = createRefreshToken(req.user.id);
 
-        // Store the refresh token in an httpOnly cookie
-        res.cookie('refreshToken', refreshToken, {
-            httpOnly: true,
-            secure: true,
-            sameSite: 'None',
-            maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days expiration
-            path: '/',
-        });
+        // For Google OAuth, we need to pass tokens to the client
+        // Since we can't directly access localStorage from the server,
+        // we'll redirect to a special route that will handle token storage
 
-
-        // Store the auth token in an httpOnly cookie
-        res.cookie('authToken', authToken, {
-            httpOnly: true,  // Prevents access to cookie via JavaScript (XSS protection)
-            secure: true,
-            sameSite: 'None',
-            maxAge: 2 * 60 * 60 * 1000,  // 2 hour expiration
-            path: '/',
-        });
-
-
-        // Redirect the user to /chat
-        res.redirect(`${process.env.ORIGIN}/chat`);
+        // Redirect with tokens as URL parameters (will be handled by client)
+        res.redirect(`${process.env.ORIGIN}/auth-callback?authToken=${authToken}&refreshToken=${refreshToken}`);
     } catch (error) {
         res.status(400).json({ message: 'Error logging in user', error: error.message });
     }
@@ -201,21 +169,8 @@ export const logoutUser = async (req, res) => {
     user.lastSeenActive = Date.now(); // Set the last seen active time to the current time
     await user.save();
 
-
-    // Clear the tokens from the cookie
-    res.clearCookie('authToken', {
-        httpOnly: true, // Ensures the cookie cannot be accessed via JavaScript
-        secure: true, // Set to true only in production
-        sameSite: 'None', // Helps prevent CSRF attacks
-        path: '/',
-    });
-
-    res.clearCookie('refreshToken', {
-        httpOnly: true, // Ensures the cookie cannot be accessed via JavaScript
-        secure: true,
-        sameSite: 'None',
-        path: '/',
-    });
+    // With localStorage approach, tokens are cleared on the client side
+    // No need to clear cookies on the server
 
     // Send a response indicating successful logout
     res.status(200).json({ success: true, message: 'User logged out successfully' });

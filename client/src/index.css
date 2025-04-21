@@ -9,6 +9,64 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Set default background color to match app theme */
+html, body {
+  background-color: #0f172a !important; /* bg-slate-900 */
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  box-sizing: border-box;
+  color: white;
+}
+
+/* Improve initial loading state */
+#root {
+  min-height: 100vh;
+  background-color: #0f172a !important; /* bg-slate-900 */
+}
+
+/* Animation for the loading spinner */
+@keyframes app-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.app-loading-spinner {
+  border: 2px solid rgba(59, 130, 246, 0.1);
+  border-top-color: #3b82f6;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  animation: app-spin 0.8s cubic-bezier(0.4, 0.1, 0.3, 1) infinite;
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
+  position: relative;
+}
+
+.app-loading-spinner::after {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  right: -4px;
+  bottom: -4px;
+  border-radius: 50%;
+  border: 1px solid rgba(59, 130, 246, 0.1);
+  animation: app-spin 1.2s linear infinite reverse;
+}
+
+/* Ensure consistent loading state */
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+  background-color: #0f172a !important;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+}
 
 
 /* Target autofilled inputs */

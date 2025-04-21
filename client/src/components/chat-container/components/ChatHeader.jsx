@@ -2,7 +2,7 @@ import { RxCross1 } from "react-icons/rx";
 import { useAppStore } from "@/store/store";
 import { capitalizeUsername } from "@/utils/capitalize";
 import { HOST, GET_GROUP_MEMBERS_ROUTE } from "@/utils/constants";
-import axios from "axios";
+import axiosInstance from "@/utils/axiosConfig";
 import { useEffect, useState } from "react";
 import GroupDetailsModal from "@/components/GroupDetailsModal";
 
@@ -14,18 +14,16 @@ const ChatHeader = () => {
 
   const getGroupMembers = async (members) => {
     try {
-      const response = await axios.get(`${HOST}/${GET_GROUP_MEMBERS_ROUTE}`, {
+      const response = await axiosInstance.get(`${HOST}/${GET_GROUP_MEMBERS_ROUTE}`, {
         params: {
           members: members
-        },
-        withCredentials: true,
+        }
       })
       if (response.data.success) {
         setMembers(response.data.members)
       }
-
     } catch (error) {
-      console.log(error)
+      console.error('Error fetching group members:', error)
     }
   }
 
@@ -34,7 +32,7 @@ const ChatHeader = () => {
       getGroupMembers(selectedChatData.members)
     }
   }, [selectedChatData])
-  
+
 
   return (
     <div className={`p-4 border-b border-slate-700 flex justify-between items-center ${selectedChatType === "group" ? "cursor-pointer" : ""}`}
@@ -53,7 +51,7 @@ const ChatHeader = () => {
         className="w-8 h-8 rounded-full"
       />
       }
-        
+
         <span className="font-medium text-white truncate flex items-center">
           {
             selectedChatType === "dm" ? capitalizeUsername(selectedChatData.username)
@@ -62,7 +60,7 @@ const ChatHeader = () => {
               <span className="text-[12px] text-gray-400 font-light text-wrap">tap here for group info</span>
               </div>
           }
-          
+
         </span>
       </div>
 
@@ -73,11 +71,11 @@ const ChatHeader = () => {
       </button>
 
       {
-        groupDetailsModal && 
-        <GroupDetailsModal 
-        setSelectedChatData={setSelectedChatData} 
-        setSelectedChatType={setSelectedChatType} 
-        members={members} 
+        groupDetailsModal &&
+        <GroupDetailsModal
+        setSelectedChatData={setSelectedChatData}
+        setSelectedChatType={setSelectedChatType}
+        members={members}
         setMembers={setMembers}
         setGroupDetailsModal={setGroupDetailsModal}
         groupDetailsModal={groupDetailsModal}
@@ -85,7 +83,7 @@ const ChatHeader = () => {
       }
     </div>
 
- 
+
   );
 };
 

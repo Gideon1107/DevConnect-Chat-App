@@ -5,7 +5,7 @@ import { AiOutlineSend } from "react-icons/ai";
 import EmojiPicker, { Emoji } from "emoji-picker-react";
 import { useAppStore } from "@/store/store";
 import { useSocket } from "@/context/SocketContext";
-import axios from "axios";
+import axiosInstance from "@/utils/axiosConfig";
 import { HOST, SEND_FILE_ROUTE } from "@/utils/constants";
 import { toast } from "sonner";
 
@@ -19,9 +19,9 @@ const MessageInput = () => {
   const fileInputRef = useRef(null);
   const socket = useSocket()
   const [isEmojiPickerOpen, setIsEmojiPickerOpen] = useState(false)
-  const { 
-    selectedChatType, 
-    selectedChatData, 
+  const {
+    selectedChatType,
+    selectedChatData,
     user,
     setIsUploading,
     setFileUploadProgress,
@@ -92,8 +92,7 @@ const MessageInput = () => {
         const formData = new FormData();
         formData.append("file", file);
         setIsUploading(true);
-        const response = await axios.post(`${HOST}/${SEND_FILE_ROUTE}`, formData, {
-          withCredentials: true,
+        const response = await axiosInstance.post(`${HOST}/${SEND_FILE_ROUTE}`, formData, {
           onUploadProgress: (data) => {
             setFileUploadProgress(Math.round((data.loaded * 100) / data.total));
           }
@@ -122,7 +121,7 @@ const MessageInput = () => {
             })
           }
         } else {
-          toast.error(response.data.message); 
+          toast.error(response.data.message);
         }
       }
     } catch (error) {

@@ -9,24 +9,30 @@ const createAuthToken = (id) => {
 
 
 const authUser = async (req, res, next) => {
-    let token = req.cookies.authToken;
-    const refreshToken = req.cookies.refreshToken;  // Retrieve the refresh token from the cookies
+    // Get token from Authorization header
+    const authHeader = req.headers.authorization;
+    let token = authHeader && authHeader.startsWith('Bearer ') ? authHeader.split(' ')[1] : null;
+    let refreshToken = req.headers['x-refresh-token']; // Get refresh token from custom header
+
+    // If no token in headers, check cookies for backward compatibility
+    if (!token) {
+        token = req.cookies.authToken;
+    }
+
+    if (!refreshToken) {
+        refreshToken = req.cookies.refreshToken;
+    }
 
     // If no access token, attempt to use refresh token
     if (!token && refreshToken) {
         try {
             const decodedRefreshToken = jwt.verify(refreshToken, process.env.JWT_SECRET);
 
-            token = createAuthToken(decodedRefreshToken.id); // Generate new auth token
+            // Generate new auth token
+            const newAuthToken = createAuthToken(decodedRefreshToken.id);
 
-            // Set the new auth token in the cookie
-            res.cookie('authToken', token, {
-                httpOnly: true,
-                secure: true,
-                sameSite: 'None',
-                maxAge: 2 * 60 * 60 * 1000, // 2hours expiration
-                path: '/',
-            });
+            // Set token in response header for client to capture
+            res.set('X-New-Auth-Token', newAuthToken);
 
             req.user = { id: decodedRefreshToken.id };
             return next();
@@ -36,8 +42,8 @@ const authUser = async (req, res, next) => {
         }
     }
 
-     // If there's still no valid token, deny access
-     if (!token) {
+    // If there's still no valid token, deny access
+    if (!token) {
         return res.status(401).json({ success: false, message: "Not Authorized, Login Again" });
     }
 
@@ -52,14 +58,8 @@ const authUser = async (req, res, next) => {
                 const decodedRefreshToken = jwt.verify(refreshToken, process.env.JWT_SECRET);
                 const newAuthToken = createAuthToken(decodedRefreshToken.id);
 
-                // Set the new access token in the cookie
-                res.cookie('authToken', newAuthToken, {
-                    httpOnly: true,
-                    secure: true,
-                    sameSite: 'None',
-                    maxAge: 2 * 60 * 60 * 1000, // 2hours expiration
-                    path: '/',
-                });
+                // Set token in response header for client to capture
+                res.set('X-New-Auth-Token', newAuthToken);
 
                 req.user = { id: decodedRefreshToken.id };
                 return next();

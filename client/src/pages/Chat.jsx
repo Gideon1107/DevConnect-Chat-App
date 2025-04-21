@@ -1,26 +1,25 @@
 import { useAppStore } from "@/store/store";
 import Sidebar from "@/components/contacts-container/Sidebar";
-import EmptyChatContainer from "@/components/empty-chat-container/EmptyChatContainer";
+import SimpleEmptyChat from "@/components/empty-chat-container/SimpleEmptyChat";
 import ChatContainer from "@/components/chat-container/ChatContainer";
-
+import LoadingScreen from "@/components/LoadingScreen";
+import EmptyChatContainer from "@/components/empty-chat-container/EmptyChatContainer";
 
 
 
 const Chat = () => {
 
-  const { 
-    user, 
+  const {
+    user,
     selectedChatType,
-    selectedChatData,
     isUploading,
     isDownloading,
     fileUploadProgress,
     fileDownloadProgress,
   } = useAppStore();
 
-
   if (!user){
-    return <div className="text-white">Loading...</div>
+    return <LoadingScreen message="Loading DevConnect Chat..." />;
   }
 
 
@@ -46,13 +45,13 @@ const Chat = () => {
 
       <Sidebar/>
       {
-        selectedChatType === undefined 
-        ? 
-        <EmptyChatContainer/> 
-        : 
+        selectedChatType === undefined
+        ?
+        <EmptyChatContainer/>
+        :
         <ChatContainer/>
       }
-      
+
     </div>
   )
 }

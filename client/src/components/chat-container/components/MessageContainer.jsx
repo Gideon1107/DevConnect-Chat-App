@@ -1,6 +1,6 @@
 import { useAppStore } from "@/store/store"
 import { GET_ALL_MESSAGES_ROUTE, GET_GROUP_MESSAGES_ROUTE, HOST } from "@/utils/constants";
-import axios from "axios";
+import axiosInstance from "@/utils/axiosConfig";
 import moment from "moment";
 import { useEffect, useRef, useState } from "react";
 import { GoFileZip } from "react-icons/go";
@@ -30,29 +30,26 @@ const MessageContainer = () => {
 
     const getMessages = async () => {
       try {
-        const response = await axios.post(`${HOST}/${GET_ALL_MESSAGES_ROUTE}`,
-          { id: selectedChatData._id },
-          { withCredentials: true })
+        const response = await axiosInstance.post(`${HOST}/${GET_ALL_MESSAGES_ROUTE}`, { id: selectedChatData._id })
         if (response.data.messages) {
           setSelectedChatMessages(response.data.messages)
         }
       } catch (error) {
-        console.log(error)
+        console.error('Error fetching messages:', error)
+        toast.error(error.response?.data?.message || 'Failed to load messages')
       }
     }
 
 
     const getGroupMessages = async () => {
       try {
-        const response = await axios.get(`${HOST}/${GET_GROUP_MESSAGES_ROUTE}/${selectedChatData._id}`, {
-          withCredentials: true
-      })
+        const response = await axiosInstance.get(`${HOST}/${GET_GROUP_MESSAGES_ROUTE}/${selectedChatData._id}`)
         if (response.data.messages) {
           setSelectedChatMessages(response.data.messages)
         }
       } catch (error) {
-        console.log(error)
-        toast.error("Internal server error")
+        console.error('Error fetching group messages:', error)
+        toast.error(error.response?.data?.message || 'Failed to load group messages')
       }
     }
 
@@ -226,7 +223,7 @@ const MessageContainer = () => {
   const renderGroupMessages = (message) => {
     return (
       <div className={`mt-5 ${message.sender._id !== user._id ? "text-left" : "text-right"} text-sm mb-2`}>
-      
+
       {/* text messages */}
       {
       message.messageType === "text" && (
@@ -273,23 +270,23 @@ const MessageContainer = () => {
 
 
       {
-        message.sender._id !== user._id ? 
+        message.sender._id !== user._id ?
         <div className="flex items-center justify-start gap-2">
           <div className="w-6 h-6 overflow-hidden rounded-full">
             <img src={message.sender.profilePicture} alt={message.sender.username} className="w-full h-full object-cover "/>
           </div>
           <span className="text-sm text-white/60 font-light">{message.sender.username}</span>
           <span className="text-sm text-white/60 font-light">{moment(message.createdAt).format("LT")}</span>
-        </div> 
+        </div>
         : <div className="text-xs text-white/60 font-light">
           {moment(message.createdAt).format("LT")}
         </div>
       }
-      
+
       </div>
     )
   }
-    
+
 
   return (
     <div className="flex-1 overflow-y-auto scrollbar-hidden p-4 px-8 md:w-[65vw] lg:w-[70vw] xl:w-[80vw] w-full">
