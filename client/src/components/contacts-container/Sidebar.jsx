@@ -13,7 +13,7 @@ const Sidebar = () => {
   const [openGroupModal, setOpenGroupModal] = useState(false);
 
   return (
-    <div className="h-full fixed sm:static border-r border-slate-800 flex flex-col md:w-[35vw] lg:w-[30vw] xl:w-[21vw] bg-slate-900 w-full"> 
+    <div className="h-full fixed sm:static border-r border-slate-800 flex flex-col md:w-[35vw] lg:w-[30vw] xl:w-[21vw] bg-slate-900 w-full scrollbar-hidden"> 
        <div className="pl-4 pt-6 cursor-pointer ">
       <img src={logo} alt="logo" className="w-[150px] mb-6"/>
       </div>

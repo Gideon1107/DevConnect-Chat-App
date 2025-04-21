@@ -24,7 +24,7 @@ export const Navbar = ({ onSignInClick }) => {
 
 
         <nav className="hidden sm:block">
-          <ul className="flex lg:gap-10 md:gap-2">
+          <ul className="flex lg:gap-10 md:gap-8">
             <Link
               to="/features"
               className={`text-gray-300 font-light hover:text-white px-3 py-2 rounded-md text-base${location.pathname === '/features' ? 'text-white' : ''
@@ -41,13 +41,13 @@ export const Navbar = ({ onSignInClick }) => {
               Community
             </Link>
 
-            <Link
+            {/* <Link
               to="/docs"
               className={`text-gray-300 font-light hover:text-white px-3 py-2 rounded-md text-base ${location.pathname === '/docs' ? 'text-white' : ''
                 }`}
             >
               Docs
-            </Link>
+            </Link> */}
 
             <button
               onClick={onSignInClick}
@@ -96,16 +96,19 @@ export const Navbar = ({ onSignInClick }) => {
           >
             Community
           </Link>
-          <Link
+          {/* <Link
             to="/docs"
             onClick={handleMobileMenu}
             className={`text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm ${location.pathname === '/docs' ? 'text-white font-semibold' : 'font-light'
               }`}
           >
             Docs
-          </Link>
+          </Link> */}
           <button
-            onClick={onSignInClick}
+            onClick={() => {
+              onSignInClick();
+              setIsMenuOpen(false)
+            }}
             className="bg-blue-600 text-white px-6 py-2  rounded-[3px] text-sm hover:bg-blue-700 active:bg-blue-800"
           >
             Sign In

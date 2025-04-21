@@ -124,7 +124,7 @@ const App = () => {
   return (
     <Router>
       <ScrollToTop />
-      <div className="bg-slate-900 min-h-[100dvh] relative">
+      <div className="bg-slate-900 min-h-[100dvh] relative scrollbar-hidden">
         {showBackToTop && <BackToTop />}
         <Toaster position='top-center' duration={3000}/>
         {!user && <Navbar onSignInClick={handleOpenSignIn} />}

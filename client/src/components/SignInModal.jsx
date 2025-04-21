@@ -108,7 +108,7 @@ export const SignInModal = ({ isOpen, onClose, onSwitchToSignUp }) => {
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 bg-black/80 max-sm: flex items-center justify-center z-50">
+    <div className="fixed inset-0 bg-black/80 max-sm: flex items-center justify-center z-[9999]">
       <div className="bg-slate-900 p-8 sm:rounded-xl w-full max-w-md border border-slate-800">
 
         <div className="flex justify-between items-center mb-6">

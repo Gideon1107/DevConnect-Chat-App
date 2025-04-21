@@ -68,7 +68,7 @@ const UsersList = () => {
   return (
     <div className="flex-1 overflow-y-auto ">
 
-      <div className="sticky top-0 z-10 bg-slate-900 pb-1">
+      <div className="sticky top-0 z-20 bg-slate-900 pb-1">
         <div className="flex flex-1 relative px-4 items-center  overflow-hidden mb-4">
           <input type="text" className="w-full p-2  text-gray-900 outline-none focus:outline-none caret-black placeholder:italic rounded-tr-lg rounded-bl-lg pr-12 pl-2"
             placeholder="search user"

@@ -125,7 +125,7 @@ const CreateGroupModal = ({ setOpenGroupModal }) => {
 
 
     return (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex sm:items-center sm:justify-center z-50">
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex sm:items-center sm:justify-center z-[9999]">
             <div className="bg-slate-900 p-8 sm:rounded-xl w-full max-w-xl border border-slate-800">
                 <div className="flex justify-between items-center mb-6 border-b border-slate-800 pb-3">
                     <h2 className="text-lg font-medium text-white">Create New Group</h2>

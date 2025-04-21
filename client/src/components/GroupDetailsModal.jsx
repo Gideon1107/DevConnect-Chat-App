@@ -264,7 +264,7 @@ const GroupDetailsModal = ({ members, setMembers, setSelectedChatData, setSelect
 
     return (
         <>
-            <div className="fixed inset-0 bg-black/80 max-sm: flex sm:items-center sm:justify-center z-10">
+            <div className="fixed inset-0 bg-black/80 max-sm: flex sm:items-center sm:justify-center z-[9999]">
                 <div className={`bg-slate-900 p-4 sm:rounded-lg ${isEditing ? "max-w-lg w-full" : "w-full max-w-xl"} border border-slate-800`}>
                     {
                         showAddUser ? (
