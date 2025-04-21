@@ -295,15 +295,24 @@ const MessageContainer = () => {
 
       {
         showImage && (
-          <div className="fixed top-0 left-0 w-full h-screen bg-black/95 flex items-center justify-center z-[99999]">
-            <img src={imageUrl} alt="image" className="w-[90%] h-[60%] sm:h-[70%] object-contain max-h-[calc(100vh-120px)]" />
-            <div className="flex gap-8 fixed top-[60px] sm:top-[40px] w-full justify-center">
+          <div
+            className="fixed top-0 left-0 w-full h-full bg-black/95 flex flex-col items-center justify-center z-[999999] inset-0"
+            onClick={(e) => {
+              // Close when clicking on the background (not on the image or buttons)
+              if (e.target === e.currentTarget) {
+                setShowImage(false);
+                setImageUrl(null);
+              }
+            }}
+          >
+            <img src={imageUrl} alt="image" className="w-[85%] h-[50%] sm:h-[70%] object-contain max-h-[calc(100vh-180px)]" style={{marginTop: '-20px'}} />
+            <div className="flex gap-8 fixed top-[80px] sm:top-[40px] w-full justify-center">
               <button
                 onClick={() => handleDownloadFileMessage(imageUrl)}
-                className="bg-black/50 rounded-full p-2 cursor-pointer">
+                className="bg-gray-800 rounded-full p-3 cursor-pointer shadow-lg">
                 <HiDownload size={25} className="text-blue-400" />
               </button>
-              <button className="bg-black/50 rounded-full p-2 cursor-pointer"
+              <button className="bg-gray-800 rounded-full p-3 cursor-pointer shadow-lg"
                 onClick={() => {
                   setShowImage(false)
                   setImageUrl(null)
