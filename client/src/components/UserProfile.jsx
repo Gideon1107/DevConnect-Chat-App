@@ -3,7 +3,7 @@ import axiosInstance from "@/utils/axiosConfig";
 import { toast } from "sonner"
 import { HOST, LOGOUT_ROUTE } from "@/utils/constants";
 import { IoIosLogOut } from "react-icons/io";
-import { CiSettings } from "react-icons/ci";
+import { FaUserEdit } from "react-icons/fa";
 import EditProfile from "./EditProfile";
 import { useState } from "react";
 import { capitalizeUsername } from "@/utils/capitalize";
@@ -66,9 +66,9 @@ const UserProfile = () => {
         </span>
       </div>
 
-      <div className="flex items-center gap-5 sm:gap-3">
+      <div className="flex items-center gap-6 sm:gap-5">
       <button onClick={() => setIsEditProfile(true)} title="Edit Profile">
-        <CiSettings size={24} className=" text-white rounded-xl cursor-pointer hover:text-gray-200" />
+        <FaUserEdit size={22} className="text-gray-400 cursor-pointer hover:text-blue-300 transition-colors" />
       </button>
 
       <button onClick={onLogout} title="Logout">
