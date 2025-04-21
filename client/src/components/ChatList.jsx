@@ -101,7 +101,7 @@ const ChatList = () => {
               }`}></span>
             </div>
             <div className="flex-1 min-w-0 ">
-              <div className="font-medium text-white truncate font-base">{chat.username}</div>
+              <div className="font-medium text-white truncate font-base">{capitalizeUsername(chat.username)}</div>
               <div className={`text-sm text-gray-400 truncate ${chat.messageType === "file" && "italic" } font-light`}>{ chat.messageType === "text" ? chat.lastMessage : "file"}</div>
             </div>
           </div>

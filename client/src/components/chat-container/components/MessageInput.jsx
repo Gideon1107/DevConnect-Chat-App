@@ -158,7 +158,7 @@ const MessageInput = () => {
             <RiEmojiStickerLine className="text-xl" />
           </button>
 
-          {/* Emoji display */}
+          {/* Emoji display */} 
           <div className="absolute bottom-12 -right-16 sm:right-0" ref={emojiRef}>
             <EmojiPicker theme="auto" width={320} height={440}
               open={isEmojiPickerOpen}

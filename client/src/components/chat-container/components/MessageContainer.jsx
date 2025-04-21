@@ -295,9 +295,9 @@ const MessageContainer = () => {
 
       {
         showImage && (
-          <div className="fixed top-0 left-0 w-full h-screen bg-black/85 flex items-center justify-center z-10">
-            <img src={imageUrl} alt="image" className="w-[90%] h-[80%] object-contain" />
-            <div className="flex gap-8 fixed top-0 mt-5">
+          <div className="fixed top-0 left-0 w-full h-screen bg-black/85 flex items-center justify-center z-[9999]">
+            <img src={imageUrl} alt="image" className="w-[90%] h-[70%] object-contain" />
+            <div className="flex gap-8 fixed top-0 mt-10">
               <button
                 onClick={() => handleDownloadFileMessage(imageUrl)}
                 className="bg-black/20 rounded-full p-1 cursor-pointer">
