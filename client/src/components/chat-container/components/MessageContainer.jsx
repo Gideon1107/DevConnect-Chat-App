@@ -295,20 +295,20 @@ const MessageContainer = () => {
 
       {
         showImage && (
-          <div className="fixed top-0 left-0 w-full h-screen bg-black/85 flex items-center justify-center z-[9999]">
-            <img src={imageUrl} alt="image" className="w-[90%] h-[70%] object-contain" />
-            <div className="flex gap-8 fixed top-0 mt-10">
+          <div className="fixed top-0 left-0 w-full h-screen bg-black/95 flex items-center justify-center z-[99999]">
+            <img src={imageUrl} alt="image" className="w-[90%] h-[60%] sm:h-[70%] object-contain max-h-[calc(100vh-120px)]" />
+            <div className="flex gap-8 fixed top-[60px] sm:top-[40px] w-full justify-center">
               <button
                 onClick={() => handleDownloadFileMessage(imageUrl)}
-                className="bg-black/20 rounded-full p-1 cursor-pointer">
-                <HiDownload size={25} />
+                className="bg-black/50 rounded-full p-2 cursor-pointer">
+                <HiDownload size={25} className="text-blue-400" />
               </button>
-              <button className="bg-black/20 rounded-full p-1 cursor-pointer"
+              <button className="bg-black/50 rounded-full p-2 cursor-pointer"
                 onClick={() => {
                   setShowImage(false)
                   setImageUrl(null)
                 }}>
-                <RxCross1 size={25} />
+                <RxCross1 size={25} className="text-red-400" />
               </button>
             </div>
           </div>
