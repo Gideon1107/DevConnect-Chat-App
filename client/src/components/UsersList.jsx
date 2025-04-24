@@ -59,9 +59,10 @@ const UsersList = () => {
   }
 
   useEffect(() => {
-    fetchAllUsers()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+    if (!users) {
+      fetchAllUsers();
+    }
+  }, [users])
 
 
 

@@ -7,11 +7,11 @@ import logo from "../../assets/devLogo4.png"
 import { MdGroups2 } from "react-icons/md";
 import CreateGroupModal from '../CreateGroupModal';
 import { useAppStore } from "@/store/store";
-import { GET_USER_GROUPS_ROUTE, HOST } from "@/utils/constants";
+import { GET_USER_GROUPS_ROUTE, HOST, GETALLUSERS_ROUTE } from "@/utils/constants";
 import axiosInstance from "@/utils/axiosConfig";
 
 const Sidebar = () => {
-  const { setGroups } = useAppStore()
+  const { setGroups, setUsers } = useAppStore()
   const [activeTab, setActiveTab] = useState('messages');
 
   const [openGroupModal, setOpenGroupModal] = useState(false);
@@ -29,11 +29,23 @@ const Sidebar = () => {
           console.error('Error fetching groups:', error);
         }
       };
+
+      const fetchAllUsers = async () => {
+        try {
+          const response = await axiosInstance.get(`${HOST}/${GETALLUSERS_ROUTE}`)
+          if (response.data.success) {
+            setUsers(response.data.allUsers)
+          }
+        } catch (error) {
+          console.error('Error fetching all users:', error.response?.data?.message || error.message);
+          setUsers(undefined)
+        }
+      }
   
       fetchGroups();
-
+      fetchAllUsers();
       
-    }, [setGroups]);
+    }, [setGroups, setUsers]);
 
   return (
     <div className="h-full fixed sm:static border-r border-slate-800 flex flex-col md:w-[35vw] lg:w-[30vw] xl:w-[21vw] bg-slate-900 w-full scrollbar-hidden"> 

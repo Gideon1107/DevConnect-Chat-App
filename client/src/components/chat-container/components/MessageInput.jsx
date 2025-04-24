@@ -137,7 +137,7 @@ const MessageInput = () => {
 
   return (
     <div className="sticky bottom-0 left-0 right-0 z-50 bg-slate-900 w-full">
-      <div className="bg-slate-900 flex justify-center items-center p-4 sm:px-8 sm:mb-6 mb-1 gap-4">
+      <div className="bg-slate-900 flex justify-center items-center px-4 sm:px-8 sm:mb-2 mb-1 gap-4">
         <div className="flex-1 flex  items-center gap-4 pr-5 bg-slate-800 rounded-tr-[12px] rounded-bl-[12px]">
           {/* Message input field */}
           <input type="text" className="flex-1 p-3 bg-transparent rounded-lg focus:border-none focus:outline-none placeholder:text-sm" placeholder="Start Typing..."
