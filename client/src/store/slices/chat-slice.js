@@ -8,6 +8,8 @@ export const createChatSlice = (set, get) => ({
     fileUploadProgress: 0,
     fileDownloadProgress: 0,
     groups: [],
+    isLoadingMessages: false,
+    setIsLoadingMessages: (isLoading) => set({ isLoadingMessages: isLoading }),
     setGroups: (groups) => set({ groups }),
     setIsUploading: (isUploading) => set({ isUploading }),
     setIsDownloading: (isDownloading) => set({ isDownloading }),

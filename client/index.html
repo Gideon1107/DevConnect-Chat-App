@@ -8,13 +8,11 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600&display=swap">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600&display=swap">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#0f172a">
-    <meta name="format-detection" content="telephone=no">
-    <meta name="keyboard-appearance" content="dark">
     <title>DevConnect</title>
     <style>
       html, body {
@@ -36,27 +34,6 @@
       #root {
         height: 100%;
         background-color: #0f172a;
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        overflow: hidden;
-      }
-
-      /* Improve mobile keyboard behavior */
-      input, textarea {
-        font-size: 16px; /* Prevents iOS zoom on focus */
-      }
-
-      /* Prevent content from being hidden under the virtual keyboard */
-      @supports (-webkit-touch-callout: none) {
-        body, html {
-          height: -webkit-fill-available;
-        }
-        #root {
-          height: -webkit-fill-available;
-        }
       }
       @keyframes spinner {
         0% { transform: rotate(0deg); }

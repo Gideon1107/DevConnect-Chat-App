@@ -143,9 +143,14 @@ export const loginUser = async (req, res) => {
 // Route for Login in with Google
 export const googleLogin = async (req, res) => {
     try {
+        const userId =  req.user.id
+        const user = await User.findById(userId)
+        user.status = "online"; // Set user status to online
+        await user.save();
+        
         // Successful authentication, generate a JWT token
-        const authToken = createAuthToken(req.user.id)
-        const refreshToken = createRefreshToken(req.user.id);
+        const authToken = createAuthToken(userId)
+        const refreshToken = createRefreshToken(userId);
 
         // For Google OAuth, we need to pass tokens to the client
         // Since we can't directly access localStorage from the server,

@@ -79,8 +79,39 @@ html, body {
 /* Ensure navbar stays sticky */
 .sticky {
   position: sticky !important;
+  position: -webkit-sticky !important; /* iOS support */
   top: 0 !important;
-  z-index: 9999 !important;
+  z-index: 50 !important;
+  background-color: #0f172a !important; /* bg-slate-900 */
+}
+
+/* Add these rules for better mobile input handling */
+@supports (-webkit-touch-callout: none) {
+  /* iOS-specific fixes */
+  .sticky {
+    position: -webkit-sticky !important;
+  }
+}
+
+/* Prevent content from being hidden behind keyboard */
+@media screen and (max-width: 768px) {
+  body {
+    min-height: -webkit-fill-available;
+  }
+
+  /* Ensure input stays above keyboard */
+  .sticky {
+    position: sticky !important;
+    bottom: 0 !important;
+    z-index: 50 !important;
+  }
+}
+
+/* Prevent viewport height issues on mobile */
+@supports (padding: max(0px)) {
+  .sticky {
+    padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
+  }
 }
 
 /* Back to top button animation */

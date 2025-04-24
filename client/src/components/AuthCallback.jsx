@@ -54,7 +54,7 @@ const AuthCallback = () => {
   return (
     <div className="flex items-center justify-center h-screen bg-slate-900">
       <div className="text-center">
-        <h2 className="text-xl font-medium text-white mb-4">Completing authentication...</h2>
+        <h2 className="text-base sm:text-lg font-light text-white mb-4">Completing authentication...</h2>
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mx-auto"></div>
       </div>
     </div>

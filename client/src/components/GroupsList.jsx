@@ -1,40 +1,42 @@
 import { useAppStore } from "@/store/store";
-import { GET_USER_GROUPS_ROUTE, HOST } from "@/utils/constants";
-import { useEffect } from "react";
+import { GET_GROUP_MESSAGES_ROUTE, HOST } from "@/utils/constants";
 import axiosInstance from "@/utils/axiosConfig";
 
 const GroupsList = () => {
-  const { groups, setSelectedChatType, setSelectedChatData, setGroups, setSelectedChatMessages } = useAppStore()
+  const { groups, setSelectedChatType, setSelectedChatData, setSelectedChatMessages, setIsLoadingMessages } = useAppStore()
 
 
-  // Fetch groups when the component mounts
-  useEffect(() => {
-    const fetchGroups = async () => {
-      try {
-        const response = await axiosInstance.get(`${HOST}/${GET_USER_GROUPS_ROUTE}`);
-        if (response.data.success) {
-          setGroups(response.data.groups)
-        }
-      } catch (error) {
-        console.error('Error fetching groups:', error);
+  // This function select chat as group and fetch the messages
+  const handleGroupSelect = async (group) => {
+    try {
+      setSelectedChatType("group");
+      setSelectedChatData(group);
+      setSelectedChatMessages([]);
+      setIsLoadingMessages(true)
+
+      // Fetch messages immediately when group is selected
+      const response = await axiosInstance.get(`${HOST}/${GET_GROUP_MESSAGES_ROUTE}/${group._id}`);
+      
+      if (response.data.messages) {
+        setSelectedChatMessages(response.data.messages);
+        setIsLoadingMessages(false)
       }
-    };
+    } catch (error) {
+      console.error('Error prefetching group messages:', error);
+      // Don't show error toast here since MessageContainer will retry
+    } finally {
+      setIsLoadingMessages(false)
+    }
+  };
 
-    fetchGroups();
-  }, [setGroups]);
-
-
+  if (!groups) return null;
 
   return (
     <div className="flex-1 overflow-y-auto scrollbar-hidden">
       {groups.map((group) => (
         <div
           key={group.name}
-          onClick={() => {
-            setSelectedChatType("group")
-            setSelectedChatData(group)
-            setSelectedChatMessages([])
-          }}
+          onClick={() => handleGroupSelect(group)}
           className="flex items-center gap-3 p-3 cursor-pointer sm:hover:bg-slate-800 max-sm:active:bg-slate-800"
         >
           <img

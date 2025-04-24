@@ -12,7 +12,7 @@ import { toast } from "sonner";
 
 
 
-const MessageInput = ({ isKeyboardOpen }) => {
+const MessageInput = () => {
 
   const [message, setMessage] = useState("");
   const emojiRef = useRef();
@@ -25,7 +25,7 @@ const MessageInput = ({ isKeyboardOpen }) => {
     user,
     setIsUploading,
     setFileUploadProgress,
-   } = useAppStore()
+  } = useAppStore()
 
 
 
@@ -136,45 +136,48 @@ const MessageInput = ({ isKeyboardOpen }) => {
 
 
   return (
-    <div className={`${isKeyboardOpen ? 'py-2' : 'h-[10vh]'} bg-slate-900 flex justify-center items-center p-4 sm:px-8 sm:mb-6 mb-1 gap-4 transition-all duration-200`}>
-      <div className="flex-1 flex  items-center gap-4 pr-5 bg-slate-800 rounded-tr-[12px] rounded-bl-[12px]">
-        {/* Message input field */}
-        <input type="text" className="flex-1 p-3 bg-transparent rounded-lg focus:border-none focus:outline-none placeholder:text-sm" placeholder="Start Typing..."
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          onKeyDown={handleKeyDown} />
+    <div className="sticky bottom-0 left-0 right-0 z-50 bg-slate-900 w-full">
+      <div className="bg-slate-900 flex justify-center items-center p-4 sm:px-8 sm:mb-6 mb-1 gap-4">
+        <div className="flex-1 flex  items-center gap-4 pr-5 bg-slate-800 rounded-tr-[12px] rounded-bl-[12px]">
+          {/* Message input field */}
+          <input type="text" className="flex-1 p-3 bg-transparent rounded-lg focus:border-none focus:outline-none placeholder:text-sm" placeholder="Start Typing..."
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            onKeyDown={handleKeyDown}
+          />
 
-        {/* Attahment button */}
-        <button
-          className="text-gray-200 focus:text-white duration-300 transition-all">
-          <GrAttachment className="text-xl" onClick={handleFileUpload} />
-        </button>
-        <input type="file" ref={fileInputRef} onChange={handleAttachmentChange} className="hidden" />
-
-        <div className="relative items-center flex">
-          {/* Emoji button */}
-          <button className="text-gray-200 focus:text-white duration-300 transition-all"
-            onClick={() => setIsEmojiPickerOpen(!isEmojiPickerOpen)}>
-            <RiEmojiStickerLine className="text-xl" />
+          {/* Attahment button */}
+          <button
+            className="text-gray-200 focus:text-white duration-300 transition-all">
+            <GrAttachment className="text-xl" onClick={handleFileUpload} />
           </button>
+          <input type="file" ref={fileInputRef} onChange={handleAttachmentChange} className="hidden" />
 
-          {/* Emoji display */}
-          <div className="absolute bottom-12 -right-16 sm:right-0" ref={emojiRef}>
-            <EmojiPicker theme="auto" width={320} height={440}
-              open={isEmojiPickerOpen}
-              onEmojiClick={handleAddEmoji}
-              autoFocusSearch={false}
-            />
+          <div className="relative items-center flex">
+            {/* Emoji button */}
+            <button className="text-gray-200 focus:text-white duration-300 transition-all"
+              onClick={() => setIsEmojiPickerOpen(!isEmojiPickerOpen)}>
+              <RiEmojiStickerLine className="text-xl" />
+            </button>
+
+            {/* Emoji display */}
+            <div className="absolute bottom-12 -right-16 sm:right-0" ref={emojiRef}>
+              <EmojiPicker theme="auto" width={320} height={440}
+                open={isEmojiPickerOpen}
+                onEmojiClick={handleAddEmoji}
+                autoFocusSearch={false}
+              />
+
+            </div>
 
           </div>
-
         </div>
-      </div>
 
-      <button className="text-gray-200 bg-slate-800 p-3 rounded-[5px] focus:text-white duration-300 transition-all hover:bg-slate-700">
-        <AiOutlineSend className="text-2xl"
-          onClick={handleSendMessage} />
-      </button>
+        <button className="text-gray-200 bg-slate-800 p-3 rounded-[5px] focus:text-white duration-300 transition-all hover:bg-slate-700">
+          <AiOutlineSend className="text-2xl"
+            onClick={handleSendMessage} />
+        </button>
+      </div>
     </div>
   );
 };

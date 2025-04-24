@@ -1,4 +1,4 @@
-import  { useState } from 'react';
+import  { useState, useEffect } from 'react';
 import UserProfile from '../UserProfile';
 import ChatList from '../ChatList';
 import UsersList from '../UsersList';
@@ -6,11 +6,34 @@ import GroupsList from '../GroupsList';
 import logo from "../../assets/devLogo4.png"
 import { MdGroups2 } from "react-icons/md";
 import CreateGroupModal from '../CreateGroupModal';
+import { useAppStore } from "@/store/store";
+import { GET_USER_GROUPS_ROUTE, HOST } from "@/utils/constants";
+import axiosInstance from "@/utils/axiosConfig";
 
 const Sidebar = () => {
+  const { setGroups } = useAppStore()
   const [activeTab, setActiveTab] = useState('messages');
 
   const [openGroupModal, setOpenGroupModal] = useState(false);
+
+
+    // Fetch groups when the component mounts
+    useEffect(() => {
+      const fetchGroups = async () => {
+        try {
+          const response = await axiosInstance.get(`${HOST}/${GET_USER_GROUPS_ROUTE}`);
+          if (response.data.success) {
+            setGroups(response.data.groups)
+          }
+        } catch (error) {
+          console.error('Error fetching groups:', error);
+        }
+      };
+  
+      fetchGroups();
+
+      
+    }, [setGroups]);
 
   return (
     <div className="h-full fixed sm:static border-r border-slate-800 flex flex-col md:w-[35vw] lg:w-[30vw] xl:w-[21vw] bg-slate-900 w-full scrollbar-hidden"> 

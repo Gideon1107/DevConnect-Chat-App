@@ -34,9 +34,14 @@ passport.use(new GoogleStrategy({
         });
 
         await user.save();
+        
+      } else {
+        user.status = "online"; // Set user status to online
+        await user.save();
       }
       done(null, user);
     } catch (error) {
+      console.log(error)
       done(error, null);
     }
   }
