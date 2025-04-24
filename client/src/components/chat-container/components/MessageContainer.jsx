@@ -62,7 +62,7 @@ const MessageContainer = () => {
       }
     }
 
-    if (selectedChatData?._id && (!selectedChatMessages)) {
+    if (selectedChatData?._id && (selectedChatMessages.length === 0)) {
       if (selectedChatType === "dm") {
         getMessages();
       } else if (selectedChatType === "group") {

@@ -27,7 +27,7 @@ import ConfirmDelete from "./ConfirmDelete";
 
 const GroupDetailsModal = ({ members, setMembers, setSelectedChatData, setSelectedChatType, setGroupDetailsModal, groupDetailsModal }) => {
 
-    const { selectedChatData, setGroups, groups } = useAppStore() // Getting the selected chat data from the store, could be dm or group
+    const { selectedChatData, setGroups, groups, setSelectedChatMessages } = useAppStore() // Getting the selected chat data from the store, could be dm or group
     const [admin, setAdmin] = useState("")
     const [isEditing, setIsEditing] = useState(false)
     const [showAddUser, setShowAddUser] = useState(false);
@@ -417,6 +417,7 @@ const GroupDetailsModal = ({ members, setMembers, setSelectedChatData, setSelect
                                                                 onClick={(e) => {
                                                                     e.stopPropagation();
                                                                     if (!isCurrentUser) { // Check if member is not current user
+                                                                        setSelectedChatMessages([])
                                                                         setSelectedChatType("dm")
                                                                         setSelectedChatData(member)
                                                                         handleClose()
