@@ -14,23 +14,13 @@ html, body {
   background-color: #0f172a !important; /* bg-slate-900 */
   margin: 0;
   padding: 0;
-  min-height: 100vh;
+  height: 100%;
   box-sizing: border-box;
   color: white;
-  overflow-x: hidden; /* Prevent horizontal scrolling */
   -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
   -webkit-touch-callout: none; /* Disable callout on long-press */
-  -webkit-user-select: none; /* Disable text selection */
-  user-select: none; /* Disable text selection */
 }
 
-/* Improve initial loading state */
-#root {
-  min-height: 100vh;
-  background-color: #0f172a !important; /* bg-slate-900 */
-  overscroll-behavior: none; /* Prevent bounce effect on iOS */
-  touch-action: manipulation; /* Optimize for touch */
-}
 
 /* Animation for the loading spinner */
 @keyframes app-spin {
@@ -76,43 +66,6 @@ html, body {
 }
 
 
-/* Ensure navbar stays sticky */
-.sticky {
-  position: sticky !important;
-  position: -webkit-sticky !important; /* iOS support */
-  top: 0 !important;
-  z-index: 50 !important;
-  background-color: #0f172a !important; /* bg-slate-900 */
-}
-
-/* Add these rules for better mobile input handling */
-@supports (-webkit-touch-callout: none) {
-  /* iOS-specific fixes */
-  .sticky {
-    position: -webkit-sticky !important;
-  }
-}
-
-/* Prevent content from being hidden behind keyboard */
-@media screen and (max-width: 768px) {
-  body {
-    min-height: -webkit-fill-available;
-  }
-
-  /* Ensure input stays above keyboard */
-  .sticky {
-    position: sticky !important;
-    bottom: 0 !important;
-    z-index: 50 !important;
-  }
-}
-
-/* Prevent viewport height issues on mobile */
-@supports (padding: max(0px)) {
-  .sticky {
-    padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
-  }
-}
 
 /* Back to top button animation */
 @keyframes float {

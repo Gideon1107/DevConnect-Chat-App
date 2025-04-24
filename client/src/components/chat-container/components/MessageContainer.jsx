@@ -7,6 +7,7 @@ import { GoFileZip } from "react-icons/go";
 import { HiDownload } from "react-icons/hi";
 import { RxCross1 } from "react-icons/rx";
 import { toast } from "sonner";
+import LoadingScreen from "@/components/LoadingScreen";
 
 
 const MessageContainer = () => {
@@ -303,8 +304,9 @@ const MessageContainer = () => {
         isLoadingMessages
           ? (
             <div className="flex items-center justify-center h-[100dvh]">
-              <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-gray-400"></div>
+              <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
             </div>
+
           )
           : (
             <>

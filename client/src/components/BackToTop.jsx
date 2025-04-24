@@ -37,7 +37,7 @@ const BackToTop = () => {
 
     return (
         <div
-            className={`fixed z-50 bottom-8 right-8 transition-all duration-500 ease-in-out transform ${showBackToTop ? 'translate-y-0 opacity-100' : 'translate-y-16 opacity-0'}`}
+            className={`fixed z-[99999] bottom-8 right-8 transition-all duration-500 ease-in-out transform ${showBackToTop ? 'translate-y-0 opacity-100' : 'translate-y-16 opacity-0'}`}
             onClick={handleScrollToTop}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
@@ -54,7 +54,7 @@ const BackToTop = () => {
                 />
             </div>
             {/* Tooltip */}
-            <div className={`absolute -top-8 left-1/2 transform -translate-x-1/2 whitespace-nowrap bg-blue-600 text-white text-xs py-1 px-2 rounded transition-all duration-300 ${isHovered ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}>
+            <div className={`absolute -top-8 left-1/2 transform -translate-x-1/2 whitespace-nowrap bg-blue-600 text-white text-xs py-1 px-2 rounded transition-all duration-300 font-light ${isHovered ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}>
                 Back to top
             </div>
 
