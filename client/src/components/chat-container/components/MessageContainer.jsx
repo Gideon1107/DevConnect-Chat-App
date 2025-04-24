@@ -49,7 +49,7 @@ const MessageContainer = () => {
 
     const getGroupMessages = async () => {
       try {
-        const response = await axiosInstance.get(`${HOST}/${GET_GROUP_MESSAGES_ROUTE}/${selectedChatData._id}`)
+        const response = await axiosInstance.get(`${HOST}/${GET_GROUP_MESSAGES_ROUTE}/${selectedChatData._id}`);
         if (response.data.messages) {
           setSelectedChatMessages(response.data.messages)
         }
@@ -62,14 +62,13 @@ const MessageContainer = () => {
       }
     }
 
-    if (selectedChatData?._id && (selectedChatMessages.length === 0)) {
-      if (selectedChatType === "dm") {
-        getMessages();
-      } else if (selectedChatType === "group") {
-        getGroupMessages()
-      }
+ 
+    if (selectedChatType === "dm") {
+      getMessages();
+    } else if (selectedChatType === "group") {
+      getGroupMessages()
     }
-  }, [selectedChatData, selectedChatType, setSelectedChatMessages, selectedChatMessages])
+  }, [selectedChatData, selectedChatType, setSelectedChatMessages])
 
 
   useEffect(() => {

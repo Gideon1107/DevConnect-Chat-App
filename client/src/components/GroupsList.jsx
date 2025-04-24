@@ -9,9 +9,9 @@ const GroupsList = () => {
   // This function select chat as group and fetch the messages
   const handleGroupSelect = async (group) => {
     try {
+      setSelectedChatMessages([]);
       setSelectedChatType("group");
       setSelectedChatData(group);
-      setSelectedChatMessages([]);
       setIsLoadingMessages(true)
 
       // Fetch messages immediately when group is selected

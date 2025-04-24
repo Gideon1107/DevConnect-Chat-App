@@ -11,6 +11,10 @@ export const createGroup = async (req, res) => {
     const userId = req.user.id; 
     const admin = await User.findById(userId);
 
+    if (!userId) {
+      return res.status(404).json({success: false, message: "Not Authorized"})
+    }
+
     // Check if group name already exists
     const existingGroup = await Group.findOne({ name });
     if (existingGroup) {
