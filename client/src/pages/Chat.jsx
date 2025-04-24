@@ -28,7 +28,7 @@ const Chat = () => {
 
       {
         isUploading && ( <div className="h-[100vh] w-full fixed top-0 z-20 left-0 bg-black/80 flex items-center justify-center flex-col gap-5 backdrop-blur-md">
-          <h5 className="tet-4xl animate-pulse">Uploading File</h5>
+          <h5 className="text-sm sm:text-base animate-pulse">Uploading File</h5>
           {fileUploadProgress}%
         </div>
         )
@@ -36,7 +36,7 @@ const Chat = () => {
 
       {
         isDownloading && ( <div className="h-[100vh] w-full fixed top-0 z-20 left-0 bg-black/80 flex items-center justify-center flex-col gap-5 backdrop-blur-md">
-          <h5 className="tet-4xl animate-pulse">Downloading File</h5>
+          <h5 className="text-sm sm:text-base animate-pulse">Downloading File</h5>
           {fileDownloadProgress}%
         </div>
         )

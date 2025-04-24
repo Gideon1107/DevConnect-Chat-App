@@ -321,7 +321,7 @@ const MessageContainer = () => {
         showImage && (
           <div className="fixed top-0 left-0 w-full h-screen bg-black/95 flex items-center justify-center z-[99999]" style={{ position: 'fixed', zIndex: 99999 }}>
             <img src={imageUrl} alt="image" className="w-[90%] h-[60%] object-contain max-h-[calc(100vh-160px)]" style={{ marginTop: '-20px' }} />
-            <div className="flex gap-8 fixed top-[70px] w-full justify-center" style={{ zIndex: 99999 }}>
+            <div className="flex gap-8 fixed top-[120px] w-full justify-center" style={{ zIndex: 99999 }}>
               <button
                 onClick={() => handleDownloadFileMessage(imageUrl)}
                 className="bg-gray-800/80 rounded-full p-2 cursor-pointer">
