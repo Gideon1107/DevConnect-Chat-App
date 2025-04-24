@@ -264,7 +264,7 @@ const GroupDetailsModal = ({ members, setMembers, setSelectedChatData, setSelect
 
     return (
         <>
-            <div className="fixed inset-0 bg-black/80 max-sm: flex sm:items-center sm:justify-center z-[9999]">
+            <div className="fixed inset-0 bg-black/80 max-sm: flex sm:items-center sm:justify-center z-[9999] overflow-y-auto">
                 <div className={`bg-slate-900 p-4 sm:rounded-lg ${isEditing ? "max-w-lg w-full" : "w-full max-w-xl"} border border-slate-800`}>
                     {
                         showAddUser ? (
@@ -405,12 +405,12 @@ const GroupDetailsModal = ({ members, setMembers, setSelectedChatData, setSelect
                                         </div>
 
                                         {/* Members */}
-                                        <div className="bg-slate-800/20 rounded-sm mb-4 overflow-y-auto sm:max-h-[200px] max-h-[65vh] scrollbar-hidden max-sm:min-h-[50vh]">
+                                        <div className="bg-slate-800/20 rounded-sm mb-4 overflow-y-auto sm:max-h-[200px] max-h-[40dvh] ">
                                             {
                                                 members.map((member) => {
                                                     const isCurrentUser = member._id === useAppStore.getState().user._id; // Check if member is current user
                                                     return (
-                                                        <div className={`flex items-center gap-2 border-b-[1px] border-slate-800 hover:bg-slate-800/50 py-3 rounded-md ${isCurrentUser ? 'cursor-not-allowed' : 'cursor-pointer'}`} key={member._id}>
+                                                        <div className={`flex items-center gap-2 border-b-[1px] border-slate-800 sm:hover:bg-slate-800/50 active:bg-slate-800/50 py-3 rounded-md ${isCurrentUser ? 'cursor-not-allowed' : 'cursor-pointer'}`} key={member._id}>
 
                                                             {/* Each Member container */}
                                                             <div className="flex items-center gap-2 w-full pl-3"
