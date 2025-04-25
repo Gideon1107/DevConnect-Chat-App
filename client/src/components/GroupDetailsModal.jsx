@@ -265,7 +265,7 @@ const GroupDetailsModal = ({ members, setMembers, setSelectedChatData, setSelect
     return (
         <>
             <div className="fixed inset-0 bg-black/80 max-sm: flex sm:items-center sm:justify-center z-[9999] overflow-y-auto">
-                <div className={`bg-slate-900 p-4 sm:rounded-lg ${isEditing ? "max-w-lg w-full" : "w-full max-w-xl"} border border-slate-800`}>
+                <div className={`bg-slate-900 p-4 sm:rounded-lg ${isEditing ? "max-w-lg w-full" : "w-full max-w-xl"} border border-slate-900`}>
                     {
                         showAddUser ? (
                             // Add User Form
@@ -405,7 +405,7 @@ const GroupDetailsModal = ({ members, setMembers, setSelectedChatData, setSelect
                                         </div>
 
                                         {/* Members */}
-                                        <div className="bg-slate-800/20 rounded-sm mb-4 overflow-y-auto sm:max-h-[200px] max-h-[40dvh] ">
+                                        <div className="bg-slate-800/20 rounded-sm mb-4 overflow-y-auto sm:max-h-[200px] max-h-[40dvh] custom-scrollbar">
                                             {
                                                 members.map((member) => {
                                                     const isCurrentUser = member._id === useAppStore.getState().user._id; // Check if member is current user
@@ -457,17 +457,21 @@ const GroupDetailsModal = ({ members, setMembers, setSelectedChatData, setSelect
                                     {/* Action Button */}
                                     <div>
                                         {
-                                            admin._id === useAppStore.getState().user._id ?  // If the current user is the admin of the group Show Edit and Delete buttons
+                                            selectedChatData.createdBy === useAppStore.getState().user._id ?  // If the current user is the admin of the group Show Edit and Delete buttons
                                                 <div className="flex justify-between">
                                                     <button className="p-2 px-4 bg-slate-700/90 rounded-sm hover:bg-slate-800 transition-all duration-300 text-sm"
-                                                        onClick={() => setIsEditing(true)}
+                                                    onClick={() => setIsEditing(true)}
+                                                    disabled={selectedChatData.createdBy !== useAppStore.getState().user._id}
                                                     >Edit Group</button>
                                                     <button className="p-2 px-4 bg-red-700 rounded-sm text-sm hover:bg-red-700/80 transition-all duration-300"
-                                                        onClick={() => setShowConfirmGroupDeleteModal(true)}
+                                                    onClick={() => setShowConfirmGroupDeleteModal(true)}
+                                                    disabled={selectedChatData.createdBy !== useAppStore.getState().user._id}
                                                     >Delete Group</button>
-                                                </div> : // If the current user is not the admin of the group Show Leave button
+                                                </div> 
+                                                : // If the current user is not the admin of the group Show Leave button
                                                 <button className="p-2 px-4 bg-red-700 rounded-sm text-sm hover:bg-red-700/80 transition-all duration-300"
-                                                    onClick={() => setShowConfirmLeaveGroupModal(true)}
+                                                onClick={() => setShowConfirmLeaveGroupModal(true)}
+                                                disabled={selectedChatData.createdBy === useAppStore.getState().user._id}
                                                 >Leave Group</button>
                                         }
                                     </div>

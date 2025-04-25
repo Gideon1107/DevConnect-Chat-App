@@ -167,14 +167,31 @@ input:-moz-placeholder {
 }
 
 
-/* Custom scrollbar class is now also hidden for app-like feel */
 .custom-scrollbar {
-  scrollbar-width: none;  /* Firefox */
-  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: thin;  /* Firefox */
+  -ms-overflow-style: auto;  /* IE and Edge */
 }
 
 .custom-scrollbar::-webkit-scrollbar {
-  display: none;
+  display: block;
+  width: 4px;
+  background-color: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;  /* Removed the visible track */
+  margin: 0; /* Try to eliminate top/bottom margins */
+  border: none;
+  box-shadow: none;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #475569;  /* slate-600 */
+  border-radius: 2px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #64748b;  /* slate-500 */
 }
 
 /* Allow text selection in inputs and textareas */
