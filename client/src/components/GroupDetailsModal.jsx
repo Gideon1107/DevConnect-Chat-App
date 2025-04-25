@@ -28,7 +28,6 @@ import ConfirmDelete from "./ConfirmDelete";
 const GroupDetailsModal = ({ members, setMembers, setSelectedChatData, setSelectedChatType, setGroupDetailsModal, groupDetailsModal }) => {
 
     const { selectedChatData, setGroups, groups, setSelectedChatMessages } = useAppStore() // Getting the selected chat data from the store, could be dm or group
-    const [admin, setAdmin] = useState("")
     const [isEditing, setIsEditing] = useState(false)
     const [showAddUser, setShowAddUser] = useState(false);
     const [allUsers, setAllUsers] = useState([]);
@@ -38,6 +37,8 @@ const GroupDetailsModal = ({ members, setMembers, setSelectedChatData, setSelect
     const [showConfirmLeaveGroupModal, setShowConfirmLeaveGroupModal] = useState(false) // State to show confirm leave group modal
     const [memberIdToRemove, setMemberIdToRemove] = useState(null) // State to store member Id to remove which will be passed as props to confirm modal
     const [memberToRemove, setMemberToRemoe] = useState("") //State to store member username to be removed which will be passed as props to confirm modal
+
+    const admin = members.filter((member) => member._id === selectedChatData.createdBy)[0] // filter out the group admin from member array
 
     // Fetch groups
     useEffect(() => {
@@ -235,28 +236,6 @@ const GroupDetailsModal = ({ members, setMembers, setSelectedChatData, setSelect
             toast.error(error.response?.data?.message || "Failed to leave group", {duration: 2000})
         }
     }
-
-
-    // This function gets the group admin
-    const getGroupAdmin = async () => {
-        const admindId = selectedChatData.createdBy
-
-        try {
-            const response = await axiosInstance.get(`${HOST}/${GET_GROUP_ADMIN_ROUTE}`, {
-                params: {
-                    adminId: admindId
-                }
-            })
-            setAdmin(response.data.admin)  // Set admin to the admin received
-        } catch (error) {
-            console.error('Error getting group admin:', error);
-        }
-    }
-
-    useEffect(() => {
-        getGroupAdmin()
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
 
 
     // Early return if modal shouldn't be shown
