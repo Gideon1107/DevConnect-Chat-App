@@ -9,9 +9,14 @@ passport.use(new GoogleStrategy({
   },
   async (accessToken, refreshToken, profile, done) => {
     try {
-      let user = await User.findOne({ googleId: profile.id });
-      if (!user) {
+      let user = await User.findOne({ 
+        $or: [
+          { googleId: profile.id }, 
+          { email: profile.emails[0].value }
+        ] 
+      });
 
+      if (!user) {
         let baseUsername = profile.displayName.split(' ')[0].toLowerCase(); // Extract first name & lowercase
         let username = baseUsername;
         // Check if username exists
@@ -36,13 +41,23 @@ passport.use(new GoogleStrategy({
         await user.save();
         
       } else {
+        // If user exists but doesn't have googleId, update it
+        if (!user.googleId) {
+          user.googleId = profile.id;
+        }
+        
         user.status = "online"; // Set user status to online
         await user.save();
       }
+
       done(null, user);
     } catch (error) {
-      console.log(error)
-      done(error, null);
+      console.log(error);
+      if (error.code === 11000) {
+        done(new Error('Email already registered with different account'));
+      } else {
+        done(new Error('Error during authentication: ' + error.message));
+      }
     }
   }
 ));

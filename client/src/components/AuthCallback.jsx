@@ -35,11 +35,11 @@ const AuthCallback = () => {
           // Redirect to chat page
           setTimeout(() => {
             navigate('/chat');
-          }, 1000);
+          }, 2000);
         } catch (error) {
           console.error('Error fetching user data:', error);
-          toast.success('Logged in, loading your profile...', { theme: 'light' });
-          navigate('/chat');
+          toast.error('Error loading profile: ' + error.message, { theme: 'light' });
+          navigate('/');
         }
       } else {
         toast.error('Authentication failed', { theme: 'light' });
