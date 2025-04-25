@@ -35,7 +35,7 @@ const ChatHeader = () => {
 
 
   return (
-    <div className={`px-4 pt-3 pb-2 border-b border-slate-800 flex justify-between items-center sticky top-0 z-50 ${selectedChatType === "group" ? "cursor-pointer" : ""}`}
+    <div className={`px-4 pt-3 pb-2 border-b border-slate-800 flex justify-between items-center sticky top-0 ${selectedChatType === "group" ? "cursor-pointer" : ""}`}
     style={{ position: '-webkit-sticky' }} // For iOS support
     onClick={selectedChatType === "group" ? () => {
       setGroupDetailsModal(true)

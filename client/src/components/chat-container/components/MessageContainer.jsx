@@ -195,14 +195,14 @@ const MessageContainer = () => {
             : "bg-gray-600/50 text-white/80 border-gray-500/50 rounded-tl-2xl rounded-br-2xl"} inline-block  sm:max-w-[55%] break-words text-sm`}>
 
             {checkIfImage(message.mediaUrl)
-              ? <div className="cursor-pointer"
+              ? <div className="cursor-pointer w-[200px] h-[200px] overflow-hidden"
                 onClick={() => {
                   setImageUrl(message.mediaUrl);
                   setShowImage(true);
                 }
                 }
               >
-                <img src={message.mediaUrl} alt="image" width={200} height={200} />
+                <img src={message.mediaUrl} alt="image" className="w-full h-full object-cover" />
               </div>
               : <div className="flex items-center justify-center gap-3 px-2 py-1">
                 <span className="text-white/80 text-2xl bg-black/20 rounded-full p-2">
@@ -320,18 +320,18 @@ const MessageContainer = () => {
         showImage && (
           <div className="fixed top-0 left-0 w-full h-screen bg-black/95 flex items-center justify-center z-[99999]" style={{ position: 'fixed', zIndex: 99999 }}>
             <img src={imageUrl} alt="image" className="w-[90%] h-[60%] object-contain max-h-[calc(100vh-160px)]" style={{ marginTop: '-20px' }} />
-            <div className="flex gap-8 fixed top-[120px] w-full justify-center" style={{ zIndex: 99999 }}>
+            <div className="flex gap-8 fixed top-[100px] w-full justify-center" style={{ zIndex: 99999 }}>
               <button
                 onClick={() => handleDownloadFileMessage(imageUrl)}
                 className="bg-gray-800/80 rounded-full p-2 cursor-pointer">
-                <HiDownload size={25} />
+                <HiDownload size={25} className="text-blue-400"/>
               </button>
               <button className="bg-gray-800/80 rounded-full p-2 cursor-pointer"
                 onClick={() => {
                   setShowImage(false)
                   setImageUrl(null)
                 }}>
-                <RxCross1 size={25} />
+                <RxCross1 size={25} className="text-red-300"/>
               </button>
             </div>
           </div>
