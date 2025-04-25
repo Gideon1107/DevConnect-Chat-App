@@ -36,29 +36,36 @@ const ChatHeader = () => {
 
   return (
     <div className={`px-4 pt-3 pb-2 border-b border-slate-800 flex justify-between items-center sticky top-0 z-50 ${selectedChatType === "group" ? "cursor-pointer" : ""}`}
-    style={{ position: '-webkit-sticky' }} // For iOS support
-    onClick={selectedChatType === "group" ? () => {
-      setGroupDetailsModal(true)
-    }: null }>
+      style={{ position: '-webkit-sticky' }} // For iOS support
+      onClick={selectedChatType === "group" ? () => {
+        setGroupDetailsModal(true)
+      } : null}>
       <div className="flex items-center gap-4">
-      {
-        selectedChatType === "dm" ? <img
-        src={selectedChatData.profilePicture}
-        alt={selectedChatData.username}
-        className="w-8 h-8 rounded-full"
-      /> : <img
-        src={selectedChatData.image}
-        alt={selectedChatData.name}
-        className="w-8 h-8 rounded-full"
-      />
-      }
+        {
+          selectedChatType === "dm" ?
+            <div className="w-8 h-8 overflow-hidden rounded-full">
+              <img
+                src={selectedChatData.profilePicture}
+                alt={selectedChatData.username}
+                className="w-full h-full object-cover"
+              />
+            </div>
+            : 
+            <div className="w-8 h-8 overflow-hidden rounded-full">
+              <img
+                src={selectedChatData.image}
+                alt={selectedChatData.name}
+                className="w-full h-full object-cover"
+              />
+            </div>
+        }
 
         <span className="font-medium text-white truncate flex items-center">
           {
             selectedChatType === "dm" ? capitalizeUsername(selectedChatData.username)
-            : <div className="flex flex-col">
-              <span>{selectedChatData.name}</span>
-              <span className="text-[12px] text-gray-400 font-light text-wrap">tap here for group info</span>
+              : <div className="flex flex-col">
+                <span>{selectedChatData.name}</span>
+                <span className="text-[12px] text-gray-400 font-light text-wrap">tap here for group info</span>
               </div>
           }
 
@@ -66,20 +73,20 @@ const ChatHeader = () => {
       </div>
 
       <button className="text-gray-400 focus:text-white duration-300 transition-all"
-      onClick={closeChat}
+        onClick={closeChat}
       >
-        <RxCross1 className="text-xl"/>
+        <RxCross1 className="text-xl" />
       </button>
 
       {
         groupDetailsModal &&
         <GroupDetailsModal
-        setSelectedChatData={setSelectedChatData}
-        setSelectedChatType={setSelectedChatType}
-        members={members}
-        setMembers={setMembers}
-        setGroupDetailsModal={setGroupDetailsModal}
-        groupDetailsModal={groupDetailsModal}
+          setSelectedChatData={setSelectedChatData}
+          setSelectedChatType={setSelectedChatType}
+          members={members}
+          setMembers={setMembers}
+          setGroupDetailsModal={setGroupDetailsModal}
+          groupDetailsModal={groupDetailsModal}
         />
       }
     </div>

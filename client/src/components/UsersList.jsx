@@ -80,15 +80,15 @@ const UsersList = () => {
         </div>
 
         <div className="flex items-center justify-between mb-2 px-4 gap-2">
-          <button className={`px-6 md:px-4  rounded-tr-lg rounded-bl-lg text-sm py-1 ${sortBy === "all" ? "bg-blue-700" : "bg-slate-600"}`}
+          <button className={`px-6 sm:px-2  rounded-tr-lg rounded-bl-lg text-sm py-1 ${sortBy === "all" ? "bg-blue-700" : "bg-slate-600"}`}
             onClick={() => setSortBy("all")}
           >All</button>
 
-          <button className={`px-6 md:px-4 rounded-tr-lg rounded-bl-lg text-sm py-1 ${sortBy === "online" ? "bg-blue-700" : "bg-slate-600"}`}
+          <button className={`px-6 sm:px-2 rounded-tr-lg rounded-bl-lg text-sm py-1 ${sortBy === "online" ? "bg-blue-700" : "bg-slate-600"}`}
             onClick={() => setSortBy("online")}
           >Online</button>
 
-          <button className={`px-6 md:px-4 rounded-tr-lg rounded-bl-lg text-sm py-1 truncate ${sortBy === "username" ? "bg-blue-700" : "bg-slate-600"}`}
+          <button className={`px-6 sm:px-2 rounded-tr-lg rounded-bl-lg text-sm py-1 truncate ${sortBy === "username" ? "bg-blue-700" : "bg-slate-600"}`}
             onClick={() => setSortBy("username")}
           >Username(A-Z)</button>
         </div>
