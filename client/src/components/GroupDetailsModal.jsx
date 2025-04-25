@@ -243,7 +243,7 @@ const GroupDetailsModal = ({ members, setMembers, setSelectedChatData, setSelect
 
     return (
         <>
-            <div className="fixed inset-0 bg-black/80 max-sm: flex sm:items-center sm:justify-center z-[9999] overflow-y-auto">
+            <div className="fixed inset-0 bg-black/80 max-sm: flex sm:items-center sm:justify-center z-[9999] overflow-y-auto ">
                 <div className={`bg-slate-900 p-4 sm:rounded-lg ${isEditing ? "max-w-lg w-full" : "w-full max-w-xl"} border border-slate-900`}>
                     {
                         showAddUser ? (
@@ -360,7 +360,7 @@ const GroupDetailsModal = ({ members, setMembers, setSelectedChatData, setSelect
                                     <div className="flex flex-col">
                                         <div className="flex items-center gap-2 mb-6">
                                             <span className="text-sm text-gray-400">Admin: </span>
-                                            <span className="text-sm text-white pl-2 font-normal">{admin._id === useAppStore.getState().user._id ? "You" : capitalizeUsername(admin.username)}</span>
+                                            <span className="text-sm text-white pl-2 font-normal">{admin._id === useAppStore.getState().user._id ? "Me" : capitalizeUsername(admin.username)}</span>
                                         </div>
 
 
@@ -384,7 +384,7 @@ const GroupDetailsModal = ({ members, setMembers, setSelectedChatData, setSelect
                                         </div>
 
                                         {/* Members */}
-                                        <div className="bg-slate-800/20 rounded-sm mb-4 overflow-y-auto sm:max-h-[200px] max-h-[40dvh] custom-scrollbar">
+                                        <div className="bg-slate-800/10 mb-4 overflow-y-auto sm:max-h-[200px] max-h-[40dvh] scrollbar-hidden">
                                             {
                                                 members.map((member) => {
                                                     const isCurrentUser = member._id === useAppStore.getState().user._id; // Check if member is current user
@@ -403,12 +403,12 @@ const GroupDetailsModal = ({ members, setMembers, setSelectedChatData, setSelect
                                                                     }
                                                                 }}
                                                                 aria-disabled={isCurrentUser}
-                                                                title={`${isCurrentUser ? "You" : "Tap to chat"}`}
+                                                                title={`${isCurrentUser ? "Me" : "Tap to chat"}`}
                                                             >
                                                                 <img src={member.profilePicture} alt="member.username" className="w-6 h-6 rounded-full" key={member._id} />
                                                                 <span className="text-white font-normal text-sm">{capitalizeUsername(member.username)}</span>
-
                                                             </div>
+
 
                                                             {/* Remove user button */}
                                                             <div>
@@ -422,6 +422,10 @@ const GroupDetailsModal = ({ members, setMembers, setSelectedChatData, setSelect
                                                                             setMemberIdToRemove(member._id)
                                                                             setMemberToRemoe(member.username)
                                                                         }}>remove</button>
+                                                                }
+
+                                                                {
+                                                                    isCurrentUser && <span className="text-xs font-light text-white text-right ml-auto pr-3 hover:underline cursor-pointer">me</span>
                                                                 }
                                                             </div>
                                                         </div>
