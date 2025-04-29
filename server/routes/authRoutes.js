@@ -4,7 +4,9 @@ import {
     registerUser,
     logoutUser,
     loginUser,
-    googleLogin
+    googleLogin,
+    requestPasswordReset,
+    resetPassword
  } 
  from '../controllers/authController.js';
 import { checkAuth } from '../middlewares/checkAuth.js';
@@ -29,5 +31,9 @@ router.get('/google/callback', passport.authenticate('google', { failureRedirect
 router.get('/check', checkAuth)
 
 router.post('/logout',authUser, logoutUser);
+
+// Password reset routes
+router.post('/request-reset', requestPasswordReset);
+router.post('/reset-password', resetPassword);
 
 export default router;

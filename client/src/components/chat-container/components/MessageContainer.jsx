@@ -181,9 +181,9 @@ const MessageContainer = () => {
         message.messageType === "text" && (
           <div className={`${message.sender !== selectedChatData._id
             ? "bg-slate-400/50 text-white/80 border-slate-400/50 rounded-tr-2xl rounded-bl-2xl"
-            : "bg-gray-600/50 text-white/80 border-gray-500/50 rounded-tl-2xl rounded-br-2xl"} border inline-block p-2 px-4 sm:max-w-[50%] break-words text-sm`}>
+            : "bg-gray-600/50 text-white/80 border-gray-500/50 rounded-tl-2xl rounded-br-2xl"} border inline-block py-2 px-2 sm:max-w-[50%] max-w-80 break-words text-sm`}>
 
-            {message.content}
+            <p className="text-left">{message.content}</p>
           </div>
         )}
 

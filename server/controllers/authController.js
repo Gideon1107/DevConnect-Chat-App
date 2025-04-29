@@ -2,7 +2,8 @@ import User from '../models/User.js';
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import validator from "validator";
-
+import crypto from 'crypto';
+import nodemailer from 'nodemailer';
 
 const createAuthToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -200,3 +201,136 @@ export const adminLogin = async (req, res) => {
         res.json({ success: false, message: error.message })
     }
 }
+
+// Request Password Reset
+export const requestPasswordReset = async (req, res) => {
+    try {
+        const { email } = req.body;
+
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(404).json({ 
+                success: false, 
+                message: "If a user with this email exists, you will receive a password reset email." 
+            });
+        }
+
+        // Generate reset token
+        const resetToken = crypto.randomBytes(32).toString('hex');
+        const resetTokenExpiry = Date.now() + 3600000; // Token expires in 1 hour
+
+        // Save hashed version of token
+        user.resetPasswordToken = crypto
+            .createHash('sha256')
+            .update(resetToken)
+            .digest('hex');
+        user.resetPasswordExpires = resetTokenExpiry;
+        await user.save();
+
+        // Create reset URL
+        const resetUrl = `${process.env.ORIGIN}/reset-password/${resetToken}`;
+
+        // Create transporter
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: process.env.EMAIL_USERNAME,
+                pass: process.env.EMAIL_PASSWORD
+            }
+        });
+
+        // Send email
+        await transporter.sendMail({
+            from: process.env.EMAIL_FROM,
+            to: user.email,
+            subject: 'Password Reset Request',
+            html: `
+                <h1>Password Reset Request</h1>
+                <p>You requested a password reset. Click the link below to reset your password:</p>
+                <a href="${resetUrl}">Reset Password</a>
+                <p>This link will expire in 1 hour.</p>
+                <p>If you didn't request this, please ignore this email.</p>
+            `
+        });
+
+        res.status(200).json({
+            success: true,
+            message: "If a user with this email exists, you will receive a password reset email."
+        });
+
+    } catch (error) {
+        console.error('Reset password error:', error);
+        res.status(500).json({ 
+            success: false, 
+            message: "Error processing password reset request" 
+        });
+    }
+};
+
+// Reset Password
+export const resetPassword = async (req, res) => {
+    try {
+        const { token, newPassword } = req.body;
+
+        // Hash the token to compare with stored hash
+        const hashedToken = crypto
+            .createHash('sha256')
+            .update(token)
+            .digest('hex');
+
+        // Find user with valid token
+        const user = await User.findOne({
+            resetPasswordToken: hashedToken,
+            resetPasswordExpires: { $gt: Date.now() }
+        });
+
+        if (!user) {
+            return res.status(400).json({
+                success: false,
+                message: "Password reset token is invalid or has expired"
+            });
+        }
+
+        // Validate new password
+        if (newPassword.length < 8) {
+            return res.status(400).json({
+                success: false,
+                message: "Password must be at least 8 characters long"
+            });
+        }
+
+        // Hash new password
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+        // Update user password and clear reset token fields
+        user.password = hashedPassword;
+        user.resetPasswordToken = undefined;
+        user.resetPasswordExpires = undefined;
+        await user.save();
+
+        // Generate new tokens
+        const authToken = createAuthToken(user._id);
+        const refreshToken = createRefreshToken(user._id);
+
+        res.status(200).json({
+            success: true,
+            message: "Password has been reset successfully",
+            authToken,
+            refreshToken,
+            user: {
+                _id: user._id,
+                username: user.username,
+                email: user.email,
+                profilePicture: user.profilePicture
+            }
+        });
+
+    } catch (error) {
+        console.error('Reset password error:', error);
+        res.status(500).json({
+            success: false,
+            message: "Error resetting password"
+        });
+    }
+};

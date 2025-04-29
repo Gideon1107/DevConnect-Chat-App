@@ -94,7 +94,7 @@ const ChatList = () => {
             >
               <div
                 onClick={() => handleClick(chat)}
-                className={`flex items-center gap-3 p-3 cursor-pointer w-full active:bg-slate-800
+                className={`flex overflow-x-hidden items-center gap-3 p-3 cursor-pointer w-full active:bg-slate-800
               `}
 
               >
@@ -109,7 +109,7 @@ const ChatList = () => {
                   <span className={`absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full ${chat.status === 'online' ? 'bg-green-400' : 'bg-gray-400'
                     }`}></span>
                 </div>
-                <div className="flex-1 min-w-0 ">
+                <div className=" max-w-60 ">
                   <div className="font-medium text-white truncate font-base">{capitalizeUsername(chat.username)}</div>
                   <div className={`text-sm text-gray-400 truncate ${chat.messageType === "file" && "italic"} font-light`}>{chat.messageType === "text" ? chat.lastMessage : "file"}</div>
                 </div>
