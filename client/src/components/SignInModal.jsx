@@ -185,6 +185,10 @@ export const SignInModal = ({ isOpen, onClose, onSwitchToSignUp }) => {
             <button
               type="button"
               className="text-sm text-blue-500 hover:text-blue-400"
+              onClick={() => {
+                onClose()
+                navigate('/forgot-password')
+              }}
             >
               Forgot password?
             </button>

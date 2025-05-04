@@ -14,7 +14,6 @@ import NotFound from './components/NotFound'
 import PrivateRoute from './components/PrivateRoute'
 import Chat from './pages/Chat'
 import Profile from './pages/Profile'
-import Settings from './pages/Settings'
 import PublicRoute from './components/PublicRoute';
 import ScrollToTop from './components/ScollToTop';
 import BackToTop from './components/BackToTop';
@@ -27,6 +26,10 @@ import AuthCallback from './components/AuthCallback';
 import { isAuthenticated } from './utils/authUtils';
 import TestEmptyChat from './pages/TestEmptyChat';
 import LoadingScreen from './components/LoadingScreen';
+import ActivateAccount from './components/ActivateAccount';
+import AwaitingAccountVerification from './components/AwaitingAccountVerification';
+import ForgotPassword from './components/ForgotPassword';
+import ResetPassword from './components/ResetPassword';
 
 
 
@@ -136,6 +139,15 @@ const App = () => {
           <Route path="/community" element={<PublicRoute element={<Community />} />} />
           <Route path="/docs" element={<PublicRoute element={<Documentation />} />} />
           <Route path="/about" element={<PublicRoute element={<About />} />} />
+
+          {/* Pages to registration verfication */}
+          <Route path="/awaiting-account-verification" element={<PublicRoute element={<AwaitingAccountVerification/>}/>}/>
+          <Route path="/activate/:token" element={<PublicRoute element={<ActivateAccount/>}/>}/>
+
+          {/* Pages to password resetting */}
+          <Route path="/forgot-password" element={<PublicRoute element={<ForgotPassword/>}/>}/>
+          <Route path="/reset-password/:token" element={<PublicRoute element={<ResetPassword/>}/>}/>
+          
 
           {/* Auth Callback for Google OAuth */}
           <Route path="/auth-callback" element={<AuthCallback />} />

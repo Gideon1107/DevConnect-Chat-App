@@ -20,10 +20,11 @@ const UserProfile = () => {
   const onLogout = async () => {
     try {
       // Send logout request using our custom axios instance
-      const response = await axiosInstance.post(`${HOST}/${LOGOUT_ROUTE}`, {});
+      const response = await axiosInstance.post(`${HOST}/${LOGOUT_ROUTE}`);
 
       // Clear tokens from localStorage
       removeTokens();
+      
 
       // Update UI
       toast.success(response.data?.message || 'Logged out successfully', { theme: "light" , duration: 2000});

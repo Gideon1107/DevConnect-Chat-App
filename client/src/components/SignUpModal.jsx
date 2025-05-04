@@ -9,8 +9,6 @@ import { useState, useEffect } from "react";
 import axiosInstance from "@/utils/axiosConfig";
 import { HOST, SIGNUP_ROUTE, GOOGLE_LOGIN_ROUTE } from "@/utils/constants";
 import { toast } from 'sonner';
-import { storeTokens } from "@/utils/authUtils";
-import { useAppStore } from "@/store/store";
 import { useNavigate } from "react-router-dom";
 
 
@@ -24,12 +22,14 @@ const signUpSchemna = Yup.object().shape({
     /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
     "Invalid email address"
   ).required("Email is required"),
-  password: Yup.string().required("Password is required").min(8, "Password must be at least 8 characters")
+  password: Yup.string()
+    .required("Password is required")
+    .min(8, "Password must be at least 8 characters")
 });
 
 
 export const SignUpModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
-  const { setUser } = useAppStore();
+
   const navigate = useNavigate();
 
   const {
@@ -45,27 +45,17 @@ export const SignUpModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
       const response = await axiosInstance.post(`${HOST}/${SIGNUP_ROUTE}`, data);
 
       if (response.data.success) {
-        // Store tokens in localStorage instead of cookies
-        const { authToken, refreshToken, user } = response.data;
-        storeTokens(authToken, refreshToken);
-
-        // Set user in the global store immediately
-        if (user) {
-          setUser(user);
-        }
-
-        toast.success(response.data.message, {theme: "light"});
+        toast.success(response.data.message || 'Registration successful. Please check your email for verification instructions', { theme: "light" });
 
         // Reset the form
         reset();
         onClose(); // Close the modal
 
-        // Use React Router's navigate instead of window.location for a smoother transition
-        setTimeout(() => {
-          navigate('/chat');
-        }, 1000);
+        // Navigate to awaiting verification screen
+        navigate('/awaiting-account-verification')
+
       } else {
-        toast.error(response.data.message, {theme: "light"});
+        toast.error(response.data.message, { theme: "light" });
       }
 
     } catch (error) {
@@ -122,7 +112,7 @@ export const SignUpModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
           </button>
         </div>
         <button className="w-full bg-white text-gray-900 px-4 py-2 rounded-md text-sm font-semibold hover:bg-gray-100 flex items-center justify-center gap-2 mb-4" onClick={onGoogleSignIn}>
-            <FcGoogle/>
+          <FcGoogle />
           Continue with Google
         </button>
         <div className="relative my-6">
@@ -138,7 +128,7 @@ export const SignUpModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
 
         <form className="space-y-4" noValidate onSubmit={handleSubmit(onSubmit)}>
 
-            {/* Username */}
+          {/* Username */}
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-1">
               Username
@@ -153,7 +143,7 @@ export const SignUpModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
 
             {/* Username Error message */}
             {errors.username && (
-              <span className="text-red-600 text-sm mt-1">{errors.username.message}</span>
+              <span className="text-red-600 text-xs font-light mt-1">{errors.username.message}</span>
             )}
           </div>
 
@@ -172,7 +162,7 @@ export const SignUpModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
 
             {/* Email Error message */}
             {errors.email && (
-              <span className="text-red-600 text-sm mt-1">{errors.email.message}</span>
+              <span className="text-red-600 text-xs font-light mt-1">{errors.email.message}</span>
             )}
           </div>
 
@@ -182,19 +172,19 @@ export const SignUpModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
               Password
             </label>
             <div className="relative flex items-center">
-            <input
-              {...register("password")}
-              type={showPassword ? "text" : "password"}
-              className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-md text-white focus:outline-none focus:border-blue-500 placeholder:opacity-40 placeholder:text-sm"
-              placeholder="••••••••"
-              autoComplete="off"
-            />
+              <input
+                {...register("password")}
+                type={showPassword ? "text" : "password"}
+                className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-md text-white focus:outline-none focus:border-blue-500 placeholder:opacity-40 placeholder:text-sm"
+                placeholder="••••••••"
+                autoComplete="off"
+              />
               {showPassword ? <FiEyeOff onClick={() => setShowPassword(!showPassword)} className="absolute text-white right-3 cursor-pointer" /> : <FiEye onClick={() => setShowPassword(!showPassword)} className="absolute text-white right-3 cursor-pointer" />}
             </div>
 
             {/* Password Error message */}
             {errors.password && (
-              <span className="text-red-600 text-sm mt-1">{errors.password.message}</span>
+              <span className="text-red-600 text-xs font-light mt-1">{errors.password.message}</span>
             )}
           </div>
 

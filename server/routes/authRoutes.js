@@ -1,6 +1,7 @@
 import express from 'express';
 import passport from 'passport';
 import { 
+    requestRegisterUser,
     registerUser,
     logoutUser,
     loginUser,
@@ -15,7 +16,8 @@ import authUser from '../middlewares/authMiddleware.js';
 const router = express.Router();
 
 // Register a new user
-router.post('/register', registerUser);
+router.post('/register', requestRegisterUser);
+router.post('/activate/:token', registerUser)
 
 // Login a user
 router.post('/login', loginUser )

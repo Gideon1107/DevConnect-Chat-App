@@ -6,8 +6,8 @@ import { yupResolver } from "@hookform/resolvers/yup"
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { useState } from "react";
 import { HOST, CHANGE_PASSWORD_ROUTE } from "@/utils/constants";
-import axios from "axios";
 import { toast } from "sonner";
+import axiosInstance from "@/utils/axiosConfig";
 
 
 // ChangePAssword Schema
@@ -43,9 +43,7 @@ const ChangePassword = () => {
     const onSubmit = async (data) => {
         
         try {
-            const response = await axios.put(`${HOST}/${CHANGE_PASSWORD_ROUTE}`, data, {
-                withCredentials: true // To send cookie with request
-            })
+            const response = await axiosInstance.put(`${HOST}/${CHANGE_PASSWORD_ROUTE}`, data )
             if (response.data.success) {
                 reset()
                 toast.success(response.data.message)

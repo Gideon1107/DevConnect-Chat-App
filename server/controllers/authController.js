@@ -3,7 +3,10 @@ import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import validator from "validator";
 import crypto from 'crypto';
-import nodemailer from 'nodemailer';
+import sendActivationEmail from '../utils/sendActivationEmail.js';
+import sendPasswordResetEmail from '../utils/sendPasswordResetEmail.js';
+import sendPasswordResetSuccess from '../utils/sendPasswordResetSuccess.js';
+
 
 const createAuthToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -17,9 +20,19 @@ const createRefreshToken = (id) => {
     });
 };
 
+const createActivationToken = (username, email, password) => {
+    return jwt.sign(
+        { username, email, password },
+        process.env.ACTIVATION_TOKEN_SECRET,
+        { expiresIn: '1d' }
+    );
+}
 
-// Register a new user
-export const registerUser = async (req, res) => {
+
+
+
+// Request register a new user
+export const requestRegisterUser = async (req, res) => {
 
     try {
         const { username, email, password } = req.body;
@@ -63,34 +76,81 @@ export const registerUser = async (req, res) => {
         const salt = await bcrypt.genSalt(10)
         const hashedPassword = await bcrypt.hash(password, salt)
 
-        // create user
-        const user = new User({ username, email, password: hashedPassword, googleId: undefined });
-        user.status = "online";
-        await user.save();
 
-        // Generate Token
-        const authToken = createAuthToken(user._id)
-        const refreshToken = createRefreshToken(user._id);
+        // Create an activation token carrying the user's info
+        const activationToken = createActivationToken(username, email, hashedPassword)
 
-        // Return tokens in response body for localStorage storage on client
-        res.status(201).json({
-            success: true,
-            message: 'User registered successfully',
-            authToken,
-            refreshToken,
-            user: {
-                _id: user._id,
-                username: user.username,
-                email: user.email,
-                profilePicture: user.profilePicture
-            }
-        });
+        await sendActivationEmail(email, username, activationToken)
+
+        res.status(200).json({ success: true, message: "Activation link sent to your email." })
 
     } catch (error) {
+        console.log(error)
         res.status(400).json({ message: 'Error registering user', error: error.message });
     }
 
 };
+
+
+export const registerUser = async (req, res) => {
+    try {
+        const { token } = req.params;
+
+        if (!token) {
+            return res.status(400).json({ success: false, message: 'No activation token provided.' });
+        }
+
+        try {
+            // Decode the activation token
+            const decoded = jwt.verify(token, process.env.ACTIVATION_TOKEN_SECRET);
+            const { username, email, password } = decoded;
+
+            // Check if user already exists
+            const emailExists = await User.findOne({ email });
+            if (emailExists) {
+                return res.status(400).json({ success: false, message: 'Email already registered.' });
+            }
+
+            const usernameExists = await User.findOne({ username });
+            if (usernameExists) {
+                return res.status(400).json({ success: false, message: 'Username already taken.' });
+            }
+
+            // create user
+            const user = new User({ username, email, password, googleId: undefined });
+            user.status = "online";
+            await user.save();
+
+            // Generate Token
+            const authToken = createAuthToken(user._id)
+            const refreshToken = createRefreshToken(user._id);
+
+            // Return tokens in response body for localStorage storage on client
+            res.status(201).json({
+                success: true,
+                message: 'User registered successfully',
+                authToken,
+                refreshToken,
+                user: {
+                    _id: user._id,
+                    username: user.username,
+                    email: user.email,
+                    profilePicture: user.profilePicture
+                }
+            });
+
+        } catch (error) {
+            if (error.name === 'TokenExpiredError') {
+                return res.status(400).json({ success: false, message: 'Activation token expired.' });
+            }
+            return res.status(400).json({ success: false, message: 'Invalid activation token.' });
+        }
+
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({ success: false, message: "Internal server error" })
+    }
+}
 
 
 
@@ -144,11 +204,11 @@ export const loginUser = async (req, res) => {
 // Route for Login in with Google
 export const googleLogin = async (req, res) => {
     try {
-        const userId =  req.user.id
+        const userId = req.user.id
         const user = await User.findById(userId)
         user.status = "online"; // Set user status to online
         await user.save();
-        
+
         // Successful authentication, generate a JWT token
         const authToken = createAuthToken(userId)
         const refreshToken = createRefreshToken(userId);
@@ -167,19 +227,25 @@ export const googleLogin = async (req, res) => {
 
 // Logout User Route
 export const logoutUser = async (req, res) => {
-    const { id } = req.user // Get user id from middleware
+    try {
+        const { id } = req.user // Get user id from middleware
 
-    const user = await User.findById(id); // Find the user in the database
+        const user = await User.findById(id); // Find the user in the database
 
-    user.status = "offline"; // Set user status to offline
-    user.lastSeenActive = Date.now(); // Set the last seen active time to the current time
-    await user.save();
+        user.status = "offline"; // Set user status to offline
+        user.lastSeenActive = Date.now(); // Set the last seen active time to the current time
+        await user.save();
 
-    // With localStorage approach, tokens are cleared on the client side
-    // No need to clear cookies on the server
+        // With localStorage approach, tokens are cleared on the client side
+        // No need to clear cookies on the server
 
-    // Send a response indicating successful logout
-    res.status(200).json({ success: true, message: 'User logged out successfully' });
+        // Send a response indicating successful logout
+        res.status(200).json({ success: true, message: 'User logged out successfully' });
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({ success: false, message: "Internal server error" })
+    }
+
 };
 
 
@@ -209,9 +275,9 @@ export const requestPasswordReset = async (req, res) => {
 
         const user = await User.findOne({ email });
         if (!user) {
-            return res.status(404).json({ 
-                success: false, 
-                message: "If a user with this email exists, you will receive a password reset email." 
+            return res.status(200).json({
+                success: false,
+                message: "User with this email does not exist."
             });
         }
 
@@ -227,42 +293,19 @@ export const requestPasswordReset = async (req, res) => {
         user.resetPasswordExpires = resetTokenExpiry;
         await user.save();
 
-        // Create reset URL
-        const resetUrl = `${process.env.ORIGIN}/reset-password/${resetToken}`;
-
-        // Create transporter
-        const transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-                user: process.env.EMAIL_USERNAME,
-                pass: process.env.EMAIL_PASSWORD
-            }
-        });
-
         // Send email
-        await transporter.sendMail({
-            from: process.env.EMAIL_FROM,
-            to: user.email,
-            subject: 'Password Reset Request',
-            html: `
-                <h1>Password Reset Request</h1>
-                <p>You requested a password reset. Click the link below to reset your password:</p>
-                <a href="${resetUrl}">Reset Password</a>
-                <p>This link will expire in 1 hour.</p>
-                <p>If you didn't request this, please ignore this email.</p>
-            `
-        });
+        await sendPasswordResetEmail(user.email, resetToken);
 
         res.status(200).json({
             success: true,
-            message: "If a user with this email exists, you will receive a password reset email."
+            message: "Check email for password reset instructions."
         });
 
     } catch (error) {
         console.error('Reset password error:', error);
-        res.status(500).json({ 
-            success: false, 
-            message: "Error processing password reset request" 
+        res.status(500).json({
+            success: false,
+            message: "Error processing password reset request"
         });
     }
 };
@@ -312,6 +355,8 @@ export const resetPassword = async (req, res) => {
         // Generate new tokens
         const authToken = createAuthToken(user._id);
         const refreshToken = createRefreshToken(user._id);
+
+        await sendPasswordResetSuccess(user.email, user.username); //Send email to user confirming password reset success
 
         res.status(200).json({
             success: true,
